@@ -133,7 +133,7 @@ void AwesomiumInterface::draw()
     glBindTexture(GL_TEXTURE_2D, _renderedTexture);
 
     glUniform1i(texture2Dshader.Text2DUniformID, 0);
-   
+
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glVertexAttribPointer(1, 2, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)12);
     glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)16);
@@ -159,7 +159,7 @@ void AwesomiumInterface::setDrawCoords(int x, int y, int width, int height) {
     }
 
     Vertex2D vertices[4];
-    
+
 
     vertices[0].pos.x = x;
     vertices[0].pos.y = y + height;
@@ -271,8 +271,8 @@ int getWebKeyFromSDLKey(SDL_Scancode key) {
         mapKey(x, X)
         mapKey(y, Y)
         mapKey(z, Z)
-        //	mapKey(DELETE, DELETE)
-        /*	mapKey(KP0, NUMPAD0)
+        //  mapKey(DELETE, DELETE)
+        /*  mapKey(KP0, NUMPAD0)
         mapKey(KP1, NUMPAD1)
         mapKey(KP2, NUMPAD2)
         mapKey(KP3, NUMPAD3)
@@ -315,21 +315,21 @@ int getWebKeyFromSDLKey(SDL_Scancode key) {
         mapKey(F15, F15)
         //mapKey(NUMLOCK, NUMLOCK)
         mapKey(CAPSLOCK, CAPITAL)
-        //	mapKey(SCROLLOCK, SCROLL)
+        //  mapKey(SCROLLOCK, SCROLL)
         mapKey(RSHIFT, RSHIFT)
         mapKey(LSHIFT, LSHIFT)
         mapKey(RCTRL, RCONTROL)
         mapKey(LCTRL, LCONTROL)
         mapKey(RALT, RMENU)
         mapKey(LALT, LMENU)
-        //	mapKey(RMETA, LWIN)
-        //	mapKey(LMETA, RWIN)
-        //	mapKey(LSUPER, LWIN)
-        //	mapKey(RSUPER, RWIN)
+        //  mapKey(RMETA, LWIN)
+        //  mapKey(LMETA, RWIN)
+        //  mapKey(LSUPER, LWIN)
+        //  mapKey(RSUPER, RWIN)
         mapKey(MODE, MODECHANGE)
-        //	mapKey(COMPOSE, ACCEPT)
+        //  mapKey(COMPOSE, ACCEPT)
         mapKey(HELP, HELP)
-        //	mapKey(PRINT, SNAPSHOT)
+        //  mapKey(PRINT, SNAPSHOT)
         mapKey(SYSREQ, EXECUTE)
     default:
         return Awesomium::KeyCodes::AK_UNKNOWN;
