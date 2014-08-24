@@ -14,7 +14,7 @@
 CAEngine::CAEngine() {
     memset(_blockUpdateFlagList, 0, sizeof(_blockUpdateFlagList));
     //temorary
-    _lowIndex = LOWWATER; 
+    _lowIndex = LOWWATER;
     _range = 100;
     _highIndex = _lowIndex + _range - 1;
 }
@@ -141,7 +141,7 @@ void CAEngine::updateLiquidBlocks()
     bool *activeUpdateList = _chunk->activeUpdateList;
     vector <GLushort> *blockUpdateList = _chunk->blockUpdateList[0];
     int actv = activeUpdateList[0];
-    int size = blockUpdateList[actv].size(); 
+    int size = blockUpdateList[actv].size();
     if (size == 0) return;
     activeUpdateList[0] = !(activeUpdateList[0]); //switch to other list
     int c, blockID;
@@ -208,12 +208,12 @@ void CAEngine::updatePowderBlocks()
             if (_blockUpdateFlagList[b] == 0){
                 _usedUpdateFlagList.push_back(b);
                 _blockUpdateFlagList[b] = 1;
-                if (_chunk->getBlock(b).physicsProperty == P_SNOW){ 
+                if (_chunk->getBlock(b).physicsProperty == P_SNOW){
                     snowPhysics(b);
                 }
             }
         }
-        blockUpdateList[actv].clear(); 
+        blockUpdateList[actv].clear();
 
         for (i = 0; i < _usedUpdateFlagList.size(); i++){
             _blockUpdateFlagList[_usedUpdateFlagList[i]] = 0;
@@ -256,7 +256,7 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
     blockID = owner->getBlockID(nextIndex);
 
     //If we are falling on an air block
-    if (blockID == NONE){ 
+    if (blockID == NONE){
         ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, startBlockID);
         ChunkUpdater::removeBlockFromLiquidPhysics(_chunk, startBlockIndex);
 
@@ -276,7 +276,7 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
 
             if (diff > 10 && inFrustum) particleEngine.addParticles(1, glm::dvec3(position.x + pos.x, position.y + pos.y - 1.0, position.z + pos.z), 0, 0.1, 16665, 1111, glm::vec4(255.0f, 255.0f, 255.0f, 255.0f), Blocks[blockID].particleTex, 0.5f, 8);
             hasChanged = 1;
-            
+
             if (owner != _chunk) {
                 owner->changeState(ChunkStates::WATERMESH);
                 ChunkUpdater::updateNeighborStates(owner, nextIndex, ChunkStates::WATERMESH);
@@ -324,7 +324,7 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
         adjOwners[index] = owner;
         adjIndices[index++] = nextIndex;
     } else if (blockID >= _lowIndex && blockID < _highIndex){ //tmp CANT FLOW THOUGH FULL WATER
-        
+
         if (nextCoord > 0){ //extra flow. its the secret!
             adjAdjIndices[index] = nextIndex - 1;
             adjAdjOwners[index] = owner;
@@ -436,7 +436,7 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
         adjIndices[index++] = nextIndex;
     }
 
-  
+
 
     //Spread the liquid
     int numAdj = index + 1;
@@ -453,15 +453,15 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
                     ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, _lowIndex - 1 + diff);
                 } else if (Blocks[blockID].waterBreak){
                     ChunkUpdater::removeBlock(owner, nextIndex, true);
-                    ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, _lowIndex - 1 + diff);              
+                    ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, _lowIndex - 1 + diff);
                 } else{
                     ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, blockID + diff);
                 }
 
-               
+
                 startBlockID -= diff;
                 if (diff > 10 && inFrustum) particleEngine.addParticles(1, glm::dvec3(position.x + pos.x, position.y + pos.y, position.z + pos.z), 0, 0.1, 16665, 1111, glm::vec4(255.0f, 255.0f, 255.0f, 255.0f), Blocks[blockID].particleTex, 0.5f, 8);
-               
+
                 if (owner != _chunk) {
                     owner->changeState(ChunkStates::WATERMESH);
                     ChunkUpdater::updateNeighborStates(owner, nextIndex, ChunkStates::WATERMESH);
@@ -486,14 +486,14 @@ void CAEngine::liquidPhysics(i32 startBlockIndex, i32 startBlockID) {
                 if (owner != _chunk) {
                     owner->changeState(ChunkStates::WATERMESH);
                     ChunkUpdater::updateNeighborStates(owner, nextIndex, ChunkStates::WATERMESH);
-                }     
+                }
                 hasChanged = 1;
             } else if (blockID >= _lowIndex && blockID < startBlockID - 1){
                 diff = (startBlockID - blockID) / 2;
 
                 ChunkUpdater::placeBlockFromLiquidPhysics(owner, nextIndex, blockID + diff);
                 startBlockID -= diff;
-         
+
                 if (owner != _chunk) {
                     owner->changeState(ChunkStates::WATERMESH);
                     ChunkUpdater::updateNeighborStates(owner, nextIndex, ChunkStates::WATERMESH);
@@ -547,7 +547,7 @@ void CAEngine::powderPhysics(int c)
             hasChanged = 1;
         } else{ //otherwise do simple cellular automata
             b = GETBLOCKTYPE(b);
-            //	if (b != NONE && b < LOWWATER) owner->BreakBlock(c2, owner->data[c2]); //to break blocks
+            //  if (b != NONE && b < LOWWATER) owner->BreakBlock(c2, owner->data[c2]); //to break blocks
             if (GETBLOCK(owner->data[c2]).powderMove){
                 tmp = owner->data[c2];
                 ChunkUpdater::placeBlock(owner, c2, _chunk->data[c]);
@@ -556,7 +556,7 @@ void CAEngine::powderPhysics(int c)
                 ChunkUpdater::placeBlock(owner, c2, _chunk->data[c]);
                 ChunkUpdater::removeBlock(_chunk, c, false);
             }
-       
+
             hasChanged = 1;
         }
     }
@@ -652,7 +652,7 @@ void CAEngine::snowPhysics(int c)
             hasChanged = 1;
         } else{ //otherwise do simple cellular automata
             b = GETBLOCKTYPE(b);
-            //	if (b != NONE && b < LOWWATER) owner->BreakBlock(c2, owner->data[c2]); //to break blocks
+            //  if (b != NONE && b < LOWWATER) owner->BreakBlock(c2, owner->data[c2]); //to break blocks
             if (GETBLOCK(owner->data[c2]).powderMove){
                 tmp = owner->data[c2];
             } else{
@@ -685,7 +685,7 @@ void CAEngine::snowPhysics(int c)
                     b = _chunk->getLeftBlockData(c, x, &c2, &owner);
                     if (GETBLOCK(b).powderMove){
                         if (GETBLOCK(owner->getBottomBlockData(c2)).powderMove){
-                        
+
                             tmp1 = _chunk->data[c];
                             ChunkUpdater::placeBlock(_chunk, c, owner->data[c2]);
                             ChunkUpdater::placeBlock(owner, c2, tmp1);
@@ -702,13 +702,13 @@ void CAEngine::snowPhysics(int c)
                     b = _chunk->getRightBlockData(c, x, &c2, &owner);
                     if (GETBLOCK(b).powderMove){
                         if (GETBLOCK(owner->getBottomBlockData(c2)).powderMove){
-     
+
                             tmp1 = _chunk->data[c];
                             ChunkUpdater::placeBlock(_chunk, c, owner->data[c2]);
                             ChunkUpdater::placeBlock(owner, c2, tmp1);
 
                             ChunkUpdater::snowAddBlockToUpdateList(owner, c2);
- 
+
                             hasChanged = 1;
                             if (isSnow) particleEngine.addParticles(1, glm::dvec3(position.x + x + 1.0, position.y + y, position.z + z), 0, 0.2, 10, 6, glm::vec4(255.0f), tex, 1.0f, 8);
                         }
@@ -719,11 +719,11 @@ void CAEngine::snowPhysics(int c)
                     b = _chunk->getFrontBlockData(c, z, &c2, &owner);
                     if (GETBLOCK(b).powderMove){
                         if (GETBLOCK(owner->getBottomBlockData(c2)).powderMove){
-   
+
                             tmp1 = _chunk->data[c];
                             ChunkUpdater::placeBlock(_chunk, c, owner->data[c2]);
-                            ChunkUpdater::placeBlock(owner, c2, tmp1); 
-                        
+                            ChunkUpdater::placeBlock(owner, c2, tmp1);
+
                             ChunkUpdater::snowAddBlockToUpdateList(owner, c2);
 
                             hasChanged = 1;
