@@ -181,3 +181,5 @@ desktop.ini
 # Ignore C++ Project Files, Generate Them Instead
 *.vcxproj
 *.vcxproj.filters
+SoA/SOA.vcxproj
+SoA/SOA.vcxproj.filters
