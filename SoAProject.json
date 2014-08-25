@@ -454,9 +454,6 @@
             "@Include": "InputManager.cpp"
           },
           {
-            "@Include": "Actor.cpp"
-          },
-          {
             "@Include": "BlockData.cpp"
           },
           {

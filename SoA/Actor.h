@@ -3,8 +3,8 @@ class Item;
 
 class Actor {
 public:
-    Actor();
-    ~Actor();
+    Actor() {}
+    ~Actor() {}
 
     f32v3 boundingBox;
 

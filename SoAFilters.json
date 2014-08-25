@@ -616,10 +616,6 @@
       {
         "ClCompile": [
           {
-            "@Include": "Actor.cpp",
-            "Filter": "SOA Files\\Game\\Objects"
-          },
-          {
             "@Include": "App.cpp",
             "Filter": "SOA Files\\Screens"
           },

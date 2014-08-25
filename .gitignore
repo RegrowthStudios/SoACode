@@ -177,3 +177,7 @@ FakesAssemblies/
 [Tt]humbs.db
 *.DS_Store
 desktop.ini
+
+# Ignore C++ Project Files, Generate Them Instead
+*.vcxproj
+*.vcxproj.filters
