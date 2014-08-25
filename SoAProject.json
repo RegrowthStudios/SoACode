@@ -1,0 +1,838 @@
+{
+  "?xml": {
+    "@version": "1.0",
+    "@encoding": "utf-8"
+  },
+  "Project": {
+    "@DefaultTargets": "Build",
+    "@ToolsVersion": "12.0",
+    "@xmlns": "http://schemas.microsoft.com/developer/msbuild/2003",
+    "ItemGroup": [
+      {
+        "@Label": "ProjectConfigurations",
+        "ProjectConfiguration": [
+          {
+            "@Include": "Debug|Win32",
+            "Configuration": "Debug",
+            "Platform": "Win32"
+          },
+          {
+            "@Include": "Release|Win32",
+            "Configuration": "Release",
+            "Platform": "Win32"
+          }
+        ]
+      },
+      {
+        "ClInclude": [
+          {
+            "@Include": "BlockTextureAtlas.h"
+          },
+          {
+            "@Include": "ChunkGenerator.h"
+          },
+          {
+            "@Include": "ChunkRenderer.h"
+          },
+          {
+            "@Include": "Component.h"
+          },
+          {
+            "@Include": "ComponentTable.hpp"
+          },
+          {
+            "@Include": "ComponentTableBase.h"
+          },
+          {
+            "@Include": "DevConsole.h"
+          },
+          {
+            "@Include": "DevConsoleView.h"
+          },
+          {
+            "@Include": "Entity.h"
+          },
+          {
+            "@Include": "AwesomiumInterface.h"
+          },
+          {
+            "@Include": "ChunkUpdater.h"
+          },
+          {
+            "@Include": "GeometrySorter.h"
+          },
+          {
+            "@Include": "GLStates.h"
+          },
+          {
+            "@Include": "Keg.h"
+          },
+          {
+            "@Include": "LiquidData.h"
+          },
+          {
+            "@Include": "LoadBar.h"
+          },
+          {
+            "@Include": "LoadScreen.h"
+          },
+          {
+            "@Include": "CAEngine.h"
+          },
+          {
+            "@Include": "ChunkMesher.h"
+          },
+          {
+            "@Include": "ChunkWorker.h"
+          },
+          {
+            "@Include": "DebugRenderer.h"
+          },
+          {
+            "@Include": "DepthState.h"
+          },
+          {
+            "@Include": "FragFile.h"
+          },
+          {
+            "@Include": "IGameScreen.h"
+          },
+          {
+            "@Include": "GLEnums.h"
+          },
+          {
+            "@Include": "GLProgram.h"
+          },
+          {
+            "@Include": "GLTexture.h"
+          },
+          {
+            "@Include": "GraphicsDevice.h"
+          },
+          {
+            "@Include": "IOManager.h"
+          },
+          {
+            "@Include": "Item.h"
+          },
+          {
+            "@Include": "MainGame.h"
+          },
+          {
+            "@Include": "MaterialAtlas.h"
+          },
+          {
+            "@Include": "MaterialData.h"
+          },
+          {
+            "@Include": "MaterialStack.h"
+          },
+          {
+            "@Include": "Particle.h"
+          },
+          {
+            "@Include": "ParticleBatch.h"
+          },
+          {
+            "@Include": "ParticleEmitter.h"
+          },
+          {
+            "@Include": "ParticleEngine.h"
+          },
+          {
+            "@Include": "ParticleMesh.h"
+          },
+          {
+            "@Include": "PtrRecycler.h"
+          },
+          {
+            "@Include": "RasterizerState.h"
+          },
+          {
+            "@Include": "RegionFileManager.h"
+          },
+          {
+            "@Include": "SamplerState.h"
+          },
+          {
+            "@Include": "ScreenList.h"
+          },
+          {
+            "@Include": "SpriteBatch.h"
+          },
+          {
+            "@Include": "SpriteFont.h"
+          },
+          {
+            "@Include": "stdafx.h"
+          },
+          {
+            "@Include": "App.h"
+          },
+          {
+            "@Include": "TestScreen.h"
+          },
+          {
+            "@Include": "TextureAtlasManager.h"
+          },
+          {
+            "@Include": "TextureAtlasStitcher.h"
+          },
+          {
+            "@Include": "Timing.h"
+          },
+          {
+            "@Include": "VoxelEditor.h"
+          },
+          {
+            "@Include": "Thread.h"
+          },
+          {
+            "@Include": "VoxelLightEngine.h"
+          },
+          {
+            "@Include": "VoxelUtils.h"
+          },
+          {
+            "@Include": "WSO.h"
+          },
+          {
+            "@Include": "WSOAtlas.h"
+          },
+          {
+            "@Include": "WSOScanner.h"
+          },
+          {
+            "@Include": "WSOData.h"
+          },
+          {
+            "@Include": "Inputs.h"
+          },
+          {
+            "@Include": "InputManager.h"
+          },
+          {
+            "@Include": "Actor.h"
+          },
+          {
+            "@Include": "atomicops.h"
+          },
+          {
+            "@Include": "BlockData.h"
+          },
+          {
+            "@Include": "Camera.h"
+          },
+          {
+            "@Include": "Chunk.h"
+          },
+          {
+            "@Include": "ChunkManager.h"
+          },
+          {
+            "@Include": "Collision.h"
+          },
+          {
+            "@Include": "Constants.h"
+          },
+          {
+            "@Include": "Errors.h"
+          },
+          {
+            "@Include": "FileSystem.h"
+          },
+          {
+            "@Include": "FrameBuffer.h"
+          },
+          {
+            "@Include": "Frustum.h"
+          },
+          {
+            "@Include": "GameControls.h"
+          },
+          {
+            "@Include": "GameManager.h"
+          },
+          {
+            "@Include": "GameMenu.h"
+          },
+          {
+            "@Include": "global.h"
+          },
+          {
+            "@Include": "ImageLoading.h"
+          },
+          {
+            "@Include": "LoadTask.h"
+          },
+          {
+            "@Include": "PhysicsBlocks.h"
+          },
+          {
+            "@Include": "PhysicsEngine.h"
+          },
+          {
+            "@Include": "Random.h"
+          },
+          {
+            "@Include": "RenderTask.h"
+          },
+          {
+            "@Include": "RenderUtils.h"
+          },
+          {
+            "@Include": "TaskQueueManager.h"
+          },
+          {
+            "@Include": "TerrainPatch.h"
+          },
+          {
+            "@Include": "lodepng.h"
+          },
+          {
+            "@Include": "ObjectLoader.h"
+          },
+          {
+            "@Include": "OpenglManager.h"
+          },
+          {
+            "@Include": "OpenGLStructs.h"
+          },
+          {
+            "@Include": "Options.h"
+          },
+          {
+            "@Include": "Particles.h"
+          },
+          {
+            "@Include": "Planet.h"
+          },
+          {
+            "@Include": "Player.h"
+          },
+          {
+            "@Include": "readerwriterqueue.h"
+          },
+          {
+            "@Include": "Rendering.h"
+          },
+          {
+            "@Include": "shader.h"
+          },
+          {
+            "@Include": "SimplexNoise.h"
+          },
+          {
+            "@Include": "Sound.h"
+          },
+          {
+            "@Include": "TerrainGenerator.h"
+          },
+          {
+            "@Include": "Texture2d.h"
+          },
+          {
+            "@Include": "ThreadPool.h"
+          },
+          {
+            "@Include": "AwesomiumUI.h"
+          },
+          {
+            "@Include": "FloraGenerator.h"
+          },
+          {
+            "@Include": "types.h"
+          },
+          {
+            "@Include": "utils.h"
+          },
+          {
+            "@Include": "VoxelRay.h"
+          },
+          {
+            "@Include": "VRayHelper.h"
+          },
+          {
+            "@Include": "WorldEditor.h"
+          },
+          {
+            "@Include": "ChunkIOManager.h"
+          },
+          {
+            "@Include": "WorldStructs.h"
+          },
+          {
+            "@Include": "VoxelWorld.h"
+          },
+          {
+            "@Include": "VoxDefs.h"
+          },
+          {
+            "@Include": "EditorVariables.h"
+          },
+          {
+            "@Include": "ZipFile.h"
+          }
+        ]
+      },
+      {
+        "ClCompile": [
+          {
+            "@Include": "..\\deps\\include\\JSON\\json_spirit_reader.cpp",
+            "PrecompiledHeader": [
+              {
+                "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+                "#text": "NotUsing"
+              },
+              {
+                "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+                "#text": "NotUsing"
+              }
+            ]
+          },
+          {
+            "@Include": "BlockTextureAtlas.cpp"
+          },
+          {
+            "@Include": "ChunkGenerator.cpp"
+          },
+          {
+            "@Include": "ChunkRenderer.cpp"
+          },
+          {
+            "@Include": "ComponentTableBase.cpp"
+          },
+          {
+            "@Include": "AwesomiumInterface.cpp"
+          },
+          {
+            "@Include": "ChunkUpdater.cpp"
+          },
+          {
+            "@Include": "DevConsole.cpp"
+          },
+          {
+            "@Include": "DevConsoleView.cpp"
+          },
+          {
+            "@Include": "GeometrySorter.cpp"
+          },
+          {
+            "@Include": "Keg.cpp"
+          },
+          {
+            "@Include": "LoadBar.cpp"
+          },
+          {
+            "@Include": "LoadScreen.cpp"
+          },
+          {
+            "@Include": "CAEngine.cpp"
+          },
+          {
+            "@Include": "ChunkWorker.cpp"
+          },
+          {
+            "@Include": "DebugRenderer.cpp"
+          },
+          {
+            "@Include": "DepthState.cpp"
+          },
+          {
+            "@Include": "FragFile.cpp"
+          },
+          {
+            "@Include": "GLProgram.cpp"
+          },
+          {
+            "@Include": "GLTexture.cpp"
+          },
+          {
+            "@Include": "GraphicsDevice.cpp"
+          },
+          {
+            "@Include": "InputManager.cpp"
+          },
+          {
+            "@Include": "Actor.cpp"
+          },
+          {
+            "@Include": "BlockData.cpp"
+          },
+          {
+            "@Include": "Camera.cpp"
+          },
+          {
+            "@Include": "Chunk.cpp"
+          },
+          {
+            "@Include": "Inputs.cpp"
+          },
+          {
+            "@Include": "IOManager.cpp"
+          },
+          {
+            "@Include": "MainGame.cpp"
+          },
+          {
+            "@Include": "OpenglManager.cpp"
+          },
+          {
+            "@Include": "Particle.cpp"
+          },
+          {
+            "@Include": "ParticleBatch.cpp"
+          },
+          {
+            "@Include": "ParticleEmitter.cpp"
+          },
+          {
+            "@Include": "ParticleEngine.cpp"
+          },
+          {
+            "@Include": "PhysicsBlocks.cpp"
+          },
+          {
+            "@Include": "PhysicsEngine.cpp"
+          },
+          {
+            "@Include": "Random.cpp"
+          },
+          {
+            "@Include": "FloraGenerator.cpp"
+          },
+          {
+            "@Include": "RasterizerState.cpp"
+          },
+          {
+            "@Include": "RegionFileManager.cpp"
+          },
+          {
+            "@Include": "RenderUtils.cpp"
+          },
+          {
+            "@Include": "SamplerState.cpp"
+          },
+          {
+            "@Include": "ScreenList.cpp"
+          },
+          {
+            "@Include": "SpriteBatch.cpp"
+          },
+          {
+            "@Include": "SpriteFont.cpp"
+          },
+          {
+            "@Include": "stdafx.cpp",
+            "PrecompiledHeader": [
+              {
+                "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+                "#text": "Create"
+              },
+              {
+                "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+                "#text": "Create"
+              }
+            ]
+          },
+          {
+            "@Include": "App.cpp"
+          },
+          {
+            "@Include": "TestScreen.cpp"
+          },
+          {
+            "@Include": "TextureAtlasManager.cpp"
+          },
+          {
+            "@Include": "TextureAtlasStitcher.cpp"
+          },
+          {
+            "@Include": "Timing.cpp"
+          },
+          {
+            "@Include": "VoxelEditor.cpp"
+          },
+          {
+            "@Include": "VoxelLightEngine.cpp"
+          },
+          {
+            "@Include": "VoxelRay.cpp"
+          },
+          {
+            "@Include": "VRayHelper.cpp"
+          },
+          {
+            "@Include": "ChunkIOManager.cpp"
+          },
+          {
+            "@Include": "ChunkManager.cpp"
+          },
+          {
+            "@Include": "ChunkMesher.cpp"
+          },
+          {
+            "@Include": "CloseTerrainPatch.cpp"
+          },
+          {
+            "@Include": "Collision.cpp"
+          },
+          {
+            "@Include": "Errors.cpp"
+          },
+          {
+            "@Include": "FileSystem.cpp"
+          },
+          {
+            "@Include": "FrameBuffer.cpp"
+          },
+          {
+            "@Include": "Frustum.cpp"
+          },
+          {
+            "@Include": "GameControls.cpp"
+          },
+          {
+            "@Include": "GameManager.cpp"
+          },
+          {
+            "@Include": "GameMenu.cpp"
+          },
+          {
+            "@Include": "global.cpp"
+          },
+          {
+            "@Include": "ImageLoading.cpp"
+          },
+          {
+            "@Include": "TerrainPatch.cpp"
+          },
+          {
+            "@Include": "lodepng.cpp"
+          },
+          {
+            "@Include": "main.cpp"
+          },
+          {
+            "@Include": "ObjectLoader.cpp"
+          },
+          {
+            "@Include": "Options.cpp"
+          },
+          {
+            "@Include": "Planet.cpp"
+          },
+          {
+            "@Include": "Player.cpp"
+          },
+          {
+            "@Include": "Rendering.cpp"
+          },
+          {
+            "@Include": "shader.cpp"
+          },
+          {
+            "@Include": "SimplexNoise.cpp"
+          },
+          {
+            "@Include": "Sound.cpp"
+          },
+          {
+            "@Include": "TerrainGenerator.cpp"
+          },
+          {
+            "@Include": "Texture2d.cpp"
+          },
+          {
+            "@Include": "ThreadPool.cpp"
+          },
+          {
+            "@Include": "AwesomiumUI.cpp"
+          },
+          {
+            "@Include": "WorldEditor.cpp"
+          },
+          {
+            "@Include": "WorldStructs.cpp"
+          },
+          {
+            "@Include": "VoxelWorld.cpp"
+          },
+          {
+            "@Include": "WSO.cpp"
+          },
+          {
+            "@Include": "WSOAtlas.cpp"
+          },
+          {
+            "@Include": "WSOScanner.cpp"
+          },
+          {
+            "@Include": "ZipFile.cpp"
+          }
+        ]
+      },
+      {
+        "ResourceCompile": {
+          "@Include": "Resources\\resources.rc"
+        }
+      },
+      {
+        "Image": {
+          "@Include": "Resources\\SOA.ico"
+        }
+      },
+      {
+        "Text": [
+          {
+            "@Include": "docs\\FileSpecs\\WSO.txt"
+          },
+          {
+            "@Include": "KEG.txt"
+          },
+          {
+            "@Include": "TODO.txt"
+          }
+        ]
+      },
+      {
+        "None": {
+          "@Include": "Chunk.inl"
+        }
+      }
+    ],
+    "PropertyGroup": [
+      {
+        "@Label": "Globals",
+        "ProjectGuid": "{588491F3-69BA-40E7-8CE8-2382A64D86E3}",
+        "RootNamespace": "soa",
+        "ProjectName": "SoA"
+      },
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+        "@Label": "Configuration",
+        "ConfigurationType": "Application",
+        "UseDebugLibraries": "true",
+        "PlatformToolset": "v120",
+        "CharacterSet": "MultiByte"
+      },
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+        "@Label": "Configuration",
+        "ConfigurationType": "Application",
+        "UseDebugLibraries": "false",
+        "PlatformToolset": "v120_xp",
+        "WholeProgramOptimization": "true",
+        "CharacterSet": "MultiByte"
+      },
+      {
+        "@Label": "UserMacros"
+      },
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+        "IncludePath": "$(SolutionDir)deps\\win32\\include;$(IncludePath)",
+        "LibraryPath": "$(SolutionDir)deps\\win32\\lib;$(LibraryPath)",
+        "OutDir": "$(SolutionDir)bin\\$(PlatformName)\\$(PlatformTarget)\\$(Configuration)\\"
+      },
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+        "IncludePath": "$(SolutionDir)deps\\win32\\include;$(IncludePath)",
+        "LibraryPath": "$(SolutionDir)deps\\win32\\lib;$(LibraryPath)",
+        "IntDir": "$(Configuration)",
+        "OutDir": "$(SolutionDir)bin\\$(PlatformName)\\$(PlatformTarget)\\$(Configuration)\\"
+      }
+    ],
+    "Import": [
+      {
+        "@Project": "$(VCTargetsPath)\\Microsoft.Cpp.Default.props"
+      },
+      {
+        "@Project": "$(VCTargetsPath)\\Microsoft.Cpp.props"
+      },
+      {
+        "@Project": "$(VCTargetsPath)\\Microsoft.Cpp.targets"
+      }
+    ],
+    "ImportGroup": [
+      {
+        "@Label": "ExtensionSettings"
+      },
+      {
+        "@Label": "PropertySheets",
+        "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+        "Import": {
+          "@Project": "$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props",
+          "@Condition": "exists('$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props')",
+          "@Label": "LocalAppDataPlatform"
+        }
+      },
+      {
+        "@Label": "PropertySheets",
+        "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+        "Import": {
+          "@Project": "$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props",
+          "@Condition": "exists('$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props')",
+          "@Label": "LocalAppDataPlatform"
+        }
+      },
+      {
+        "@Label": "ExtensionTargets"
+      }
+    ],
+    "ItemDefinitionGroup": [
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Debug|Win32'",
+        "ClCompile": {
+          "WarningLevel": "Level3",
+          "Optimization": "Disabled",
+          "AdditionalIncludeDirectories": "$(SolutionDir)deps\\include;%(AdditionalIncludeDirectories)",
+          "PreprocessorDefinitions": "WINDOWS;DEBUG;%(PreprocessorDefinitions)",
+          "PrecompiledHeader": "Use",
+          "ForcedUsingFiles": "",
+          "ForcedIncludeFiles": ""
+        },
+        "Link": {
+          "GenerateDebugInformation": "true",
+          "AdditionalDependencies": "opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;libyaml-cppmdd.lib;awesomium.lib;fmodexL_vc.lib;zdll.lib;%(AdditionalDependencies)",
+          "SubSystem": "Console",
+          "LargeAddressAware": "true",
+          "AdditionalLibraryDirectories": "$(SolutionDir)deps\\lib\\$(PlatformName)\\$(PlatformTarget);%(AdditionalLibraryDirectories)"
+        },
+        "PostBuildEvent": {
+          "Command": "robocopy /XO /E \"$(SolutionDir)deps\\dll\\$(PlatformName)\\$(PlatformTarget)\\$(Configuration)\\ \" \"$(OutDir) \" * /XD \".git\"\r\nrobocopy /XO /E \"$(SolutionDir)game\\ \" \"$(OutDir) \" * /XD \".git\"\r\n\r\nEXIT 0",
+          "Message": "Copying dependencies and resources to output directory"
+        }
+      },
+      {
+        "@Condition": "'$(Configuration)|$(Platform)'=='Release|Win32'",
+        "ClCompile": {
+          "WarningLevel": "Level3",
+          "Optimization": "MaxSpeed",
+          "FunctionLevelLinking": "true",
+          "IntrinsicFunctions": "true",
+          "AdditionalIncludeDirectories": "$(SolutionDir)deps\\include;%(AdditionalIncludeDirectories)",
+          "MultiProcessorCompilation": "true",
+          "FavorSizeOrSpeed": "Speed",
+          "InlineFunctionExpansion": "OnlyExplicitInline",
+          "PreprocessorDefinitions": "WINDOWS;NDEBUG;%(PreprocessorDefinitions)",
+          "PrecompiledHeader": "Use",
+          "ForcedUsingFiles": "",
+          "ForcedIncludeFiles": ""
+        },
+        "Link": {
+          "GenerateDebugInformation": "true",
+          "EnableCOMDATFolding": "true",
+          "OptimizeReferences": "true",
+          "AdditionalDependencies": "opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;libyaml-cppmd.lib;awesomium.lib;fmodex_vc.lib;zdll.lib;%(AdditionalDependencies)",
+          "SubSystem": "Console",
+          "AdditionalLibraryDirectories": "$(SolutionDir)deps\\lib\\$(PlatformName)\\$(PlatformTarget);%(AdditionalLibraryDirectories)",
+          "LargeAddressAware": "true"
+        },
+        "PostBuildEvent": {
+          "Command": "robocopy /XO /E \"$(SolutionDir)deps\\dll\\$(PlatformName)\\$(PlatformTarget)\\$(Configuration)\\ \" \"$(OutDir) \" * /XD \".git\"\r\nrobocopy /XO /E \"$(SolutionDir)game\\ \" \"$(OutDir) \" * /XD \".git\"\r\n\r\nEXIT 0",
+          "Message": "Copying dependencies and resources to output directory"
+        }
+      }
+    ]
+  }
+}
