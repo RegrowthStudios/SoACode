@@ -211,7 +211,7 @@ i32 FileManager::loadFloraNoiseFunctions(const cString filename, Planet* planet)
             } else {
                 type = fit->second;
                 if (!(file >> persistence >> frequency >> octaves >> lowbound >> upbound)) {
-                    printf("	ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
+                    printf("    ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
                     cin >> octaves;
                     file.close();
                     return 1;
@@ -244,52 +244,52 @@ i32 FileManager::loadCloudNoiseFunctions(const cString filename, Planet* planet)
 
     //file.open(filename);
     //if (file.fail()){
-    //	printf("ERROR: Noise Function File %s could not be found!\nEnter any key to continue: ", filename);
-    //	cin >> octaves;
-    //	file.close();
-    //	return 1;
+    //    printf("ERROR: Noise Function File %s could not be found!\nEnter any key to continue: ", filename);
+    //    cin >> octaves;
+    //    file.close();
+    //    return 1;
     //}
     //
     //while (file >> types){
-    //	if (types[0] == '#'){
-    //		file.getline(buffer, 512);
-    //	}else{
-    //		type = atoi(types.c_str());
+    //    if (types[0] == '#'){
+    //        file.getline(buffer, 512);
+    //    }else{
+    //        type = atoi(types.c_str());
 
-    //		if (!(file >> persistence >> frequency >> octaves >> lowbound)){
-    //			printf("	ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
-    //			cin >> octaves;
-    //			file.close();
-    //			return 1;
-    //		}
-    //		if (type == 0){
-    //			stormNoiseFunction = new NoiseInfo();
-    //			stormNoiseFunction->frequency = frequency;
-    //			stormNoiseFunction->persistence = persistence;
-    //			stormNoiseFunction->octaves = octaves;
-    //			stormNoiseFunction->type = type;
-    //			stormNoiseFunction->lowBound = lowbound;
-    //		}else if (type == 1){
-    //			sunnyCloudyNoiseFunction = new NoiseInfo();
-    //			sunnyCloudyNoiseFunction->frequency = frequency;
-    //			sunnyCloudyNoiseFunction->persistence = persistence;
-    //			sunnyCloudyNoiseFunction->octaves = octaves;
-    //			sunnyCloudyNoiseFunction->type = type;
-    //			sunnyCloudyNoiseFunction->lowBound = lowbound;
-    //		}else if (type == 2){
-    //			cumulusNoiseFunction = new NoiseInfo();
-    //			cumulusNoiseFunction->frequency = frequency;
-    //			cumulusNoiseFunction->persistence = persistence;
-    //			cumulusNoiseFunction->octaves = octaves;
-    //			cumulusNoiseFunction->type = type;
-    //			cumulusNoiseFunction->lowBound = lowbound;
-    //		}else{
-    //			printf("	ERROR: Noise Function File %s invalid type!\nEnter any key to continue: ", filename);
-    //			cin >> octaves;
-    //			file.close();
-    //			return 1;
-    //		}
-    //	}
+    //        if (!(file >> persistence >> frequency >> octaves >> lowbound)){
+    //            printf("    ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
+    //            cin >> octaves;
+    //            file.close();
+    //            return 1;
+    //        }
+    //        if (type == 0){
+    //            stormNoiseFunction = new NoiseInfo();
+    //            stormNoiseFunction->frequency = frequency;
+    //            stormNoiseFunction->persistence = persistence;
+    //            stormNoiseFunction->octaves = octaves;
+    //            stormNoiseFunction->type = type;
+    //            stormNoiseFunction->lowBound = lowbound;
+    //        }else if (type == 1){
+    //            sunnyCloudyNoiseFunction = new NoiseInfo();
+    //            sunnyCloudyNoiseFunction->frequency = frequency;
+    //            sunnyCloudyNoiseFunction->persistence = persistence;
+    //            sunnyCloudyNoiseFunction->octaves = octaves;
+    //            sunnyCloudyNoiseFunction->type = type;
+    //            sunnyCloudyNoiseFunction->lowBound = lowbound;
+    //        }else if (type == 2){
+    //            cumulusNoiseFunction = new NoiseInfo();
+    //            cumulusNoiseFunction->frequency = frequency;
+    //            cumulusNoiseFunction->persistence = persistence;
+    //            cumulusNoiseFunction->octaves = octaves;
+    //            cumulusNoiseFunction->type = type;
+    //            cumulusNoiseFunction->lowBound = lowbound;
+    //        }else{
+    //            printf("    ERROR: Noise Function File %s invalid type!\nEnter any key to continue: ", filename);
+    //            cin >> octaves;
+    //            file.close();
+    //            return 1;
+    //        }
+    //    }
     //}
     //file.close();
     return 0;
@@ -327,7 +327,7 @@ i32 FileManager::loadNoiseFunctions(const cString filename, bool mandatory, Plan
             type = atoi(types.c_str());
 
             if (!(file >> persistence >> frequency >> octaves >> lowbound >> upbound >> scale)) {
-                printf("	ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
+                printf("    ERROR: Noise Function File %s has a format error!\nEnter any key to continue: ", filename);
                 cin >> octaves;
                 file.close();
                 return 1;
@@ -355,12 +355,12 @@ i32 FileManager::loadNoiseFunctions(const cString filename, bool mandatory, Plan
     file.close();
     if (mandatory) {
         if (!hasTemp) {
-            cout << "	ERROR: Temperature noise function missing! Noise type = 30\nEnter any key to continue: ";
+            cout << "    ERROR: Temperature noise function missing! Noise type = 30\nEnter any key to continue: ";
             cin >> octaves;
             return 1;
         }
         if (!hasRainfall) {
-            cout << "	ERROR: Rainfall noise function missing! Noise type = 31\nEnter any key to continue: ";
+            cout << "    ERROR: Rainfall noise function missing! Noise type = 31\nEnter any key to continue: ";
             cin >> octaves;
             return 1;
         }
@@ -388,7 +388,7 @@ i32 FileManager::loadFloraData(Planet *planet, nString worldFilePath) {
         }
         sscanf(&(s[0]), "%d", &blockID);
         if (!(file >> textureID >> s >> meshType)) {
-            printf("	ERROR: World/Flora/FloraData.txt has a format error!\nEnter any key to continue: ");
+            printf("    ERROR: World/Flora/FloraData.txt has a format error!\nEnter any key to continue: ");
             cin >> s;
             file.close();
             return 1;
@@ -410,17 +410,17 @@ i32 FileManager::loadFloraData(Planet *planet, nString worldFilePath) {
             planet->floraTypeVec.push_back(ft);
         }
         //if (Blocks[blockID].active){ //for manual creation
-        //	printf("ERROR: (FloraData.txt) block ID %d already in use!\n", blockID);
-        //	printf("Enter any key to continue... ");
-        //	cin >> s;
+        //    printf("ERROR: (FloraData.txt) block ID %d already in use!\n", blockID);
+        //    printf("Enter any key to continue... ");
+        //    cin >> s;
         //}else{
-        //	planet->floraLookupMap.insert(make_pair(s, planet->floraTypeVec.size()));
-        //	FloraType *ft = new FloraType;
-        //	ft->name = s;
-        //	ft->baseBlock = blockID;
-        //	planet->floraTypeVec.push_back(ft);
-        //	for (int i = 0; i < s.size(); i++) if (s[i] == '_') s[i] = ' ';
-        //	Blocks[blockID].SetName(s).SetMeshType(meshType).SetHealth(100).SetPhysics(P_SOLID).SetColor(255, 255, 255).SetTexture(textureID).SetCollide(0).SetOcclude(0).SetWaveEffect(1).SetNumParticles(2).SetExplosionResistance(0.05).SetWaterBreak(1).SetWeight(0.1f).SetValue(10.0f).SetIsCrushable(1).SetFloatingAction(2).SetIsSupportive(0);
+        //    planet->floraLookupMap.insert(make_pair(s, planet->floraTypeVec.size()));
+        //    FloraType *ft = new FloraType;
+        //    ft->name = s;
+        //    ft->baseBlock = blockID;
+        //    planet->floraTypeVec.push_back(ft);
+        //    for (int i = 0; i < s.size(); i++) if (s[i] == '_') s[i] = ' ';
+        //    Blocks[blockID].SetName(s).SetMeshType(meshType).SetHealth(100).SetPhysics(P_SOLID).SetColor(255, 255, 255).SetTexture(textureID).SetCollide(0).SetOcclude(0).SetWaveEffect(1).SetNumParticles(2).SetExplosionResistance(0.05).SetWaterBreak(1).SetWeight(0.1f).SetValue(10.0f).SetIsCrushable(1).SetFloatingAction(2).SetIsSupportive(0);
         //}
     }
     file.close();
@@ -713,7 +713,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
         }
         if (ts == "Biome_Map_Filename:") {
             if (!(file >> s)) {
-                printf("	ERROR: World/Biomes/BiomeDistribution/BiomeList.txt trouble reading Biome_Map_Filename!\nEnter any key to continue: ");
+                printf("    ERROR: World/Biomes/BiomeDistribution/BiomeList.txt trouble reading Biome_Map_Filename!\nEnter any key to continue: ");
                 cin >> s;
                 file.close();
                 return 1;
@@ -722,7 +722,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
             loadPNG(planet->biomeMapTexture, (worldFilePath + "Biomes/BiomeDistribution/" + s).c_str(), PNGLoadInfo(textureSamplers + 3, 12));
         } else if (ts == "Biome_Color_Filename:") {
             if (!(file >> s)) {
-                cout << "	ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt trouble reading Biome_Color_Filename!\nEnter any key to continue: ";
+                cout << "    ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt trouble reading Biome_Color_Filename!\nEnter any key to continue: ";
                 cin >> s;
                 file.close();
                 return 1;
@@ -731,7 +731,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
             loadPNG(planet->colorMapTexture, (worldFilePath + "Biomes/BiomeDistribution/" + s).c_str(), PNGLoadInfo(textureSamplers + 3, 12));
         } else if (ts == "Water_Color_Filename:") {
             if (!(file >> s)) {
-                cout << "	ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt trouble reading Water_Color_Filename!\nEnter any key to continue: ";
+                cout << "    ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt trouble reading Water_Color_Filename!\nEnter any key to continue: ";
                 cin >> s;
                 file.close();
                 return 1;
@@ -744,7 +744,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
             activeList = 2;
         } else {
             if (!(file >> bfname)) {
-                cout << "	ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt format error!\nEnter any key to continue: ";
+                cout << "    ERROR: " + worldFilePath + "Biomes/BiomeDistribution/BiomeList.txt format error!\nEnter any key to continue: ";
                 cin >> s;
                 file.close();
                 return 1;
@@ -756,7 +756,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
                 biome->isBase = 1;
 
                 if (!(file >> s)) {
-                    printf("	ERROR: %s trouble reading mapColor!\nEnter any key to continue: ", bfname.c_str());
+                    printf("    ERROR: %s trouble reading mapColor!\nEnter any key to continue: ", bfname.c_str());
                     cin >> s;
                     file.close();
                     return 1;
@@ -778,7 +778,7 @@ i32 FileManager::loadBiomeData(Planet *planet, nString worldFilePath) {
                 }
                 planet->addMainBiome(biome);
             } else {
-                printf("	FORMAT ERROR: %sBiomes/BiomeDistribution/BiomeList.txt) Line: %s \nEnter any key to continue: ", worldFilePath, bfname.c_str());
+                printf("    FORMAT ERROR: %sBiomes/BiomeDistribution/BiomeList.txt) Line: %s \nEnter any key to continue: ", worldFilePath, bfname.c_str());
                 cin >> s;
                 file.close();
                 return 1;
@@ -860,98 +860,98 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             activeList = 5;
         } else if (ts == "Underwater_Block_ID:") {
             if (!(biomeFile >> biome->underwaterBlock)) {
-                printf("	ERROR: %s trouble reading Underwater_Block_ID!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Underwater_Block_ID!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Beach_Block_ID:") {
             if (!(biomeFile >> biome->beachBlock)) {
-                printf("	ERROR: %s trouble reading Beach_Block_ID!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Beach_Block_ID!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Apply_Biome_At:") {
             if (!(biomeFile >> biome->applyBiomeAt)) {
-                printf("	ERROR: %s trouble reading Apply_Biome_At!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Apply_Biome_At!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Min_Terrain_Mult:") {
             if (!(biomeFile >> biome->minTerrainMult)) {
-                printf("	ERROR: %s trouble reading Min_Terrain_Mult!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Min_Terrain_Mult!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Min_Temp:") {
             if (!(biomeFile >> biome->lowTemp)) {
-                printf("	ERROR: %s trouble reading Min_Temp!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Min_Temp!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Max_Temp:") {
             if (!(biomeFile >> biome->highTemp)) {
-                printf("	ERROR: %s trouble reading Max_Temp!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Max_Temp!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Temp_Slope_Length:") {
             if (!(biomeFile >> biome->tempSlopeLength)) {
-                printf("	ERROR: %s trouble reading Temp_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Temp_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Min_Rain:") {
             if (!(biomeFile >> biome->lowRain)) {
-                printf("	ERROR: %s trouble reading Min_Rain!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Min_Rain!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Max_Rain:") {
             if (!(biomeFile >> biome->highRain)) {
-                printf("	ERROR: %s trouble reading Max_Rain!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Max_Rain!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Max_Height:") {
             if (!(biomeFile >> biome->maxHeight)) {
-                printf("	ERROR: %s trouble reading Max_Height!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Max_Height!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Max_Height_Slope_Length:") {
             if (!(biomeFile >> biome->maxHeightSlopeLength)) {
-                printf("	ERROR: %s trouble reading Max_Height_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Max_Height_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Rain_Slope_Length:") {
             if (!(biomeFile >> biome->rainSlopeLength)) {
-                printf("	ERROR: %s trouble reading Rain_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Rain_Slope_Length!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
         } else if (ts == "Terrain_Color:") {
             if (!(biomeFile >> biome->hasAltColor)) {
-                printf("	ERROR: %s trouble reading active!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading active!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
             }
             int a, b, c;
             if (!(biomeFile >> a >> b >> c)) {
-                printf("	ERROR: %s trouble reading terrain color!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading terrain color!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -961,7 +961,7 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             biome->b = c;
         } else if (activeList == 1) { //tree types
             if (!(biomeFile >> d)) {
-                printf("	ERROR: %s trouble reading tree probability!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading tree probability!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -976,7 +976,7 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             }
         } else if (activeList == 2) { //flora types
             if (!(biomeFile >> d)) {
-                printf("	ERROR: %s trouble reading flora probability!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading flora probability!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -994,7 +994,7 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             childBiome->isBase = 0;
             childBiome->name = ts;
             if (!(biomeFile >> childFileName)) {
-                printf("	ERROR: %s trouble reading child filename!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading child filename!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -1007,7 +1007,7 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             NoiseInfo noisef;
             if (sscanf(&(ts[0]), "%d", &(noisef.type)) == 0 ||
                 !(biomeFile >> noisef.persistence >> noisef.frequency >> noisef.octaves >> noisef.lowBound >> noisef.upBound >> noisef.scale >> noisef.composition)) {
-                printf("	ERROR: %s trouble reading unique terrain noise!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading unique terrain noise!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -1017,7 +1017,7 @@ i32 FileManager::readBiome(Biome* biome, nString fileName, Planet* planet, nStri
             if (sscanf(&(ts[0]), "%lf", &(biome->distributionNoise.persistence)) == 0 ||
                 !(biomeFile >> biome->distributionNoise.frequency >> biome->distributionNoise.octaves >>
                 biome->distributionNoise.lowBound >> biome->distributionNoise.upBound)) {
-                printf("	ERROR: %s trouble reading Distribution_Noise!\nEnter any key to continue: ", fileName.c_str());
+                printf("    ERROR: %s trouble reading Distribution_Noise!\nEnter any key to continue: ", fileName.c_str());
                 cin >> ts;
                 biomeFile.close();
                 return 1;
@@ -2391,8 +2391,8 @@ i32 FileManager::loadIniFile(nString filePath, std::vector <std::vector <IniValu
 
         file.open((filePath).c_str());
         if (file.fail()) {
-            //	pError((filePath + " could not be opened for read").c_str());
-            //	perror((filePath).c_str());
+            //    pError((filePath + " could not be opened for read").c_str());
+            //    perror((filePath).c_str());
             return 1;
         }
 
