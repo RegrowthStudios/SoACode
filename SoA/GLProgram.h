@@ -9,10 +9,13 @@ public:
     // Create And Free GPU Resources
     void init();
     void destroy();
-    const bool& getIsCreated() const {
-        return _id != 0;
+
+    bool getIsCreated() const {
+        bool is_created = (_id != 0);
+        return is_created;
     }
-    const int& getID() const  {
+
+    int getID() const  {
         return _id;
     }
 
@@ -23,7 +26,8 @@ public:
     // Build The Program
     void setAttributes(const std::map<nString, ui32>& attr);
     bool link();
-    const bool& getIsLinked() const {
+
+    bool getIsLinked() const {
         return _isLinked;
     }
 
@@ -32,19 +36,23 @@ public:
     void initUniforms();
 
     // Unmap Program Variables
-    const ui32& getAttribute(const nString& name) const {
+    ui32 getAttribute(const nString& name) const {
         return _attributes.at(name);
     }
-    const ui32& getUniform(const nString& name) const {
+
+    ui32 getUniform(const nString& name) const {
         return _uniforms.at(name);
     }
 
     // Program Setup For The GPU
     void use();
     static void unuse();
-    const bool& getIsInUse() const {
-        return _programInUse == this;
+
+    bool getIsInUse() const {
+        bool in_use = (_programInUse == this);
+        return in_use;
     }
+
 private:
     // The Current Program In Use
     static GLProgram* _programInUse;
