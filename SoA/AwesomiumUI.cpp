@@ -521,7 +521,8 @@ void AwesomiumUI::InjectKeyboardEvent(const SDL_Event& event)
     WebKeyboardEvent keyEvent;
 
     char* buf = new char[20];
-    keyEvent.virtual_key_code = getWebKeyFromKey(event.key.keysym.scancode);
+    Key key = static_cast<Key>(event.key.keysym.scancode);
+    keyEvent.virtual_key_code = getWebKeyFromKey(key);
     Awesomium::GetKeyIdentifierFromVirtualKeyCode(keyEvent.virtual_key_code,
     &buf);
     strcpy(keyEvent.key_identifier, buf);
