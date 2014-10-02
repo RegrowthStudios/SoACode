@@ -75,8 +75,10 @@ extern void DrawImage2D(GLfloat *vertices, int sizeOfvertices, GLfloat *uvs, int
 class Texture2D
 {
 public:
-    Texture2D() : text(""), texSource(""), label(""), maxWidth(0), textSize(10){
-        Initialize(0, 0, 0, 0, 0); //initialize to defaults
+    Texture2D()
+    : texSource(""), textSize(10), maxWidth(0), text(""), label("") {
+        //initialize to defaults
+        Initialize(0, 0, 0, 0, 0);
     }
 
     void Initialize(GLuint texID, GLfloat sx, GLfloat sy, GLfloat w, GLfloat h, Color color = Color(), GLfloat ustrt = 0.0f, GLfloat vstrt = 0.0f, GLfloat uwidth = 1.0f, GLfloat vwidth = 1.0f);
