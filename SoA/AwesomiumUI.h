@@ -1,6 +1,6 @@
 #pragma once
+#include "stdafx.h"
 #include <SDL/SDL.h>
-#include <Windows.h>
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
@@ -11,10 +11,10 @@
 #include <Awesomium/STLHelpers.h>
 #include <Awesomium/WebCore.h>
 #include <Awesomium/WebSession.h>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\quaternion.hpp>
-#include <glm\gtc\type_ptr.hpp>
-#include <glm\gtx\quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "FileSystem.h"
 #include "global.h"
