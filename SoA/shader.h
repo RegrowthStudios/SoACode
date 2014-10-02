@@ -13,7 +13,9 @@ public:
     void DeleteShader();
     void Bind(){};
     void UnBind(){};
-    bool IsInitialized(){return isInitialized;}
+    bool IsInitialized() {
+        return isInitialized;
+    }
 protected:
     bool isInitialized;
 };
@@ -42,11 +44,11 @@ public:
     GLuint permID, permTexture;
     GLuint gradID, gradTexture;
     GLuint dtID;
-    
+
     GLuint heightModifierID;
     GLuint baseTemperatureID;
     GLuint baseRainfallID;
-    
+
     GLuint typesID;
     GLuint persistencesID;
     GLuint frequenciesID;
@@ -60,7 +62,7 @@ public:
     GLuint tempOID;
     GLuint tempLID;
     GLuint tempHID;
-    
+
     GLuint rainPID;
     GLuint rainFID;
     GLuint rainOID;
@@ -159,7 +161,7 @@ public:
     void Initialize();
     void Bind();
     void UnBind();
-    
+
     GLuint mvpID;
     GLuint texID;
 };
@@ -215,7 +217,7 @@ public:
 
 class SpaceToGroundShader : public AtmosphereShader
 {
-public: 
+public:
     void Initialize();
     void Bind();
     void UnBind();
