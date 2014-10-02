@@ -14,12 +14,12 @@ struct TreeVariable {
 public:
     TreeVariable() {}
     TreeVariable(f32 min, f32 max, f32 step, i32 byteOffset, i32 varType) :
-        step(step),
-        byteOffset(byteOffset),
-        varType(varType),
-        controlType(TREE_VARIABLE_CONTROL_TYPE_SLIDER),
-        byteOffset2(-1),
-        editorAccessible(1) {
+      step(step),
+      byteOffset(byteOffset),
+      byteOffset2(-1),
+      varType(varType),
+      controlType(TREE_VARIABLE_CONTROL_TYPE_SLIDER),
+      editorAccessible(1) {
         this->min = min;
         this->max = max;
     }
@@ -49,12 +49,12 @@ struct BiomeVariable {
 public:
     BiomeVariable() {}
     BiomeVariable(f32 min, f32 max, f32 step, i32 byteOffset, i32 varType) :
-        step(step),
-        byteOffset(byteOffset),
-        varType(varType),
-        controlType(BIOME_VARIABLE_CONTROL_TYPE_SLIDER),
-        byteOffset2(-1),
-        editorAccessible(1) {
+      step(step),
+      byteOffset(byteOffset),
+      byteOffset2(-1),
+      varType(varType),
+      controlType(BIOME_VARIABLE_CONTROL_TYPE_SLIDER),
+      editorAccessible(1) {
         this->min = min;
         this->max = max;
     }
@@ -82,11 +82,11 @@ struct NoiseVariable {
 public:
     NoiseVariable() {}
     NoiseVariable(f32 min, f32 max, f32 step, i32 byteOffset, i32 varType) :
-        step(step),
-        byteOffset(byteOffset),
-        varType(varType),
-        controlType(NOISE_VARIABLE_CONTROL_TYPE_SLIDER),
-        byteOffset2(-1) {
+      step(step),
+      byteOffset(byteOffset),
+      byteOffset2(-1),
+      varType(varType),
+      controlType(NOISE_VARIABLE_CONTROL_TYPE_SLIDER) {
             this->min = min;
             this->max = max;
         }
