@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
+#include "AwesomiumInterface.h"
 #include "AwesomiumUI.h"
 
 #include <cstdlib>
@@ -18,8 +19,6 @@ GLfloat uiboxUVs[8] = {0, 0, 0, 1, 1, 1, 1, 0};
 UIUpdateData uiUpdateData;
 
 AwesomiumUI *currentUserInterface;
-
-int getWebKeyFromSDLKey(SDL_Scancode key);
 
 AwesomiumUI::AwesomiumUI()
 {
@@ -144,7 +143,7 @@ bool AwesomiumUI::Initialize(const char *InputDir, int width, int height, int sc
         DrawWidth = drawWidth;
         DrawHeight = drawHeight;
     }
-    
+
     UItexture1.Initialize(GuiTextureID, 0, 0, screenWidth/32, screenWidth/32, glm::vec4(1.0f), 1.0f/32.0f, 29.0f/32.0f, 1.0f/32.0f, 1.0f/32.0f);
     ArrowTextureLeft.Initialize(GuiTextureID, screenWidth/6 - screenWidth/32, screenHeight/2 - screenWidth/32,  screenWidth/16, screenWidth/16, glm::vec4(1.0f), 24.0f/32.0f, 28.0f/32.0f, -4.0f/32.0f, 4.0f/32.0f);
     ArrowTextureRight.Initialize(GuiTextureID, screenWidth - screenWidth/6 - screenWidth/32, screenHeight/2 - screenWidth/32, screenWidth/16, screenWidth/16, glm::vec4(1.0f), 20.0f/32.0f, 28.0f/32.0f, 4.0f/32.0f, 4.0f/32.0f);
@@ -170,7 +169,7 @@ bool AwesomiumUI::Initialize(const char *InputDir, int width, int height, int sc
         cin >> tmp;
         return 0;
     }
-    
+
     data_source = new DataPakSource(WSLit("UI_Resources.pak"));
 
     webSession->AddDataSource(WSLit("UI"), data_source);
@@ -199,12 +198,12 @@ bool AwesomiumUI::Initialize(const char *InputDir, int width, int height, int sc
     glGenTextures(1, &textureID);
 
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);    
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -337,7 +336,7 @@ bool AwesomiumUI::Initialize(const char *InputDir, int width, int height, int sc
                 slidersArray.Push(JSValue(i->second.max));
                 slidersArray.Push(JSValue(i->second.step));
                 slidersArray.Push(JSValue(i->second.byteOffset2));
-            }    
+            }
         }
         args.Push(WSLit("Noise-Mod"));
         args.Push(dropBoxArray);
@@ -379,7 +378,7 @@ bool AwesomiumUI::Initialize(const char *InputDir, int width, int height, int sc
         methodHandler.myObject->Invoke(WSLit("GenerateControls"), args);
         //********************* CLIMATE TYPES END ******************************************
 
-        
+
     }else{
         showMessage("Could not initialize web view object! It is most likely a problem in AppInterface.js. Did you break something???\n");
         return 0;
@@ -422,7 +421,7 @@ void AwesomiumUI::Draw()
     // Bind shader
     texture2Dshader.Bind((GLfloat)ScreenWidth, (GLfloat)ScreenHeight);
     glUniform1f(texture2Dshader.Text2DUseRoundMaskID, 0.0f);
-    
+
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -522,15 +521,15 @@ void AwesomiumUI::InjectKeyboardEvent(const SDL_Event& event)
     WebKeyboardEvent keyEvent;
 
     char* buf = new char[20];
-    keyEvent.virtual_key_code = getWebKeyFromSDLKey(event.key.keysym.scancode);
+    keyEvent.virtual_key_code = getWebKeyFromKey(event.key.keysym.scancode);
     Awesomium::GetKeyIdentifierFromVirtualKeyCode(keyEvent.virtual_key_code,
     &buf);
     strcpy(keyEvent.key_identifier, buf);
 
     delete[] buf;
- 
+
     keyEvent.modifiers = 0;
- 
+
     if (event.key.keysym.mod & KMOD_LALT || event.key.keysym.mod & KMOD_RALT)
     keyEvent.modifiers |= Awesomium::WebKeyboardEvent::kModAltKey;
     if (event.key.keysym.mod & KMOD_LCTRL || event.key.keysym.mod & KMOD_RCTRL)
@@ -539,7 +538,7 @@ void AwesomiumUI::InjectKeyboardEvent(const SDL_Event& event)
     keyEvent.modifiers |= Awesomium::WebKeyboardEvent::kModShiftKey;
     if (event.key.keysym.mod & KMOD_NUM)
     keyEvent.modifiers |= Awesomium::WebKeyboardEvent::kModIsKeypad;
- 
+
     keyEvent.native_key_code = event.key.keysym.scancode;
 
     if (event.type == SDL_KEYUP) {
@@ -557,7 +556,7 @@ void AwesomiumUI::InjectKeyboardEvent(const SDL_Event& event)
 
         keyEvent.type = Awesomium::WebKeyboardEvent::kTypeKeyDown;
         webView->InjectKeyboardEvent(keyEvent);
- 
+
         if (chr) {
             keyEvent.type = Awesomium::WebKeyboardEvent::kTypeChar;
             keyEvent.virtual_key_code = chr;
@@ -597,8 +596,8 @@ void CustomJSMethodHandler::OnMethodCall(WebView *caller, unsigned int remote_ob
         }else if (method_name == WSLit("ReloadTextures")) {
             uiUpdateData.code = -2;
             return;
-        } 
-        
+        }
+
         //non-universal
         switch (EditorState){
             case E_MAIN:
@@ -808,7 +807,7 @@ JSValue CustomJSMethodHandler::OnMethodCallWithReturnValue(WebView *caller, unsi
 
 /// Helper Macro
 #define mapKey(a, b) case SDLK_##a: return Awesomium::KeyCodes::AK_##b;
- 
+
 /// Get an Awesomium KeyCode from an SDLKey Code
 int getWebKeyFromSDLKey2(SDL_Scancode key) {
     switch (key) {
