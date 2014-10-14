@@ -69,7 +69,52 @@ typedef glm::highp_mat2 f64m2;
 typedef glm::highp_mat3 f64m3;
 typedef glm::highp_mat4 f64m4;
 
+namespace std {
+
+    //Hash function for i32v3
+    template <>
+    struct hash<i32v3>
+    {
+        std::size_t operator()(const i32v3& k) const
+        {
+            using std::size_t;
+            using std::hash;
+            using std::string;
+
+            // Compute individual hash values for first,
+            // second and third and combine them using XOR
+            // and bit shifting:
+
+            return ((hash<int>()(k.x)
+                ^ (hash<int>()(k.y) << 1)) >> 1)
+                ^ (hash<int>()(k.z) << 1);
+        }
+    };
+
+    //Hash function for i32v2
+    template <>
+    struct hash<i32v2>
+    {
+        std::size_t operator()(const i32v2& k) const
+        {
+            using std::size_t;
+            using std::hash;
+            using std::string;
+
+            // Compute individual hash values for first,
+            // second and third and combine them using XOR
+            // and bit shifting:
+
+            return ((hash<int>()(k.x)
+                ^ (hash<int>()(k.y) << 1)) >> 1);
+        }
+    };
+
+}
+
 struct ColorRGBA8 {
+public:
+
     ColorRGBA8(ui8 r, ui8 g, ui8 b, ui8 a)
     : r(r), g(g), b(b), a(a) {
         // empty
@@ -87,6 +132,7 @@ struct ColorRGBA8 {
 };
 
 struct ColorRGB8 {
+public:
     ColorRGB8(ui8 r, ui8 g, ui8 b)
     : r(r), g(g), b(b) {
         // empty

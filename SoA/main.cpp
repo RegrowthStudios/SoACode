@@ -45,6 +45,7 @@
 #endif
 
 #define MAX(a,b) ((a)>(b)?(a):(b))
+#include "LoadMonitor.h"
 
 Uint32 rmask, gmask, bmask, amask;
 
@@ -77,18 +78,15 @@ bool hasFocus = 0;
 void initIOEnvironment(char** argv);
 
 int main(int argc, char **argv) {
-
     checkTypes();
 
     initIOEnvironment(argv);
     SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
 
-#ifdef NEW
     MainGame* mg = new App;
     mg->run();
     delete mg;
     mg = nullptr;
-#endif // NEW
 
     Initialize();
     //ExtractFrustum(mainMenuCamera->FrustumProjectionMatrix, player->FrustumViewMatrix);
@@ -153,7 +151,7 @@ void gameLoop() {
         startTicks = SDL_GetTicks();
         GameManager::soundEngine->SetMusicVolume(soundOptions.musicVolume / 100.0f);
         GameManager::soundEngine->SetEffectVolume(soundOptions.effectVolume / 100.0f);
-         GameManager::soundEngine->update(player->headPosition, player->chunkDirection(), player->chunkUp());
+        GameManager::soundEngine->update(player->headPosition, player->chunkDirection(), player->chunkUp());
 
         while (glToGame.try_dequeue(message)) {
             if (ProcessMessage(message)) {

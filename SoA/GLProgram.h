@@ -1,5 +1,11 @@
 #pragma once
 
+// Wraper class for shader types
+enum class ShaderType {
+    VERTEX = GL_VERTEX_SHADER,
+    FRAGMENT = GL_FRAGMENT_SHADER
+};
+
 // Encapsulates A Simple OpenGL Program And Its Shaders
 class GLProgram {
 public:
@@ -9,7 +15,6 @@ public:
     // Create And Free GPU Resources
     void init();
     void destroy();
-
     bool getIsCreated() const {
         bool is_created = (_id != 0);
         return is_created;
@@ -20,11 +25,13 @@ public:
     }
 
     // Attach Program Build Information
-    void addShader(i32 type, const cString src);
-    void addShaderFile(i32 type, const cString file);
+    void addShader(ShaderType type, const cString src);
+    void addShaderFile(ShaderType type, const cString file);
 
     // Build The Program
+    void setAttribute(nString name, ui32 index);
     void setAttributes(const std::map<nString, ui32>& attr);
+    void setAttributes(const std::vector<std::pair<nString, ui32> >& attr);
     bool link();
 
     bool getIsLinked() const {
@@ -51,6 +58,10 @@ public:
     bool getIsInUse() const {
         bool in_use = (_programInUse == this);
         return in_use;
+    }
+
+    static GLProgram* getCurrentProgram() {
+        return _programInUse;
     }
 
 private:
