@@ -3,26 +3,23 @@
 #include <SDL/SDL.h>
 
 #include "Constants.h"
-#include "ImageLoading.h"
+#include "TextureCache.h"
 
 // TODO: Remove This
 using namespace std;
 
-extern int screenWidth2d, screenHeight2d;
-
-extern std::map <std::string, TextureInfo> textureMap;
-
-struct TextureInfo getTextureInfo(string source, struct Animation **anim = NULL);
+vg::Texture getTexture(string source, struct Animation **anim = NULL);
 
 struct BlockPack
 {
-    void initialize(TextureInfo texInfo);
-    TextureInfo textureInfo;
+    void initialize(vg::Texture texInfo);
+    vg::Texture textureInfo;
     vector <GLubyte[256][3]> avgColors;
 };
 
 extern BlockPack blockPack; //TODO: Not global
 
+<<<<<<< HEAD
 extern TextureInfo markerTexture;
 extern TextureInfo terrainTexture;
 extern TextureInfo logoTexture;
@@ -128,3 +125,20 @@ struct TextInfo
     int justification;
     int xm, ym;
 };
+=======
+extern vg::Texture markerTexture;
+extern vg::Texture terrainTexture;
+extern vg::Texture logoTexture;
+extern vg::Texture sunTexture;
+extern vg::Texture waterNormalTexture;
+extern vg::Texture cloudTexture1;
+extern vg::Texture WaterTexture;
+extern vg::Texture normalLeavesTexture, pineLeavesTexture, mushroomCapTexture, treeTrunkTexture1;
+extern vg::Texture ballMaskTexture;
+extern vg::Texture starboxTextures[6];
+extern vg::Texture BlankTextureID;
+extern vg::Texture explosionTexture;
+extern vg::Texture fireTexture;
+extern vg::Texture waterNoiseTexture;
+extern vg::Texture crosshairTexture;
+>>>>>>> develop

@@ -21,8 +21,6 @@ using namespace glm;
 
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
-Player *player = NULL;
-
 Player::Player() : scannedBlock(0),
                     _mass(100),
                     headInBlock(NONE),
@@ -46,6 +44,7 @@ Player::Player() : scannedBlock(0),
                     _moveMod(1.0),
                     canCling(0),
                     isClinging(0),
+                    isFlying(0),
                     _rolling(0),
                     _name("Nevin"),
                     isSprinting(0),
@@ -96,8 +95,10 @@ Player::~Player(void)
     }
 }
 
-void Player::initialize(string playerName) {
+void Player::initialize(string playerName, float aspectRatio) {
     _name = playerName;
+    _chunkCamera.init(aspectRatio);
+    _worldCamera.init(aspectRatio);
 }
 
 void Player::updateCameras()

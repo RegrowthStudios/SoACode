@@ -1,6 +1,8 @@
 #pragma once
 #include <boost\circular_buffer.hpp>
-#include <SDL\SDL.h>
+#include <SDL/SDL.h>
+
+#include "GLProgramManager.h"
 
 class DevConsole;
 class SpriteBatch;
@@ -15,7 +17,7 @@ public:
     DevConsoleView();
     ~DevConsoleView();
 
-    void init(DevConsole* console, i32 linesToRender);
+    void init(DevConsole* console, i32 linesToRender, vcore::GLProgramManager* glProgramManager);
     void dispose();
 
     void onEvent(const SDL_Event& e);

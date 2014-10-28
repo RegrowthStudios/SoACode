@@ -1,7 +1,10 @@
 #include "stdafx.h"
+#include <SDL/SDL.h>
 #include "Timing.h"
 
 typedef std::chrono::milliseconds ms;
+
+const float MS_PER_SECOND = 1000.0f;
 
 void PreciseTimer::start() {
     _timerRunning = true;
@@ -12,7 +15,7 @@ void PreciseTimer::start() {
 float PreciseTimer::stop() {
     _timerRunning = false;
     std::chrono::duration<float> duration = std::chrono::high_resolution_clock::now() - _start;
-    return duration.count() * 1000.0f; //return ms
+    return duration.count() * MS_PER_SECOND; //return ms
 }
 
 void MultiplePreciseTimer::start(std::string tag) {
@@ -46,4 +49,84 @@ void MultiplePreciseTimer::end(bool print) {
         _index = 0;
         _samples++;
     }
+}
+
+FpsCounter::FpsCounter() : _fps(0) {
+    // Empty
+}
+void FpsCounter::beginFrame() {
+    _startTicks = SDL_GetTicks();
+}
+
+float FpsCounter::endFrame() {
+    calculateFPS();
+    return _fps;
+}
+
+void FpsCounter::calculateFPS() {
+    //The number of frames to average
+    static const int NUM_SAMPLES = 10;
+    //Stores all the frametimes for each frame that we will average
+    static float frameTimes[NUM_SAMPLES];
+    //The current frame we are on
+    static int currentFrame = 0;
+    //the ticks of the previous frame
+    static float prevTicks = SDL_GetTicks();
+
+    //Ticks for the current frame
+    float currentTicks = SDL_GetTicks();
+
+    //Calculate the number of ticks (ms) for this frame
+    _frameTime = currentTicks - prevTicks;
+    frameTimes[currentFrame % NUM_SAMPLES] = _frameTime;
+
+    //current ticks is now previous ticks
+    prevTicks = currentTicks;
+
+    //The number of frames to average
+    int count;
+
+    currentFrame++;
+    if (currentFrame < NUM_SAMPLES) {
+        count = currentFrame;
+    } else {
+        count = NUM_SAMPLES;
+    }
+
+    //Average all the frame times
+    float frameTimeAverage = 0;
+    for (int i = 0; i < count; i++) {
+        frameTimeAverage += frameTimes[i];
+    }
+    frameTimeAverage /= count;
+
+    //Calculate FPS
+    if (frameTimeAverage > 0) {
+        _fps = MS_PER_SECOND / frameTimeAverage;
+    } else {
+        _fps = 60.0f;
+    }
+}
+
+FpsLimiter::FpsLimiter() {
+    // Empty
+}
+void FpsLimiter::init(float maxFPS) {
+    setMaxFPS(maxFPS);
+}
+
+void FpsLimiter::setMaxFPS(float maxFPS) {
+    _maxFPS = maxFPS;
+}
+
+float FpsLimiter::endFrame() {
+    calculateFPS();
+
+    float frameTicks = SDL_GetTicks() - _startTicks;
+    //Limit the FPS to the max FPS
+    if (MS_PER_SECOND / _maxFPS > frameTicks) {
+        SDL_Delay((Uint32)(MS_PER_SECOND / _maxFPS - frameTicks));
+    }
+
+    return _fps;
 }
