@@ -1,4 +1,4 @@
-// 
+//
 //  GLProgram.h
 //  Vorb Engine
 //
@@ -6,17 +6,21 @@
 //  Modified by Ben Arnold on 16 Oct 2014
 //  Copyright 2014 Regrowth Studios
 //  All Rights Reserved
-//  
-//  This file provides a GLProgram class that 
+//
+//  This file provides a GLProgram class that
 //  provides a wrapper around an openGL shader program
 //
 
 #pragma once
 
-#ifndef GLPROGRAM_H_
-#define GLPROGRAM_H_
+#ifndef _GL_Program_H_
+#define _GL_Program_H_
+
+#include "iostream.h"
 
 #include "Vorb.h"
+
+using std::map;
 
 namespace vorb {
 namespace core {
@@ -44,11 +48,8 @@ public:
         bool is_created = (_id != 0);
         return is_created;
     }
-<<<<<<< HEAD
 
-=======
     /// Returns the program ID
->>>>>>> develop
     int getID() const  {
         return _id;
     }
@@ -81,11 +82,7 @@ public:
     /// Links the shader program. Should be called
     /// after shaders are added
     bool link();
-<<<<<<< HEAD
-
-=======
     /// Returns true if the program is linked
->>>>>>> develop
     bool getIsLinked() const {
         return _isLinked;
     }
@@ -95,14 +92,6 @@ public:
     /// Creates mappings for uniforms
     void initUniforms();
 
-<<<<<<< HEAD
-    // Unmap Program Variables
-    ui32 getAttribute(const nString& name) const {
-        return _attributes.at(name);
-    }
-
-    ui32 getUniform(const nString& name) const {
-=======
     /// Gets an attribute index
     /// @param name: the attribute to get the index for
     /// returns the integer attribute index
@@ -113,7 +102,6 @@ public:
     /// @param name: the uniform to get the index for
     /// returns the integer uniform index
     inline const ui32& getUniform(const nString& name) const {
->>>>>>> develop
         return _uniforms.at(name);
     }
 
@@ -129,15 +117,9 @@ public:
     /// Will unuse whatever program is currently in use
     static void unuse();
 
-<<<<<<< HEAD
-    bool getIsInUse() const {
-        bool in_use = (_programInUse == this);
-        return in_use;
-=======
     /// Returns true if the program is in use
     const bool& getIsInUse() const {
         return _programInUse == this;
->>>>>>> develop
     }
 
     /// Returns the current program that is in use
@@ -166,4 +148,4 @@ private:
 }
 }
 
-#endif // GLPROGRAM_H_
+#endif // _GL_Program_H_
