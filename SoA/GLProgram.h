@@ -23,6 +23,7 @@
 using std::map;
 
 namespace vorb {
+<<<<<<< HEAD
 namespace core {
 
 // Wraper class for shader types

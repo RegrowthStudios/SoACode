@@ -4,10 +4,6 @@
 
 #include "AwesomiumInterface.h"
 
-<<<<<<< HEAD
-#include "SDL/SDL.h"
-=======
->>>>>>> develop
 #include "Errors.h"
 
 #ifndef AWESOMIUMINTERFACE_CPP_
@@ -175,8 +171,8 @@ void AwesomiumInterface<C>::handleEvent(const SDL_Event& evnt) {
         case SDL_TEXTINPUT:
         case SDL_KEYDOWN:
         case SDL_KEYUP:
-            
-            //Have to construct a webKeyboardEvent from the SDL Event     
+
+            //Have to construct a webKeyboardEvent from the SDL Event
             keyIdentifier = keyEvent.key_identifier;
             keyEvent.virtual_key_code = getWebKeyFromSDLKey(evnt.key.keysym.scancode);
             Awesomium::GetKeyIdentifierFromVirtualKeyCode(keyEvent.virtual_key_code,
@@ -231,7 +227,7 @@ void AwesomiumInterface<C>::update()
 }
 
 template <class C>
-void AwesomiumInterface<C>::draw(vcore::GLProgram* program)
+void AwesomiumInterface<C>::draw(vg::GLProgram* program) const
 {
     //Check if draw coords were set
     if (_vbo == 0 || _renderedTexture == 0) return;
@@ -256,19 +252,11 @@ void AwesomiumInterface<C>::draw(vcore::GLProgram* program)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _renderedTexture);
 
-<<<<<<< HEAD
-    glUniform1i(texture2Dshader.Text2DUniformID, 0);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glVertexAttribPointer(1, 2, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)12);
-    glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)16);
-=======
     glUniform1i(program->getUniform("myTextureSampler"), 0);
 
     glVertexAttribPointer(program->getAttribute("vertexPosition_screenspace"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (void*)0);
     glVertexAttribPointer(program->getAttribute("vertexUV"), 2, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex2D), (void*)8);
     glVertexAttribPointer(program->getAttribute("vertexColor"), 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex2D), (void*)12);
->>>>>>> develop
 
     // Draw call
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
@@ -295,10 +283,6 @@ void AwesomiumInterface<C>::setDrawRect(const i32v4& rect) {
     }
 
     Vertex2D vertices[4];
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
 
     vertices[0].pos.x = _drawRect.x;
     vertices[0].pos.y = _drawRect.y + _drawRect.w;
@@ -333,7 +317,7 @@ void AwesomiumInterface<C>::setColor(const ColorRGBA8& color) {
 
 template <class C>
 void CustomJSMethodHandler<C>::OnMethodCall(Awesomium::WebView *caller, unsigned int remote_object_id, const Awesomium::WebString &method_name, const Awesomium::JSArray &args) {
-   
+
     std::cout << "Method call: " << method_name << std::endl;
     IAwesomiumAPI<C>::setptr funcptr = _api->getVoidFunction(Awesomium::ToString(method_name));
     if (funcptr) {
@@ -343,7 +327,7 @@ void CustomJSMethodHandler<C>::OnMethodCall(Awesomium::WebView *caller, unsigned
 
 template <class C>
 Awesomium::JSValue CustomJSMethodHandler<C>::OnMethodCallWithReturnValue(Awesomium::WebView *caller, unsigned int remote_object_id, const Awesomium::WebString &method_name, const Awesomium::JSArray &args) {
-   
+
     std::cout << "Method call with return value: " << method_name << std::endl;
     IAwesomiumAPI<C>::getptr funcptr = _api->getFunctionWithReturnValue(Awesomium::ToString(method_name));
     if (funcptr) {
@@ -367,88 +351,6 @@ Awesomium::MouseButton AwesomiumInterface<C>::getAwesomiumButtonFromSDL(Uint8 SD
     return Awesomium::MouseButton::kMouseButton_Left;
 }
 
-<<<<<<< HEAD
-int getWebKeyFromKey(Key key)
-{
-    switch (key)
-    {
-        mapWebKey(0, 0)
-        mapWebKey(1, 1)
-        mapWebKey(2, 2)
-        mapWebKey(3, 3)
-        mapWebKey(4, 4)
-        mapWebKey(5, 5)
-        mapWebKey(6, 6)
-        mapWebKey(7, 7)
-        mapWebKey(8, 8)
-        mapWebKey(9, 9)
-        mapWebKey(A, A)
-        mapWebKey(B, B)
-        mapWebKey(C, C)
-        mapWebKey(D, D)
-        mapWebKey(E, E)
-        mapWebKey(F, F)
-        mapWebKey(G, G)
-        mapWebKey(H, H)
-        mapWebKey(I, I)
-        mapWebKey(J, J)
-        mapWebKey(K, K)
-        mapWebKey(L, L)
-        mapWebKey(M, M)
-        mapWebKey(N, N)
-        mapWebKey(O, O)
-        mapWebKey(P, P)
-        mapWebKey(Q, Q)
-        mapWebKey(R, R)
-        mapWebKey(S, S)
-        mapWebKey(T, T)
-        mapWebKey(U, U)
-        mapWebKey(V, V)
-        mapWebKey(W, W)
-        mapWebKey(X, X)
-        mapWebKey(Y, Y)
-        mapWebKey(Z, Z)
-        mapWebKey(Up, UP)
-        mapWebKey(Down, DOWN)
-        mapWebKey(Right, RIGHT)
-        mapWebKey(Left, LEFT)
-        mapWebKey(Return, RETURN)
-        mapWebKey(Escape, ESCAPE)
-        mapWebKey(Delete, DELETE)
-        mapWebKey(Space, SPACE)
-        mapWebKey(Backspace, BACK)
-        mapWebKey(Tab, TAB)
-        mapWebKey(Kp0, NUMPAD0)
-        mapWebKey(Kp1, NUMPAD1)
-        mapWebKey(Kp2, NUMPAD2)
-        mapWebKey(Kp3, NUMPAD3)
-        mapWebKey(Kp4, NUMPAD4)
-        mapWebKey(Kp5, NUMPAD5)
-        mapWebKey(Kp6, NUMPAD6)
-        mapWebKey(Kp7, NUMPAD7)
-        mapWebKey(Kp8, NUMPAD8)
-        mapWebKey(Kp9, NUMPAD9)
-        mapWebKey(Rshift, RSHIFT)
-        mapWebKey(Lshift, LSHIFT)
-        mapWebKey(Rctrl, RCONTROL)
-        mapWebKey(Lctrl, LCONTROL)
-        mapWebKey(Ralt, RMENU)
-        mapWebKey(Lalt, LMENU)
-        mapWebKey(F1, F1)
-        mapWebKey(F2, F2)
-        mapWebKey(F3, F3)
-        mapWebKey(F4, F4)
-        mapWebKey(F5, F5)
-        mapWebKey(F6, F6)
-        mapWebKey(F7, F7)
-        mapWebKey(F8, F8)
-        mapWebKey(F9, F9)
-        mapWebKey(F10, F10)
-        mapWebKey(F11, F11)
-        mapWebKey(F12, F12)
-    default:
-        return Awesomium::KeyCodes::AK_UNKNOWN;
-=======
 /// Helper Macros
 #define mapScanKey(a, b) case SDL_SCANCODE_##a: return Awesomium::KeyCodes::AK_##b;
 #define mapKey(a, b) case SDLK_##a: return Awesomium::KeyCodes::AK_##b;
@@ -527,8 +429,8 @@ int AwesomiumInterface<CC>::getWebKeyFromSDLKey(SDL_Scancode key) {
             mapScanKey(X, X)
             mapScanKey(Y, Y)
             mapScanKey(Z, Z)
-            //	mapScanKey(DELETE, DELETE)
-            /*	mapScanKey(KP0, NUMPAD0)
+            //  mapScanKey(DELETE, DELETE)
+            /*  mapScanKey(KP0, NUMPAD0)
             mapScanKey(KP1, NUMPAD1)
             mapScanKey(KP2, NUMPAD2)
             mapScanKey(KP3, NUMPAD3)
@@ -571,25 +473,24 @@ int AwesomiumInterface<CC>::getWebKeyFromSDLKey(SDL_Scancode key) {
             mapScanKey(F15, F15)
             //mapScanKey(NUMLOCK, NUMLOCK)
             mapScanKey(CAPSLOCK, CAPITAL)
-            //	mapScanKey(SCROLLOCK, SCROLL)
+            //  mapScanKey(SCROLLOCK, SCROLL)
             mapScanKey(RSHIFT, RSHIFT)
             mapScanKey(LSHIFT, LSHIFT)
             mapScanKey(RCTRL, RCONTROL)
             mapScanKey(LCTRL, LCONTROL)
             mapScanKey(RALT, RMENU)
             mapScanKey(LALT, LMENU)
-            //	mapScanKey(RMETA, LWIN)
-            //	mapScanKey(LMETA, RWIN)
-            //	mapScanKey(LSUPER, LWIN)
-            //	mapScanKey(RSUPER, RWIN)
+            //  mapScanKey(RMETA, LWIN)
+            //  mapScanKey(LMETA, RWIN)
+            //  mapScanKey(LSUPER, LWIN)
+            //  mapScanKey(RSUPER, RWIN)
             mapScanKey(MODE, MODECHANGE)
-            //	mapScanKey(COMPOSE, ACCEPT)
+            //  mapScanKey(COMPOSE, ACCEPT)
             mapScanKey(HELP, HELP)
-            //	mapScanKey(PRINT, SNAPSHOT)
+            //  mapScanKey(PRINT, SNAPSHOT)
             mapScanKey(SYSREQ, EXECUTE)
         default:
             return Awesomium::KeyCodes::AK_UNKNOWN;
->>>>>>> develop
     }
 }
 
