@@ -20,7 +20,6 @@
 #include "VoxelEditor.h"
 #include "Frustum.h"
 #include "TerrainPatch.h"
-#include "FrameBuffer.h"
 #include "LoadTaskShaders.h"
 #include "FileSystem.h"
 #include "MeshManager.h"
@@ -173,6 +172,29 @@ void MainMenuScreen::loadGame(const nString& fileName) {
     GameManager::saveFilePath = fileName;
     // Check the chunk version
     GameManager::chunkIOManager->checkVersion();
+
+    _state = ScreenState::CHANGE_NEXT;
+}
+
+
+void MainMenuScreen::newGame(const nString& fileName) {
+    std::cout << "Making new game: " << fileName << std::endl;
+
+    // Make the save directories, in case they were deleted
+    fileManager.makeSaveDirectories(fileName);
+    if (fileManager.setSaveFile(fileName) != 0) {
+        cout << "Could not set save file.\n";
+        return;
+    }
+   
+    // Save the world file
+    nString worldText("Aldrin");
+    _ioManager.writeStringToFile((fileName + "/World/world.txt").c_str(), worldText);
+
+    // Set the save file path
+    GameManager::saveFilePath = fileName;
+    // Save the chunk version
+    GameManager::chunkIOManager->saveVersionFile();
 
     _state = ScreenState::CHANGE_NEXT;
 }

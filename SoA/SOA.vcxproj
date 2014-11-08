@@ -113,12 +113,15 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AwesomiumRenderStage.h" />
+    <ClInclude Include="BlockTextureMethods.h" />
     <ClInclude Include="Computer.h" />
     <ClInclude Include="CutoutVoxelRenderStage.h" />
     <ClInclude Include="DevHudRenderStage.h" />
+    <ClInclude Include="FullQuadVBO.h" />
     <ClInclude Include="GamePlayRenderPipeline.h" />
     <ClInclude Include="GamePlayScreen.h" />
     <ClInclude Include="GameRenderParams.h" />
+    <ClInclude Include="GLRenderTarget.h" />
     <ClInclude Include="GpuMemory.h" />
     <ClInclude Include="HdrRenderStage.h" />
     <ClInclude Include="IAwesomiumAPI.h" />
@@ -143,12 +146,14 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MessageManager.h" />
+    <ClInclude Include="NightVisionRenderStage.h" />
     <ClInclude Include="OpaqueVoxelRenderStage.h" />
     <ClInclude Include="OpenglSurfaceFactory.h" />
     <ClInclude Include="PDA.h" />
     <ClInclude Include="PdaAwesomiumAPI.h" />
     <ClInclude Include="PdaRenderStage.h" />
     <ClInclude Include="PlanetRenderStage.h" />
+    <ClInclude Include="RTSwapChain.hpp" />
     <ClInclude Include="SkyboxRenderer.h" />
     <ClInclude Include="SonarRenderStage.h" />
     <ClInclude Include="SkyboxRenderStage.h" />
@@ -161,6 +166,7 @@
     <ClInclude Include="InitScreen.h" />
     <ClInclude Include="LoadMonitor.h" />
     <ClInclude Include="LoadTaskGameManager.h" />
+    <ClInclude Include="VoxelBits.h" />
     <ClInclude Include="VoxelMesher.h" />
     <ClInclude Include="BlockTextureAtlas.h" />
     <ClInclude Include="ChunkGenerator.h" />
@@ -236,7 +242,6 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Errors.h" />
     <ClInclude Include="FileSystem.h" />
-    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="global.h" />
@@ -276,12 +281,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AwesomiumRenderStage.cpp" />
+    <ClCompile Include="BlockTextureMethods.cpp" />
     <ClCompile Include="Computer.cpp" />
     <ClCompile Include="CutoutVoxelRenderStage.cpp" />
     <ClCompile Include="DevHudRenderStage.cpp" />
+    <ClCompile Include="FullQuadVBO.cpp" />
     <ClCompile Include="GamePlayRenderPipeline.cpp" />
     <ClCompile Include="GamePlayScreen.cpp" />
     <ClCompile Include="GameRenderParams.cpp" />
+    <ClCompile Include="GLRenderTarget.cpp" />
     <ClCompile Include="GpuMemory.cpp" />
     <ClCompile Include="HdrRenderStage.cpp" />
     <ClCompile Include="IAwesomiumAPI.cpp" />
@@ -302,6 +310,7 @@
     <ClCompile Include="LoadMonitor.cpp" />
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="MessageManager.cpp" />
+    <ClCompile Include="NightVisionRenderStage.cpp" />
     <ClCompile Include="OpaqueVoxelRenderStage.cpp" />
     <ClCompile Include="OpenglSurfaceFactory.cpp" />
     <ClCompile Include="PDA.cpp" />
@@ -380,7 +389,6 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="FileSystem.cpp" />
-    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="global.cpp" />

@@ -26,7 +26,6 @@
 #include "MainMenuRenderPipeline.h"
 
 class App;
-class FrameBuffer;
 struct TerrainMeshMessage;
 
 class MainMenuScreen : public IAppScreen<App>
@@ -60,6 +59,10 @@ private:
     /// Loads a save file and prepares to play the game
     /// @param fileName: The name of the save file
     void loadGame(const nString& fileName);
+
+    /// Makes a new save file and prepares to play the game
+    /// @param fileName: The name of the save file
+    void newGame(const nString& fileName);
 
     /// The function that runs on the update thread. It handles
     /// loading the planet in the background.
