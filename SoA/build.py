@@ -17,7 +17,6 @@ from subprocess import check_output
 
 def call(command, shell=True, verbose=None, cwd=None):
     cwd = os.getcwd() if cwd is None else cwd
-    import pdb; pdb.set_trace()
     if verbose:
         print os.path.join(cwd, command)
     cmd = command.split() if shell else command
