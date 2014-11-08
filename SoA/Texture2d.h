@@ -1,12 +1,12 @@
 #pragma once
+#ifndef _Texture2d_h_
+#define _Texture2d_h_
+
 #include "stdafx.h"
 #include <SDL/SDL.h>
 
 #include "Constants.h"
 #include "TextureCache.h"
-
-// TODO: Remove This
-using namespace std;
 
 vg::Texture getTexture(string source, struct Animation **anim = NULL);
 
@@ -34,3 +34,5 @@ extern vg::Texture explosionTexture;
 extern vg::Texture fireTexture;
 extern vg::Texture waterNoiseTexture;
 extern vg::Texture crosshairTexture;
+
+#endif // _Texture2d_h_

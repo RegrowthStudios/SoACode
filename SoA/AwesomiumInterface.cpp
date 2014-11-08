@@ -105,7 +105,7 @@ bool AwesomiumInterface<C>::init(const char* inputDir, const char* sessionName, 
 
     // Sleep a bit and update once more to give scripts and plugins
     // on the page a chance to finish loading.
-    Sleep(30);
+    SLEEP(30);
     _webCore->Update();
     _webView->SetTransparent(true);
     _webView->set_js_method_handler(&_methodHandler);
@@ -171,8 +171,8 @@ void AwesomiumInterface<C>::handleEvent(const SDL_Event& evnt) {
         case SDL_TEXTINPUT:
         case SDL_KEYDOWN:
         case SDL_KEYUP:
-            
-            //Have to construct a webKeyboardEvent from the SDL Event     
+
+            //Have to construct a webKeyboardEvent from the SDL Event
             keyIdentifier = keyEvent.key_identifier;
             keyEvent.virtual_key_code = getWebKeyFromSDLKey(evnt.key.keysym.scancode);
             Awesomium::GetKeyIdentifierFromVirtualKeyCode(keyEvent.virtual_key_code,
@@ -317,7 +317,7 @@ void AwesomiumInterface<C>::setColor(const ColorRGBA8& color) {
 
 template <class C>
 void CustomJSMethodHandler<C>::OnMethodCall(Awesomium::WebView *caller, unsigned int remote_object_id, const Awesomium::WebString &method_name, const Awesomium::JSArray &args) {
-   
+
     std::cout << "Method call: " << method_name << std::endl;
     IAwesomiumAPI<C>::setptr funcptr = _api->getVoidFunction(Awesomium::ToString(method_name));
     if (funcptr) {
@@ -327,7 +327,7 @@ void CustomJSMethodHandler<C>::OnMethodCall(Awesomium::WebView *caller, unsigned
 
 template <class C>
 Awesomium::JSValue CustomJSMethodHandler<C>::OnMethodCallWithReturnValue(Awesomium::WebView *caller, unsigned int remote_object_id, const Awesomium::WebString &method_name, const Awesomium::JSArray &args) {
-   
+
     std::cout << "Method call with return value: " << method_name << std::endl;
     IAwesomiumAPI<C>::getptr funcptr = _api->getFunctionWithReturnValue(Awesomium::ToString(method_name));
     if (funcptr) {
@@ -429,8 +429,8 @@ int AwesomiumInterface<CC>::getWebKeyFromSDLKey(SDL_Scancode key) {
             mapScanKey(X, X)
             mapScanKey(Y, Y)
             mapScanKey(Z, Z)
-            //	mapScanKey(DELETE, DELETE)
-            /*	mapScanKey(KP0, NUMPAD0)
+            //  mapScanKey(DELETE, DELETE)
+            /*  mapScanKey(KP0, NUMPAD0)
             mapScanKey(KP1, NUMPAD1)
             mapScanKey(KP2, NUMPAD2)
             mapScanKey(KP3, NUMPAD3)
@@ -473,21 +473,21 @@ int AwesomiumInterface<CC>::getWebKeyFromSDLKey(SDL_Scancode key) {
             mapScanKey(F15, F15)
             //mapScanKey(NUMLOCK, NUMLOCK)
             mapScanKey(CAPSLOCK, CAPITAL)
-            //	mapScanKey(SCROLLOCK, SCROLL)
+            //  mapScanKey(SCROLLOCK, SCROLL)
             mapScanKey(RSHIFT, RSHIFT)
             mapScanKey(LSHIFT, LSHIFT)
             mapScanKey(RCTRL, RCONTROL)
             mapScanKey(LCTRL, LCONTROL)
             mapScanKey(RALT, RMENU)
             mapScanKey(LALT, LMENU)
-            //	mapScanKey(RMETA, LWIN)
-            //	mapScanKey(LMETA, RWIN)
-            //	mapScanKey(LSUPER, LWIN)
-            //	mapScanKey(RSUPER, RWIN)
+            //  mapScanKey(RMETA, LWIN)
+            //  mapScanKey(LMETA, RWIN)
+            //  mapScanKey(LSUPER, LWIN)
+            //  mapScanKey(RSUPER, RWIN)
             mapScanKey(MODE, MODECHANGE)
-            //	mapScanKey(COMPOSE, ACCEPT)
+            //  mapScanKey(COMPOSE, ACCEPT)
             mapScanKey(HELP, HELP)
-            //	mapScanKey(PRINT, SNAPSHOT)
+            //  mapScanKey(PRINT, SNAPSHOT)
             mapScanKey(SYSREQ, EXECUTE)
         default:
             return Awesomium::KeyCodes::AK_UNKNOWN;

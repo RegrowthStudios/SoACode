@@ -1,11 +1,11 @@
-// 
+//
 //  AwesomiumInterface.h
 //  Vorb Engine
 //
 //  Created by Ben Arnold on 17 Oct 2014
 //  Copyright 2014 Regrowth Studios
 //  All Rights Reserved
-//  
+//
 //  This file provides an awesomium UI interface for
 //  HTML/CSS based UI.
 //
@@ -69,7 +69,7 @@ public:
 
     /// Frees all resources
     void destroy() override;
-    
+
     /// Invokes a JS function
     /// @param functionName: Name of the function
     /// @param args: the argument list

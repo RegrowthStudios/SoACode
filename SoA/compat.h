@@ -25,3 +25,11 @@
 #define REGISTER
 #endif
 #endif
+
+#ifndef SLEEP
+#if defined(WIN32) || defined(WIN64)
+#define SLEEP Sleep
+#else
+#define SLEEP sleep
+#endif
+#endif
