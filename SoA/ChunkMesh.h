@@ -15,9 +15,9 @@ enum class MeshType {
     FLAT 
 };
 
-enum class MeshJobType;
+enum class RenderTaskType;
 
-struct RenderTask;
+class RenderTask;
 class Chunk;
 class ChunkGridData;
 class Block;
@@ -86,7 +86,7 @@ struct ChunkMeshData
     std::vector <LiquidVertex> waterVertices;
     Chunk *chunk;
     struct ChunkMesh *chunkMesh;
-    MeshJobType type;
+    RenderTaskType type;
     int debugCode;
 
     //*** Transparency info for sorting ***

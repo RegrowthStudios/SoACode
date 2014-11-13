@@ -115,6 +115,7 @@
     <ClInclude Include="AwesomiumRenderStage.h" />
     <ClInclude Include="BlockTextureMethods.h" />
     <ClInclude Include="Computer.h" />
+    <ClInclude Include="concurrentqueue.h" />
     <ClInclude Include="CutoutVoxelRenderStage.h" />
     <ClInclude Include="DevHudRenderStage.h" />
     <ClInclude Include="FullQuadVBO.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="TexturePackLoader.h" />
+    <ClInclude Include="IThreadPoolTask.h" />
     <ClInclude Include="TransparentVoxelRenderStage.h" />
     <ClInclude Include="Vorb.h" />
     <ClInclude Include="colors.h" />
@@ -191,7 +193,6 @@
     <ClInclude Include="LoadScreen.h" />
     <ClInclude Include="CAEngine.h" />
     <ClInclude Include="ChunkMesher.h" />
-    <ClInclude Include="ChunkWorker.h" />
     <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="DepthState.h" />
     <ClInclude Include="FragFile.h" />
@@ -246,13 +247,12 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="global.h" />
-    <ClInclude Include="LoadTask.h" />
+    <ClInclude Include="GenerateTask.h" />
     <ClInclude Include="PhysicsBlocks.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="RenderTask.h" />
     <ClInclude Include="RenderUtils.h" />
-    <ClInclude Include="TaskQueueManager.h" />
     <ClInclude Include="TerrainPatch.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="ObjectLoader.h" />
@@ -290,6 +290,7 @@
     <ClCompile Include="GamePlayRenderPipeline.cpp" />
     <ClCompile Include="GamePlayScreen.cpp" />
     <ClCompile Include="GameRenderParams.cpp" />
+    <ClCompile Include="GenerateTask.cpp" />
     <ClCompile Include="GLRenderTarget.cpp" />
     <ClCompile Include="GpuMemory.cpp" />
     <ClCompile Include="HdrRenderStage.cpp" />
@@ -340,7 +341,6 @@
     <ClCompile Include="LoadBar.cpp" />
     <ClCompile Include="LoadScreen.cpp" />
     <ClCompile Include="CAEngine.cpp" />
-    <ClCompile Include="ChunkWorker.cpp" />
     <ClCompile Include="DebugRenderer.cpp" />
     <ClCompile Include="DepthState.cpp" />
     <ClCompile Include="FragFile.cpp" />

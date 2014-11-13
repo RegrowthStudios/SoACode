@@ -12,31 +12,30 @@
 #include "BlockData.h"
 #include "CAEngine.h"
 #include "Chunk.h"
+#include "ChunkIOManager.h"
 #include "ChunkUpdater.h"
 #include "FileSystem.h"
 #include "FloraGenerator.h"
 #include "Frustum.h"
 #include "GLEnums.h"
 #include "GLProgram.h"
+#include "GenerateTask.h"
 #include "Mesh.h"
+#include "MessageManager.h"
 #include "Options.h"
 #include "Particles.h"
 #include "PhysicsEngine.h"
 #include "Planet.h"
 #include "RenderTask.h"
 #include "Sound.h"
-#include "TaskQueueManager.h"
 #include "TerrainGenerator.h"
 #include "TerrainPatch.h"
 #include "ThreadPool.h"
 #include "VRayHelper.h"
-#include "VoxelLightEngine.h"
-#include "VoxelRay.h"
 #include "Vorb.h"
-#include "ChunkIOManager.h"
-#include "MessageManager.h"
-
+#include "VoxelLightEngine.h"
 #include "VoxelPlanetMapper.h"
+#include "VoxelRay.h"
 
 const f32 skyR = 135.0f / 255.0f, skyG = 206.0f / 255.0f, skyB = 250.0f / 255.0f;
 
@@ -188,8 +187,8 @@ void ChunkManager::update(const f64v3& position, const f64v3& viewDir) {
         }
     }
 
-    globalMultiplePreciseTimer.start("Finished Meshes");
-    uploadFinishedMeshes();
+    globalMultiplePreciseTimer.start("Finished Tasks");
+    processFinishedTasks();
     //change the parameter to true to print out the timingsm
     globalMultiplePreciseTimer.end(false);
 
@@ -392,23 +391,13 @@ ChunkGridData* ChunkManager::getChunkGridData(const i32v2& gridPos) {
     return it->second;
 }
 
-void ChunkManager::clearAll() {
-    // Clear the threadpool
-    threadPool.clearJobs();
-    while (!(threadPool.isFinished()));
-
-    // Clear finished generating chunks
-    std::vector<Chunk*>().swap(taskQueueManager.finishedChunks);
-
-    // Clear finished chunk meshes
-    for (size_t i = 0; i < taskQueueManager.finishedChunkMeshes.size(); i++) delete taskQueueManager.finishedChunkMeshes[i];
-    std::vector<ChunkMeshData *>().swap(_finishedChunkMeshes);
-
+void ChunkManager::destroy() {
+   
     // Clear the chunk IO thread
     GameManager::chunkIOManager->clear();
 
-    // Close the threadpool
-    threadPool.close();
+    // Destroy the thread pool
+    threadPool.destroy();
 
     _setupList.clear();
     _generateList.clear();
@@ -440,6 +429,9 @@ void ChunkManager::clearAll() {
     deleteAllChunks();
 
     vector<ChunkSlot>().swap(_chunkSlots[0]);
+
+    std::vector<RenderTask*>().swap(_freeRenderTasks);
+    std::vector<GenerateTask*>().swap(_freeGenerateTasks);
 }
 
 void ChunkManager::saveAllChunks() {
@@ -521,46 +513,145 @@ void ChunkManager::initializeThreadPool() {
     if (hc > 1) hc--;
 
     // Initialize the threadpool with hc threads
-    threadPool.initialize(hc);
+    threadPool.init(hc);
     // Give some time for the threads to spin up
     SDL_Delay(100);
 }
 
-//add the loaded chunks to the setup list
-void ChunkManager::updateLoadedChunks() {
-    taskQueueManager.fcLock.lock();
-    Chunk* ch;
-    for (size_t i = 0; i < taskQueueManager.finishedChunks.size(); i++) {
-        ch = taskQueueManager.finishedChunks[i];
-        ch->inFinishedChunks = false;
-        ch->inGenerateThread = false;
-        ch->isAccessible = true;
+void ChunkManager::processFinishedTasks() {
 
-        if (!(ch->freeWaiting)) {
+    #define MAX_TASKS 100
 
-            setupNeighbors(ch);
+    // Stores tasks for bulk deque
+    vcore::IThreadPoolTask* taskBuffer[MAX_TASKS];
 
-            //check to see if the top chunk has light that should end up in this chunk
-            VoxelLightEngine::checkTopForSunlight(ch);
+    size_t numTasks = threadPool.getFinishedTasks(taskBuffer, MAX_TASKS);
 
-            if (ch->treesToLoad.size() || ch->plantsToLoad.size()) {
-                ch->_state = ChunkStates::TREES;
-                addToSetupList(ch);
-            } else {
-                ch->_state = ChunkStates::MESH;
-                addToMeshList(ch);
-            }
+    vcore::IThreadPoolTask* task;
+
+    for (size_t i = 0; i < numTasks; i++) {
+        task = taskBuffer[i];
+
+        // Postprocessing based on task type
+        switch (task->getTaskId()) {
+            case RENDER_TASK_ID:
+                processFinishedRenderTask(static_cast<RenderTask*>(task));
+                if (_freeRenderTasks.size() < MAX_CACHED_TASKS) {
+                    // Store the render task so we don't have to call new
+                    _freeRenderTasks.push_back(static_cast<RenderTask*>(task));
+                } else {
+                    delete task;
+                }
+                break;
+            case GENERATE_TASK_ID:
+                processFinishedGenerateTask(static_cast<GenerateTask*>(task));
+                if (_freeGenerateTasks.size() < MAX_CACHED_TASKS) {
+                   // Store the generate task so we don't have to call new
+                  _freeGenerateTasks.push_back(static_cast<GenerateTask*>(task));
+                } else {
+                    delete task;
+                }
+                break;
+            default:
+                pError("Unknown thread pool Task! ID = " + to_string(task->getTaskId()));
+                delete task;
+                break;
         }
     }
-    taskQueueManager.finishedChunks.clear();
-    taskQueueManager.fcLock.unlock();
+}
 
+void ChunkManager::processFinishedGenerateTask(GenerateTask* task) {
+    Chunk *ch = task->chunk;
+
+    ch->inGenerateThread = false;
+    ch->isAccessible = true;
+
+    if (!(ch->freeWaiting)) {
+
+        setupNeighbors(ch);
+
+        //check to see if the top chunk has light that should end up in this chunk
+        VoxelLightEngine::checkTopForSunlight(ch);
+
+        if (ch->treesToLoad.size() || ch->plantsToLoad.size()) {
+            ch->_state = ChunkStates::TREES;
+            addToSetupList(ch);
+        } else {
+            ch->_state = ChunkStates::MESH;
+            addToMeshList(ch);
+        }
+    }
+}
+
+void ChunkManager::processFinishedRenderTask(RenderTask* task) {
+    Chunk* chunk = task->chunk;
+    chunk->ownerTask = nullptr;
+    // Don't do anything if the chunk should be freed
+    if (chunk->freeWaiting) return;
+    ChunkMeshData *cmd = task->chunkMeshData;
+
+    chunk->inRenderThread = 0;
+    //remove the chunk if it is waiting to be freed
+    if (chunk->freeWaiting) {
+        cmd->chunkMesh = chunk->mesh;
+        chunk->mesh = NULL;
+        if (cmd->chunkMesh != NULL) {
+            cmd->debugCode = 2;
+            GameManager::messageManager->enqueue(ThreadId::UPDATE,
+                                                    Message(MessageID::CHUNK_MESH,
+                                                    (void *)cmd));
+        }
+        return;
+    }
+
+    //set add the chunk mesh to the message
+    cmd->chunkMesh = chunk->mesh;
+
+    //Check if we need to allocate a new chunk mesh or orphan the current chunk mesh so that it can be freed in openglManager
+    switch (cmd->type) {
+        case RenderTaskType::DEFAULT:
+            if (cmd->waterVertices.empty() && cmd->transVertices.empty() && cmd->vertices.empty() && cmd->cutoutVertices.empty()) {
+                chunk->mesh = nullptr;
+            } else if (chunk->mesh == nullptr) {
+                chunk->mesh = new ChunkMesh(chunk);
+                cmd->chunkMesh = chunk->mesh;
+            }
+            break;
+        case RenderTaskType::LIQUID:
+            if (cmd->waterVertices.empty() && (chunk->mesh == nullptr || (chunk->mesh->vboID == 0 && chunk->mesh->cutoutVboID == 0 && chunk->mesh->transVboID == 0))) {
+                chunk->mesh = nullptr;
+            } else if (chunk->mesh == nullptr) {
+                chunk->mesh = new ChunkMesh(chunk);
+                cmd->chunkMesh = chunk->mesh;
+            }
+            break;
+    }
+
+    //if the chunk has a mesh, send it
+    if (cmd->chunkMesh) {
+        cmd->debugCode = 3;
+        GameManager::messageManager->enqueue(ThreadId::UPDATE,
+                                                Message(MessageID::CHUNK_MESH,
+                                                (void *)cmd));
+    }
+
+    if (chunk->_chunkListPtr == nullptr) chunk->_state = ChunkStates::DRAW;
+    
+}
+
+//add the loaded chunks to the setup list
+void ChunkManager::updateLoadedChunks() {
+
+    Chunk* ch;
     //IO load chunks
     GameManager::chunkIOManager->flcLock.lock();
     for (size_t i = 0; i < GameManager::chunkIOManager->finishedLoadChunks.size(); i++) {
 
         ch = GameManager::chunkIOManager->finishedLoadChunks[i];
         ch->inLoadThread = 0;
+        ch->ownerTask = nullptr;
+        // Don't do anything if the chunk should be freed
+        if (ch->freeWaiting) continue;
 
         if (!(ch->freeWaiting)) {
             if (ch->loadStatus == 999) { //retry loading it. probably a mistake
@@ -582,73 +673,6 @@ void ChunkManager::updateLoadedChunks() {
     }
     GameManager::chunkIOManager->finishedLoadChunks.clear();
     GameManager::chunkIOManager->flcLock.unlock();
-}
-
-void ChunkManager::uploadFinishedMeshes() {
-    Chunk* chunk;
-    ChunkMeshData *cmd;
-
-    taskQueueManager.frLock.lock();
-    for (size_t i = 0; i < taskQueueManager.finishedChunkMeshes.size(); i++) {
-        _finishedChunkMeshes.push_back(taskQueueManager.finishedChunkMeshes[i]);
-        assert(taskQueueManager.finishedChunkMeshes[i]->chunk != nullptr);
-        taskQueueManager.finishedChunkMeshes[i]->chunk->inFinishedMeshes = 0;
-    }
-    taskQueueManager.finishedChunkMeshes.clear();
-    taskQueueManager.frLock.unlock();
-
-    //use the temp vector so that the threads dont have to wait.
-    while (_finishedChunkMeshes.size()) {
-        cmd = _finishedChunkMeshes.back();
-        _finishedChunkMeshes.pop_back();
-        chunk = cmd->chunk;
-        chunk->inRenderThread = 0;
-        //remove the chunk if it is waiting to be freed
-        if (chunk->freeWaiting) {
-            cmd->chunkMesh = chunk->mesh;
-            chunk->mesh = NULL;
-            if (cmd->chunkMesh != NULL) {
-                cmd->debugCode = 2;
-                GameManager::messageManager->enqueue(ThreadId::UPDATE,
-                                                     Message(MessageID::CHUNK_MESH,
-                                                     (void *)cmd));
-            }
-            continue;
-        }
-
-        //set add the chunk mesh to the message
-        cmd->chunkMesh = chunk->mesh;
-
-        //Check if we need to allocate a new chunk mesh or orphan the current chunk mesh so that it can be freed in openglManager
-        switch (cmd->type) {
-            case MeshJobType::DEFAULT:
-                if (cmd->waterVertices.empty() && cmd->transVertices.empty() && cmd->vertices.empty() && cmd->cutoutVertices.empty()) {
-                    chunk->mesh = nullptr;
-                } else if (chunk->mesh == nullptr) {
-                    chunk->mesh = new ChunkMesh(chunk);
-                    cmd->chunkMesh = chunk->mesh;
-                }
-                break;
-            case MeshJobType::LIQUID:
-                if (cmd->waterVertices.empty() && (chunk->mesh == nullptr || (chunk->mesh->vboID == 0 && chunk->mesh->cutoutVboID == 0 && chunk->mesh->transVboID == 0))) {
-                    chunk->mesh = nullptr;
-                } else if (chunk->mesh == nullptr) {
-                    chunk->mesh = new ChunkMesh(chunk);
-                    cmd->chunkMesh = chunk->mesh;
-                }
-                break;
-        }
-
-        //if the chunk has a mesh, send it
-        if (cmd->chunkMesh) {
-            cmd->debugCode = 3;
-            GameManager::messageManager->enqueue(ThreadId::UPDATE,
-                                                 Message(MessageID::CHUNK_MESH,
-                                                 (void *)cmd));
-        }
-
-        if (chunk->_chunkListPtr == nullptr) chunk->_state = ChunkStates::DRAW;
-    }
 }
 
 void ChunkManager::makeChunkAt(const i32v3& chunkPosition, const vvoxel::VoxelMapData* relativeMapData, const i32v2& ijOffset /* = i32v2(0) */) {
@@ -812,6 +836,8 @@ i32 ChunkManager::updateMeshList(ui32 maxTicks) {
     ChunkStates state;
     Chunk* chunk;
 
+    RenderTask *newRenderTask;
+
     for (i32 i = _meshList.size() - 1; i >= 0; i--) {
         state = _meshList[i]->_state;
         chunk = _meshList[i];
@@ -828,11 +854,25 @@ i32 ChunkManager::updateMeshList(ui32 maxTicks) {
                 chunk->occlude = 0;
 
                 if (chunk->numNeighbors == 6 && chunk->inRenderThread == 0) {
-                    if (chunk->_state == ChunkStates::MESH) {
-                        if (!threadPool.addRenderJob(chunk, MeshJobType::DEFAULT)) break; //if the queue is full, well try again next frame
+                    
+                    // Get a render task
+                    if (_freeRenderTasks.size()) {
+                        newRenderTask = _freeRenderTasks.back();
+                        _freeRenderTasks.pop_back();
                     } else {
-                        if (!threadPool.addRenderJob(chunk, MeshJobType::LIQUID)) break;
+                        newRenderTask = new RenderTask;
                     }
+
+                    if (chunk->_state == ChunkStates::MESH) {
+                        newRenderTask->setChunk(chunk, RenderTaskType::DEFAULT);
+                    } else {
+                        newRenderTask->setChunk(chunk, RenderTaskType::LIQUID);
+                    }
+                    chunk->SetupMeshData(newRenderTask);
+                    chunk->inRenderThread = true;
+
+                    threadPool.addTask(newRenderTask);
+
                     chunk->removeFromChunkList();
                 }
             } else {
@@ -856,6 +896,7 @@ i32 ChunkManager::updateGenerateList(ui32 maxTicks) {
     Chunk* chunk;
     i32 startX, startZ;
     i32 ip, jp;
+    GenerateTask* generateTask;
 
     while (_generateList.size()) {
         chunk = _generateList.front();
@@ -864,9 +905,22 @@ i32 ChunkManager::updateGenerateList(ui32 maxTicks) {
 
         _generateList.pop_front();
 
-        chunk->isAccessible = 0;
+        chunk->isAccessible = false;
+        chunk->inGenerateThread = true;       
 
-        threadPool.addLoadJob(chunk, new LoadData(chunk->chunkGridData->heightData, GameManager::terrainGenerator));
+        // Get a generate task
+        if (_freeGenerateTasks.size()) {
+            generateTask = _freeGenerateTasks.back();
+            _freeGenerateTasks.pop_back();
+        } else {
+            generateTask = new GenerateTask;
+        }
+
+        // Initialize the task
+        generateTask->init(chunk, new LoadData(chunk->chunkGridData->heightData, GameManager::terrainGenerator));
+
+        // Add the task
+        threadPool.addTask(generateTask);
 
         if (SDL_GetTicks() - startTicks > maxTicks) break;
     }
@@ -962,37 +1016,6 @@ void ChunkManager::clearChunkFromLists(Chunk* chunk) {
     // Remove from any chunk list
     if (chunk->_chunkListPtr != nullptr) {
         chunk->removeFromChunkList();
-    }
-
-    // Remove from finished chunks queue
-    if (chunk->inFinishedChunks) {
-        taskQueueManager.fcLock.lock();
-        for (size_t i = 0; i < taskQueueManager.finishedChunks.size(); i++) {
-            if (taskQueueManager.finishedChunks[i] == chunk) {
-                taskQueueManager.finishedChunks[i] = taskQueueManager.finishedChunks.back();
-                chunk->inFinishedChunks = 0;
-                chunk->inGenerateThread = 0;
-                taskQueueManager.finishedChunks.pop_back();
-                break;
-            }
-        }
-        taskQueueManager.fcLock.unlock();
-    }
-
-    // Remove from finished meshes queue
-    if (chunk->inFinishedMeshes) {
-        taskQueueManager.frLock.lock();
-        for (size_t i = 0; i < taskQueueManager.finishedChunkMeshes.size(); i++) {
-            if (taskQueueManager.finishedChunkMeshes[i]->chunk == chunk) {
-                delete taskQueueManager.finishedChunkMeshes[i];
-                taskQueueManager.finishedChunkMeshes[i] = taskQueueManager.finishedChunkMeshes.back();
-                chunk->inFinishedMeshes = 0;
-                chunk->inRenderThread = 0;
-                taskQueueManager.finishedChunkMeshes.pop_back();
-                break;
-            }
-        }
-        taskQueueManager.frLock.unlock();
     }
 
     // Sever any connections with neighbor chunks
