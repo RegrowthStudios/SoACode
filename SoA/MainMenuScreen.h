@@ -34,7 +34,7 @@ class MainMenuSystemViewer;
 class SoaState;
 class SpaceSystemUpdater;
 
-DECL_VSOUND(class, Engine)
+DECL_VSOUND(class Engine)
 class AmbienceLibrary;
 class AmbiencePlayer;
 

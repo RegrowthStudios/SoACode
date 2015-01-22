@@ -31,8 +31,8 @@ class SphericalTerrainMeshManager;
 class SphericalTerrainPatch;
 class TerrainRpcDispatcher;
 
-DECL_VVOX(class, VoxelPlanetMapper);
-DECL_VIO(class, IOManager);
+DECL_VVOX(class VoxelPlanetMapper);
+DECL_VIO(class IOManager);
 
 struct AxisRotationComponent {
     f64q axisOrientation; ///< Axis of rotation
