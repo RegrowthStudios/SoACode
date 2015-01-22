@@ -21,3 +21,4 @@ AmbienceLibrary::Track AmbienceLibrary::getTrack(const nString& list, Random& rG
 
     return Track(iter->first, iter->second);
 }
+
