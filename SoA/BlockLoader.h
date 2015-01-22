@@ -6,7 +6,7 @@
 #include "BlockData.h"
 #include "CAEngine.h"
 
-DECL_VIO(class, IOManager)
+DECL_VIO(class IOManager)
 
 class BlockPack;
 class TexturePackLoader;

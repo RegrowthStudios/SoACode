@@ -25,7 +25,7 @@
 
 #include "Biome.h"
 
-DECL_VIO(class, IOManager);
+DECL_VIO(class IOManager);
 
 class TerrainFuncs;
 
