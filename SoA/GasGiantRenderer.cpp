@@ -13,14 +13,6 @@
 
 #include <iostream>
 
-void GasGiantMesh::bind() {
-    vg::GpuMemory::bindBuffer(this->vbo, vg::BufferTarget::ARRAY_BUFFER);
-    vg::GpuMemory::bindBuffer(this->ibo, vg::BufferTarget::ELEMENT_ARRAY_BUFFER);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), (void*)sizeof(f32v3));
-}
-
 GasGiantRenderer::GasGiantRenderer(const vg::GLProgramManager* glProgramManager):
     m_glProgramManager(glProgramManager),
     m_shaderProgram(glProgramManager->getProgram("GasGiant")), 
@@ -34,11 +26,7 @@ GasGiantRenderer::~GasGiantRenderer() {}
 void GasGiantRenderer::drawGasGiant(f32m4& mvp) {
     m_shaderProgram->use();
     m_shaderProgram->enableVertexAttribArrays();
-    m_mesh->bind();
-
-    glVertexAttribPointer(m_shaderProgram->getAttribute("vPosition"), 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), offsetptr(GasGiantVertex, position));
-    glVertexAttribPointer(m_shaderProgram->getAttribute("vNormal"), 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), offsetptr(GasGiantVertex, normal));
-    glVertexAttribPointer(m_shaderProgram->getAttribute("vUV"), 2, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), offsetptr(GasGiantVertex, uv));
+    bindMesh(m_mesh);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_mesh->colorBandLookup);
@@ -48,7 +36,6 @@ void GasGiantRenderer::drawGasGiant(f32m4& mvp) {
     
     glUniformMatrix4fv(m_mesh->unWVP, 1, GL_FALSE, (f32*)&mvp[0][0]);
     
-    glCullFace(GL_BACK);
     glDrawElements(GL_TRIANGLES, m_mesh->numIndices, GL_UNSIGNED_INT, 0);
 
     m_shaderProgram->disableVertexAttribArrays();
@@ -61,14 +48,35 @@ void GasGiantRenderer::initMesh() {
     vmesh::generateIcosphereMesh(0, indices, positions);
 
     std::vector<GasGiantVertex> vertices;
+    
     for(int i = 0; i < positions.size(); i++) {
         GasGiantVertex vertex;
         vertex.position = positions[i];
         vertex.normal = glm::normalize(vertex.position);
-        vertex.uv = f32v2(0.5f, (vertex.position.y + 1.0f) / 2.0f);
+        vertex.uv = f32v2(0.48f, (vertex.position.y + 1.0f) / 2.0f);
         vertices.push_back(vertex);
     }
+    /*
+    GasGiantVertex vertex;
+    vertex.position = f32v3(0.0f, 0.0f, 0.0f);
+    vertex.normal = glm::normalize(vertex.position);
+    vertex.uv = f32v2(0.0f, 0.0f);
+    vertices.push_back(vertex);
 
+    vertex.position = f32v3(0.0f, 1.0f, 0.0f);
+    vertex.normal = glm::normalize(vertex.position);
+    vertex.uv = f32v2(0.0f, 1.0f);
+    vertices.push_back(vertex);
+
+    vertex.position = f32v3(1.0f, 1.0f, 0.0f);
+    vertex.normal = glm::normalize(vertex.position);
+    vertex.uv = f32v2(1.0f, 1.0f);
+    vertices.push_back(vertex);
+
+    indices.push_back(0);
+    indices.push_back(2);
+    indices.push_back(1);
+    */
     m_mesh = new GasGiantMesh();
     m_mesh->numIndices = indices.size();
     m_mesh->numVertices = vertices.size();
@@ -87,4 +95,13 @@ void GasGiantRenderer::initMesh() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void GasGiantRenderer::bindMesh(const GasGiantMesh* mesh) {
+    vg::GpuMemory::bindBuffer(mesh->vbo, vg::BufferTarget::ARRAY_BUFFER);
+    vg::GpuMemory::bindBuffer(mesh->ibo, vg::BufferTarget::ELEMENT_ARRAY_BUFFER);
+
+    glVertexAttribPointer(m_shaderProgram->getAttribute("vPosition"), 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), offsetptr(GasGiantVertex, position));
+    glVertexAttribPointer(m_shaderProgram->getAttribute("vNormal"), 3, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), offsetptr(GasGiantVertex, normal));
+    glVertexAttribPointer(m_shaderProgram->getAttribute("vUV"), 2, GL_FLOAT, GL_FALSE, sizeof(GasGiantVertex), (GLvoid*)(2 * sizeof(f32v3)));
 }

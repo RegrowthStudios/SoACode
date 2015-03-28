@@ -28,7 +28,6 @@ void TestGasGiantScreen::destroy(const GameTime& gameTime) {
 }
 
 void TestGasGiantScreen::onEntry(const GameTime& gameTime) {
-    glEnable(GL_DEPTH_TEST);
     m_glProgramManager = new vg::GLProgramManager();
     
     vg::GLProgram* gasGiantShaderProgram = new vg::GLProgram(true);
@@ -82,8 +81,8 @@ void TestGasGiantScreen::onEntry(const GameTime& gameTime) {
     glBindTexture(GL_TEXTURE_2D, colorBandLookup);
 
     vio::ImageIO imageLoader;
-    imageLoader.loadPng("Textures/Test/nx.png", pixels, size.x, size.y);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+    imageLoader.loadPng("Textures/Test/GasGiantLookup.png", pixels, size.x, size.y);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
 
     m_gasGiantRenderer->setColorBandLookupTexture(colorBandLookup);
 

@@ -35,8 +35,6 @@ public:
     VGTexture colorBandLookup;
     VGUniform unWVP;
     VGUniform unColorBandLookup;
-
-    void bind();
 };
 
 class GasGiantRenderer {
@@ -50,10 +48,11 @@ public:
 
 private:
     void initMesh();
+    void bindMesh(const GasGiantMesh* mesh);
 
     const vg::GLProgramManager* m_glProgramManager = nullptr;
-
     vg::GLProgram* m_shaderProgram;
+    
     GasGiantMesh* m_mesh;
 };
 
