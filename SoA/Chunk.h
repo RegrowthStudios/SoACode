@@ -47,7 +47,7 @@ class Chunk {
     friend class PagedChunkAllocator;
     friend class SphericalVoxelComponentUpdater;
     friend class ChunkGrid;
-    friend class RenderTask;
+    friend class ChunkMeshTask;
 public:
     void init(ChunkID id, const ChunkPosition3D& pos);
     void setRecyclers(vcore::FixedSizeArrayRecycler<CHUNK_SIZE, ui16>* shortRecycler);
@@ -61,8 +61,6 @@ public:
     bool hasAllNeighbors() const { return m_numNeighbors == 6u; }
     const bool& isInRange() const { return m_isInRange; }
     const f32& getDistance2() const { return m_distance2; }
-    ChunkPtr getNextActive() const { return m_nextActive; }
-    ChunkPtr getPrevActive() const { return m_prevActive; }
     const ChunkID& getID() const { return m_id; }
 
     inline ui16 getBlockData(int c) const {
@@ -93,7 +91,8 @@ public:
         ChunkPtr neighbors[6];
     };
     std::mutex mutex;
-    int refCount = 0;
+    int refCount;
+    int numBlocks;
     ChunkGenLevel genLevel = ChunkGenLevel::GEN_NONE;
     volatile bool isAccessible = false;
     volatile bool queuedForMesh = false;
@@ -103,9 +102,6 @@ public:
 private:
     // For generation
     ChunkGenQueryData m_genQueryData;
-    // For ChunkGrid
-    ChunkPtr m_nextActive = nullptr;
-    ChunkPtr m_prevActive = nullptr;
 
     ui32 m_numNeighbors = 0u;
     ui32 m_loadingNeighbors = 0u; ///< Seems like a good idea to get rid of isAccesible

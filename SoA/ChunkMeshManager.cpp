@@ -3,10 +3,10 @@
 
 #include "ChunkMesh.h"
 #include "ChunkRenderer.h"
-#include "RenderTask.h"
+#include "ChunkMeshTask.h"
 #include "soaUtils.h"
 
-#define MAX_UPDATES_PER_FRAME 100
+#define MAX_UPDATES_PER_FRAME 300
 
 ChunkMeshManager::ChunkMeshManager(ui32 startMeshes /*= 128*/) {
     m_meshStorage.resize(startMeshes);
@@ -28,7 +28,7 @@ void ChunkMeshManager::update(const f64v3& cameraPosition, bool shouldSort) {
     // TODO(Ben): This is redundant with the chunk manager! Find a way to share! (Pointer?)
     updateMeshDistances(cameraPosition);
     if (shouldSort) {
-        // TODO(Ben): std::sort
+        
     }
 }
 
@@ -146,7 +146,7 @@ void ChunkMeshManager::updateMesh(ChunkMeshMessage& message) {
     bool canRender = false;
 
     switch (meshData->type) {
-        case RenderTaskType::DEFAULT:
+        case MeshTaskType::DEFAULT:
             if (meshData->opaqueQuads.size()) {
 
                 mapBufferData(mesh.vboID, meshData->opaqueQuads.size() * sizeof(VoxelQuad), &(meshData->opaqueQuads[0]), GL_STATIC_DRAW);
@@ -207,7 +207,7 @@ void ChunkMeshManager::updateMesh(ChunkMeshMessage& message) {
             }
             mesh.renderData = meshData->chunkMeshRenderData;
         //The missing break is deliberate!
-        case RenderTaskType::LIQUID:
+        case MeshTaskType::LIQUID:
 
             mesh.renderData.waterIndexSize = meshData->chunkMeshRenderData.waterIndexSize;
             if (meshData->waterVertices.size()) {

@@ -27,7 +27,6 @@
 #include "SoaOptions.h"
 #include "ParticleMesh.h"
 #include "PhysicsBlocks.h"
-#include "RenderTask.h"
 #include "SoaEngine.h"
 #include "SoaState.h"
 #include "SpaceSystem.h"
@@ -122,7 +121,7 @@ void GameplayScreen::update(const vui::GameTime& gameTime) {
     // TODO(Ben): Move to glUpdate for voxel component
     // TODO(Ben): Don't hardcode for a single player
     auto& vpCmp = m_soaState->gameSystem->voxelPosition.getFromEntity(m_soaState->playerEntity);
-    m_soaState->chunkMeshManager->update(vpCmp.gridPosition.pos, false);
+    m_soaState->chunkMeshManager->update(vpCmp.gridPosition.pos, true);
 
     // Update the PDA
     if (m_pda.isOpen()) m_pda.update();
@@ -187,7 +186,7 @@ void GameplayScreen::updateMTRenderState() {
         auto& vpCmp = m_soaState->gameSystem->voxelPosition.getFromEntity(m_soaState->playerEntity);
         state->debugChunkData.clear();
         if (svcmp.chunkGrids) {
-            for (Chunk* chunk = svcmp.chunkGrids[vpCmp.gridPosition.face].getActiveChunks(); chunk != nullptr; chunk = chunk->getNextActive()) {
+            for (Chunk* chunk : svcmp.chunkGrids[vpCmp.gridPosition.face].getActiveChunks()) {
                 state->debugChunkData.emplace_back();
                 state->debugChunkData.back().genLevel = chunk->genLevel;
                 state->debugChunkData.back().voxelPosition = chunk->getVoxelPosition().pos;
