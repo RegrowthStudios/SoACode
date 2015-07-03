@@ -38,6 +38,7 @@ def has_error(error_string):
         return True
     return False
 
+
 def sync(args):
     """Synchronizes submodules"""
     git_version = get_git_version()
