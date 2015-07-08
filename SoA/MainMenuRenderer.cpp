@@ -17,6 +17,7 @@
 #include "SoaOptions.h"
 #include "SoaState.h"
 #include "soaUtils.h"
+#include "BloomRenderStage.h"
 
 void MainMenuRenderer::init(vui::GameWindow* window, StaticLoadContext& context,
                             MainMenuScreen* mainMenuScreen, CommonState* commonState) {
@@ -39,6 +40,11 @@ void MainMenuRenderer::init(vui::GameWindow* window, StaticLoadContext& context,
     m_commonState->stages.hdr.init(window, context);
     stages.colorFilter.init(window, context);
     stages.exposureCalc.init(window, context);
+
+    stages.bloom.init(window, context);
+    stages.bloom.setParams();
+    stages.bloom.setActive(false);
+
 }
 
 void MainMenuRenderer::dispose(StaticLoadContext& context) {
@@ -52,6 +58,7 @@ void MainMenuRenderer::dispose(StaticLoadContext& context) {
     // TODO(Ben): Dispose common stages
     stages.colorFilter.dispose(context);
     stages.exposureCalc.dispose(context);
+    stages.bloom.dispose(context);
 
     // Dispose of persistent rendering resources
     m_hdrTarget.dispose();
@@ -60,6 +67,8 @@ void MainMenuRenderer::dispose(StaticLoadContext& context) {
 
 void MainMenuRenderer::load(StaticLoadContext& context) {
     m_isLoaded = false;
+
+
 
     m_loadThread = new std::thread([&]() {
         vcore::GLRPC so[4];
@@ -95,6 +104,7 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
         m_commonState->stages.hdr.load(context);
         stages.colorFilter.load(context);
         stages.exposureCalc.load(context);
+        stages.bloom.load(context);
 
         context.blockUntilFinished();
 
@@ -109,10 +119,11 @@ void MainMenuRenderer::hook() {
     m_commonState->stages.hdr.hook(&m_commonState->quad);
     stages.colorFilter.hook(&m_commonState->quad);
     stages.exposureCalc.hook(&m_commonState->quad, &m_hdrTarget, &m_viewport, 1024);
+    stages.bloom.hook(&m_commonState->quad);
 }
 
 void MainMenuRenderer::render() {
-    
+
     // Check for window resize
     if (m_shouldResize) resize();
 
@@ -137,15 +148,15 @@ void MainMenuRenderer::render() {
     // Color filter rendering
     if (m_colorFilter != 0) {
         switch (m_colorFilter) {
-            case 1:
-                colorFilter = f32v3(0.66f);
-                stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.33f)); break;
-            case 2:
-                colorFilter = f32v3(0.3f);
-                stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.66f)); break;
-            case 3:
-                colorFilter = f32v3(0.0f);
-                stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.9f)); break;
+        case 1:
+            colorFilter = f32v3(0.66f);
+            stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.33f)); break;
+        case 2:
+            colorFilter = f32v3(0.3f);
+            stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.66f)); break;
+        case 3:
+            colorFilter = f32v3(0.0f);
+            stages.colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.9f)); break;
         }
         stages.colorFilter.render();
     }
@@ -159,6 +170,12 @@ void MainMenuRenderer::render() {
     m_swapChain.reset(0, m_hdrTarget.getID(), m_hdrTarget.getTextureID(), soaOptions.get(OPT_MSAA).value.i > 0, false);
 
     // TODO: More Effects?
+    if (stages.bloom.isActive()) {
+        stages.bloom.render();
+        m_swapChain.unuse(m_window->getWidth(), m_window->getHeight());
+        m_swapChain.swap();
+        m_swapChain.bindPreviousTexture(0);
+    }
 
     // Draw to backbuffer for the last effect
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -170,8 +187,13 @@ void MainMenuRenderer::render() {
     static const f32 EXPOSURE_STEP = 0.005f;
     stepTowards(soaOptions.get(OPT_HDR_EXPOSURE).value.f, stages.exposureCalc.getExposure(), EXPOSURE_STEP);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(m_hdrTarget.getTextureTarget(), m_hdrTarget.getTextureID());
+    if (!stages.bloom.isActive()) {
+        glActiveTexture(GL_TEXTURE0);
+        m_hdrTarget.bindTexture();
+    } else {
+        m_swapChain.bindPreviousTexture(0);
+    }
+    // original depth texture
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(m_hdrTarget.getTextureTarget(), m_hdrTarget.getTextureDepthID());
     m_commonState->stages.hdr.render(&m_state->spaceCamera);
