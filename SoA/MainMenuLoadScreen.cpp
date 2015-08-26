@@ -40,7 +40,13 @@ i32 MainMenuLoadScreen::getPreviousScreen() const {
     return SCREEN_INDEX_NO_SCREEN;
 }
 
+void luaError(vscript::Environment* env, const cString message) {
+    puts(message);
+};
+
 void MainMenuLoadScreen::build() {
+    m_env.errorHandler = &luaError;
+
     m_env.addValue("WindowWidth", (f64)m_game->getWindow().getWidth());
     m_env.addValue("WindowHeight", (f64)m_game->getWindow().getHeight());
     m_env.load("Data/Logos/Vorb/ScreenUpdate.lua");
