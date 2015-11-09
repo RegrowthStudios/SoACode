@@ -9,22 +9,16 @@ ItemPack::ItemPack() :
 
 ItemID ItemPack::append(ItemData item) {
     const ItemData* curBlock;
-    ItemID rv;
-    if (curBlock = hasItem(item.id)) {
-        rv = curBlock->id;
-        item.id = rv;
-        // Overwrite block
-        *const_cast<ItemData*>(curBlock) = item;
-    } else {
-        rv = m_itemList.size();
-        item.id = rv;
-        // Add a new block
-        m_itemList.push_back(item);
-        // Set the correct index
-        m_itemMap[item.name] = rv;
-    }
+   
+    ItemID id = m_itemList.size();
+    item.id = id;
+    // Add a new block
+    m_itemList.push_back(item);
+    // Set the correct index
+    m_itemMap[item.name] = id;
+    
     onItemDataAddition(item.id);
-    return rv;
+    return id;
 }
 
 void ItemPack::reserveID(const ItemIdentifier& sid, ItemID id) {

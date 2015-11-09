@@ -58,7 +58,7 @@ void SoaController::initCreativeInventory(vecs::EntityID eid, SoaState* state) {
 
     // Skip first two blocks
     for (int i = 2; i < blocks.size(); i++) {
-        if (!state->items.hasItem(i)) {
+        if (!state->items.getItem(i)) {
             ItemData d;
             d.blockID = i;
             d.maxCount = UINT_MAX;

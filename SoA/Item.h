@@ -35,14 +35,14 @@ public:
 
     void reserveID(const ItemIdentifier& sid, ItemID id);
 
-    const ItemData* hasItem(ItemID id) const {
+    const ItemData* getItem(ItemID id) const {
         if (id >= m_itemList.size()) {
             return nullptr;
         } else {
             return &m_itemList[id];
         }
     }
-    const ItemData* hasItem(const ItemIdentifier& sid) const {
+    const ItemData* getItem(const ItemIdentifier& sid) const {
         auto v = m_itemMap.find(sid);
         if (v == m_itemMap.end()) {
             return nullptr;
