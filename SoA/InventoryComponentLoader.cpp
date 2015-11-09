@@ -1,14 +1,14 @@
 #include "stdafx.h"
+#include "InventoryComponentLoader.h"
 
 #include "GameSystemComponents.h"
-#include "InventoryComponentLoader.h"
 #include "Item.h"
 
 #include <Vorb/io/IOManager.h>
 #include <Vorb/utils.h>
 #include <fstream>
 
-const ui32 INV_HEADER_ID = 0x1234567;
+const ui32 INV_HEADER_ID = 0x12345678;
 
 const ui32 INV_LOADER_VERSION_NONE = 0;
 const ui32 INV_LOADER_VERSION_1 = 1;

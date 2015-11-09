@@ -79,6 +79,7 @@ public:
 
     Event<ui16> onItemDataAddition; ///< Signaled when a block is loaded
 
+    nString name = "UNNAMED";
 private:
     // TODO(Ben): worry about runtime resizing
     std::unordered_map<ItemIdentifier, ui32> m_itemMap; ///< Item indices organized by identifiers

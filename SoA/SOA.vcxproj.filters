@@ -884,6 +884,9 @@
     <ClInclude Include="InventoryComponentLoader.h">
       <Filter>SOA Files\ECS\Loaders</Filter>
     </ClInclude>
+    <ClInclude Include="ItemPackLoader.h">
+      <Filter>SOA Files\Game\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1458,6 +1461,9 @@
     </ClCompile>
     <ClCompile Include="InventoryComponentLoader.cpp">
       <Filter>SOA Files\ECS\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemPackLoader.cpp">
+      <Filter>SOA Files\Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
