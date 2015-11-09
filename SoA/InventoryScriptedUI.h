@@ -55,6 +55,8 @@ protected:
 
     nString getItemPackName(ItemPack* itemPack);
 
+    void printMessage(nString message);
+
     InputMapper* m_inputMapper = nullptr;
     SoaState* m_soaState = nullptr;
 };

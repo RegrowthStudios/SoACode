@@ -97,8 +97,9 @@ void TestInventoryScreen::draw(const vui::GameTime& gameTime) {
 void TestInventoryScreen::initUI() {
     m_ui = new InventoryScriptedUI();
     const ui32v2& vdims = m_game->getWindow().getViewportDims();
-    m_ui->init("Data/UI/Forms/inventory.form.lua", this, &m_game->getWindow(), f32v4(0.0f, 0.0f, (f32)vdims.x, (f32)vdims.y), &m_formFont);
     m_ui->setInputMapper(m_inputMapper);
+    m_ui->setSoaState(m_soaState);
+    m_ui->init("Data/UI/Forms/inventory.form.lua", this, &m_game->getWindow(), f32v4(0.0f, 0.0f, (f32)vdims.x, (f32)vdims.y), &m_formFont);
 }
 
 void TestInventoryScreen::reloadUI() {

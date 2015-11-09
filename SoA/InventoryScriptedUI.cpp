@@ -59,6 +59,9 @@ void InventoryScriptedUI::registerScriptValues(vui::FormScriptEnvironment* newFo
     env->setNamespaces("ItemPack");
     env->addCRDelegate("getName", makeRDelegate(*this, &InventoryScriptedUI::getItemPackName));
 
+    env->setNamespaces("Debug");
+    env->addCDelegate("print", makeDelegate(*this, &InventoryScriptedUI::printMessage));
+
     env->setNamespaces();
 }
 
@@ -140,3 +143,6 @@ nString InventoryScriptedUI::getItemPackName(ItemPack* itemPack) {
     return itemPack->name;
 }
 
+void InventoryScriptedUI::printMessage(nString message) {
+    printf(message.c_str());
+}
