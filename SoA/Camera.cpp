@@ -77,7 +77,7 @@ void Camera::rotateFromMouseAbsoluteUp(float dx, float dy, float speed, bool cla
 
     applyRotation(upQuat * rightQuat);
 
-    if (clampVerticalRotation && m_up.y < 0) {
+    if (clampVerticalRotation && m_up.y < 0.2f) {
         m_direction = previousDirection;
         m_up = previousUp;
         m_right = previousRight;
@@ -87,7 +87,8 @@ void Camera::rotateFromMouseAbsoluteUp(float dx, float dy, float speed, bool cla
 
 void Camera::rotateFromMouse(float dx, float dy, float speed) {
     f32q upQuat = vmath::angleAxis(dy * speed, m_right);
-    f32q rightQuat = vmath::angleAxis(dx * speed, m_up);
+    //f32q rightQuat = vmath::angleAxis(dx * speed, m_up);
+    f32q rightQuat = vmath::angleAxis(dx * speed, UP_ABSOLUTE);
  
     applyRotation(upQuat * rightQuat);
 }

@@ -32,6 +32,7 @@
 #include "TestNoiseScreen.h"
 #include "TestPlanetGenScreen.h"
 #include "TestStarScreen.h"
+#include "TestInventoryScreen.h"
 #include "TestVoxelModelScreen.h"
 
 void App::addScreens() {
@@ -92,6 +93,9 @@ void App::addScreens() {
     scrTests.push_back(new TestBiomeScreen(this, &state));
     m_screenList.addScreen(scrTests.back());
     scrDev->addScreen(VKEY_Z, scrTests.back(), "TestBiomeScreen");
+    scrTests.push_back(new TestInventoryScreen());
+    m_screenList.addScreen(scrTests.back());
+    scrDev->addScreen(VKEY_I, scrTests.back(), "TestInventoryScreen");
 
     // Uncomment to start from dev screen for testing other screens
 #define START_AT_DEV_SCREEN

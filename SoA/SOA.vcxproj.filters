@@ -195,6 +195,9 @@
     <Filter Include="SOA Files\ECS\ComponentBuilders">
       <UniqueIdentifier>{8abe075e-c1df-4773-9ffd-b200f0dd9087}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOA Files\Rendering\UI\Inventory">
+      <UniqueIdentifier>{67a5b50e-258c-4b20-96f0-c3d21f2df073}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -878,6 +881,15 @@
     <ClInclude Include="VoxelUpdateBufferer.h">
       <Filter>SOA Files\Voxel</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryComponentRenderer.h">
+      <Filter>SOA Files\Rendering\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryScriptedUI.h">
+      <Filter>SOA Files\Rendering\UI\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="TestInventoryScreen.h">
+      <Filter>SOA Files\Screens\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1449,6 +1461,15 @@
     </ClCompile>
     <ClCompile Include="VoxelNodeSetterTask.cpp">
       <Filter>SOA Files\Game\Universe\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryComponentRenderer.cpp">
+      <Filter>SOA Files\Rendering\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryScriptedUI.cpp">
+      <Filter>SOA Files\Rendering\UI\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="TestInventoryScreen.cpp">
+      <Filter>SOA Files\Screens\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

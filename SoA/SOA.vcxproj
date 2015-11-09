@@ -591,6 +591,8 @@ EXIT 0</Command>
     <ClInclude Include="BlockLoader.h" />
     <ClInclude Include="HeadComponentUpdater.h" />
     <ClInclude Include="ImageAssetLoader.h" />
+    <ClInclude Include="InventoryComponentRenderer.h" />
+    <ClInclude Include="InventoryScriptedUI.h" />
     <ClInclude Include="IRenderStage.h" />
     <ClInclude Include="LenseFlareRenderer.h" />
     <ClInclude Include="LiquidVoxelRenderStage.h" />
@@ -681,6 +683,7 @@ EXIT 0</Command>
     <ClInclude Include="TestDeferredScreen.h" />
     <ClInclude Include="TestDisplacementMappingScreen.h" />
     <ClInclude Include="TestGasGiantScreen.h" />
+    <ClInclude Include="TestInventoryScreen.h" />
     <ClInclude Include="TestMappingScreen.h" />
     <ClInclude Include="TestVoxelModelScreen.h" />
     <ClInclude Include="TestNoiseScreen.h" />
@@ -816,6 +819,8 @@ EXIT 0</Command>
     <ClCompile Include="BlockLoader.cpp" />
     <ClCompile Include="HeadComponentUpdater.cpp" />
     <ClCompile Include="ImageAssetLoader.cpp" />
+    <ClCompile Include="InventoryComponentRenderer.cpp" />
+    <ClCompile Include="InventoryScriptedUI.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="LenseFlareRenderer.cpp" />
     <ClCompile Include="LiquidVoxelRenderStage.cpp" />
@@ -894,6 +899,7 @@ EXIT 0</Command>
     <ClCompile Include="TestDeferredScreen.cpp" />
     <ClCompile Include="TestDisplacementMappingScreen.cpp" />
     <ClCompile Include="TestGasGiantScreen.cpp" />
+    <ClCompile Include="TestInventoryScreen.cpp" />
     <ClCompile Include="TestMappingScreen.cpp" />
     <ClCompile Include="TestVoxelModelScreen.cpp" />
     <ClCompile Include="TestNoiseScreen.cpp" />

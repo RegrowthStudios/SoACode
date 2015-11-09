@@ -375,7 +375,8 @@ void TestBiomeScreen::initInput() {
     m_mouseButtons[0] = false;
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onMotion, [&](Sender s, const vui::MouseMotionEvent& e) {
         if (m_mouseButtons[0]) {
-            m_camera.rotateFromMouseAbsoluteUp(-e.dx, -e.dy, 0.01f, true);
+            //m_camera.rotateFromMouseAbsoluteUp(-e.dx, -e.dy, 0.01f, true);
+            m_camera.rotateFromMouse(-e.dx, -e.dy, 0.01f);
         }
     });
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onButtonDown, [&](Sender s, const vui::MouseButtonEvent& e) {

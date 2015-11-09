@@ -73,7 +73,7 @@ void DevScreen::draw(const vui::GameTime& gameTime) {
 
     m_sb->begin();
 
-    f32v2 pos(90.0f, 300.0f);
+    f32v2 pos(90.0f, 200.0f);
     f32 posInc = 35.0f;
 
     if (m_nextScreen) {
@@ -88,7 +88,7 @@ void DevScreen::draw(const vui::GameTime& gameTime) {
    
         pos.y += posInc * 2.0f;
         for (auto& it : m_screenMapping) {
-            m_sb->drawString(m_font, m_screenNames[it.first].c_str(), pos, f32v2(1.0f), FONT_COLOR);
+            m_sb->drawString(m_font, m_screenNames[it.first].c_str(), pos, f32v2(0.8f), FONT_COLOR);
             pos.y += posInc;
         }
     }
