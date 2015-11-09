@@ -11,7 +11,7 @@
 
 class AABBCollidableComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
     virtual void postBuild(vecs::ECS& ecs, vecs::EntityID eID) override;
 
@@ -20,7 +20,7 @@ public:
 
 class ParkourInputComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
     virtual void postBuild(vecs::ECS& ecs, vecs::EntityID eID) override;
     ParkourInputComponent component;
@@ -28,7 +28,7 @@ public:
 
 class AttributeComponentBuilder : public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     AttributeComponent component;
@@ -37,7 +37,7 @@ public:
 /* TODO(BEN): Implement these component builders
 class FreeMoveInputComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     FreeMoveInputComponent component;
@@ -46,7 +46,7 @@ public:
 
 class SpacePositionComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     SpacePositionComponent component;
@@ -54,7 +54,7 @@ public:
 
 class VoxelPositionComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     VoxelPositionComponent component;
@@ -62,7 +62,7 @@ public:
 
 class PhysicsComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
     virtual void postBuild(vecs::ECS& ecs, vecs::EntityID eID) override;
 
@@ -71,7 +71,7 @@ public:
 
 class FrustumComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     FrustumComponent component;
@@ -79,7 +79,7 @@ public:
 
 class HeadComponentBuilder: public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
     virtual void postBuild(vecs::ECS& ecs, vecs::EntityID eID) override;
 
@@ -88,10 +88,11 @@ public:
 
 class InventoryComponentBuilder : public ECSComponentBuilder {
 public:
-    virtual void load(keg::ReadContext& reader, keg::Node node) override;
+    virtual void load(keg::ReadContext& context, keg::Node node) override;
     virtual void build(vecs::ECS& ecs, vecs::EntityID eID) override;
 
     InventoryComponent component;
 };
+KEG_TYPE_DECL(InventoryComponentKegData);
 
 #endif //GameSystemComponentBuilders_h__

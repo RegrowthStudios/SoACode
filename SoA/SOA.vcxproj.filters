@@ -198,6 +198,9 @@
     <Filter Include="SOA Files\Rendering\UI\Inventory">
       <UniqueIdentifier>{67a5b50e-258c-4b20-96f0-c3d21f2df073}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOA Files\ECS\Loaders">
+      <UniqueIdentifier>{e9884f04-eff4-4cd5-93ce-cdf72cbd016a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -890,6 +893,12 @@
     <ClInclude Include="TestInventoryScreen.h">
       <Filter>SOA Files\Screens\Test</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryComponentLoader.h">
+      <Filter>SOA Files\ECS\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemPackLoader.h">
+      <Filter>SOA Files\Game\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1470,6 +1479,12 @@
     </ClCompile>
     <ClCompile Include="TestInventoryScreen.cpp">
       <Filter>SOA Files\Screens\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryComponentLoader.cpp">
+      <Filter>SOA Files\ECS\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemPackLoader.cpp">
+      <Filter>SOA Files\Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

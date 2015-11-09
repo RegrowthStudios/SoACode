@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "GameSystemComponentBuilders.h"
 
-#include <Vorb\io\Keg.h>
-#include "GameSystemComponents.h"
 #include "Frustum.h"
+#include "GameSystemComponents.h"
+#include "InventoryComponentLoader.h"
+#include <Vorb/io/Keg.h>
 
 void AABBCollidableComponentBuilder::load(keg::ReadContext& context, keg::Node node) {
     // Default value
@@ -134,8 +135,24 @@ void HeadComponentBuilder::postBuild(vecs::ECS& ecs, vecs::EntityID eID) {
     cmp.voxelPosition = gecs.voxelPosition.getComponentID(eID);
 }
 
-void InventoryComponentBuilder::load(keg::ReadContext& reader, keg::Node node) {
-    // TODO(Ben): Load another file using a file path
+struct InventoryComponentKegData {
+    nString path = "";
+};
+KEG_TYPE_DEF(InventoryComponentKegData, InventoryComponentKegData, kt) {
+    using namespace keg;
+    kt.addValue("path", Value::basic(offsetof(InventoryComponentKegData, path), BasicType::STRING));
+}
+
+void InventoryComponentBuilder::load(keg::ReadContext& context, keg::Node node) {
+    InventoryComponentKegData data;
+    // Simple read
+    keg::parse((ui8*)&data, node, context, &KEG_GLOBAL_TYPE(InventoryComponentKegData));
+
+    // TODO(Ben): Maybe in another file
+    if (!InventoryComponentLoader::load(data.path, component)) {
+        std::cerr << "Failed to load inventory component.";
+        return;
+    }
 }
 
 void InventoryComponentBuilder::build(vecs::ECS& ecs, vecs::EntityID eID) {
