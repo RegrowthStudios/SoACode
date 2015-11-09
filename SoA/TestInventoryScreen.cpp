@@ -1,7 +1,20 @@
 #include "stdafx.h"
 #include "TestInventoryScreen.h"
 
+#include <Vorb/ecs/Entity.h>
+
 #include "Inputs.h"
+#include "LoadTaskBlockData.h"
+#include "SoaController.h"
+#include "SoaEngine.h"
+#include "SoaState.h"
+
+TestInventoryScreen::TestInventoryScreen(const App* app, CommonState* state) :
+    IAppScreen<App>(app),
+    m_commonState(state),
+    m_soaState(m_commonState->state) {
+
+}
 
 i32 TestInventoryScreen::getNextScreen() const {
     return SCREEN_INDEX_NO_SCREEN;
@@ -12,7 +25,7 @@ i32 TestInventoryScreen::getPreviousScreen() const {
 }
 
 void TestInventoryScreen::build() {
-    // Emptry
+    // Empty
 }
 
 void TestInventoryScreen::destroy(const vui::GameTime& gameTime) {
@@ -20,6 +33,35 @@ void TestInventoryScreen::destroy(const vui::GameTime& gameTime) {
 }
 
 void TestInventoryScreen::onEntry(const vui::GameTime& gameTime) {
+
+    { // Init game state
+        SoaEngine::initState(m_commonState->state);
+
+        ClientState& clientState = m_soaState->clientState;
+        // Create player
+        clientState.playerEntity = m_soaState->templateLib.build(*m_soaState->gameSystem, "Player");
+
+        // Load blocks
+        LoadTaskBlockData blockLoader(&m_soaState->blocks,
+                                      &m_soaState->clientState.blockTextureLoader,
+                                      &m_commonState->loadContext);
+
+        std::cout << "Loading blocks...\n";
+        blockLoader.load();
+       
+        std::cout << "Uploading textures...\n";
+
+        // Uploads all the needed textures
+        m_soaState->clientState.blockTextures->update();
+
+        std::cout << "Creating inventory...\n";
+
+        // Give us a creative inventory
+        controller.initCreativeInventory(clientState.playerEntity, m_soaState);
+
+        std::cout << "Done!";
+    }
+
     m_inputMapper = new InputMapper();
     initInputs(m_inputMapper);
     m_inputMapper->get(INPUT_RELOAD_UI).downEvent.addFunctor([&](Sender s, ui32 i) { m_shouldReloadUI = true; });

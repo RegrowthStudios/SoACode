@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SoaController.h"
+
 
 #include <Vorb/ecs/Entity.h>
 
@@ -7,33 +7,13 @@
 #include "GameSystemAssemblages.h"
 #include "GameSystemUpdater.h"
 #include "SoaState.h"
+#include "SoaController.h"
 #include "SoaOptions.h"
 #include "SoaEngine.h"
 #include "OrbitComponentUpdater.h"
 
 SoaController::~SoaController() {
     // Empty
-}
-
-void initCreativeInventory(vecs::EntityID eid, SoaState* state) {
-    auto& invCmp = state->gameSystem->inventory.getFromEntity(eid);
-    const std::vector<Block>& blocks = state->blocks.getBlockList();
-    // Skip first two blocks
-    for (int i = 2; i < blocks.size(); i++) {
-        if (!state->items.hasItem(i)) {
-            ItemData d;
-            d.blockID = i;
-            d.maxCount = UINT_MAX;
-            d.name = blocks[i].name;
-            d.type = ItemType::BLOCK;
-            // Add new item to stack
-            ItemStack stack;
-            stack.id = state->items.append(d);
-            stack.count = UINT_MAX;
-            stack.pack = &state->items;
-            invCmp.items.push_back(stack);
-        }
-    }
 }
 
 void SoaController::startGame(SoaState* state) {
@@ -69,6 +49,28 @@ void SoaController::startGame(SoaState* state) {
         initCreativeInventory(clientState.playerEntity, state);
     } else {
         // TODO(Ben): This
+    }
+}
+
+void SoaController::initCreativeInventory(vecs::EntityID eid, SoaState* state) {
+    auto& invCmp = state->gameSystem->inventory.getFromEntity(eid);
+    const std::vector<Block>& blocks = state->blocks.getBlockList();
+
+    // Skip first two blocks
+    for (int i = 2; i < blocks.size(); i++) {
+        if (!state->items.hasItem(i)) {
+            ItemData d;
+            d.blockID = i;
+            d.maxCount = UINT_MAX;
+            d.name = blocks[i].name;
+            d.type = ItemType::BLOCK;
+            // Add new item to stack
+            ItemStack stack;
+            stack.id = state->items.append(d);
+            stack.count = UINT_MAX;
+            stack.pack = &state->items;
+            invCmp.items.push_back(stack);
+        }
     }
 }
 

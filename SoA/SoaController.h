@@ -24,6 +24,7 @@ class SoaController {
 public:
     virtual ~SoaController();
     void startGame(SoaState* state);
+    void initCreativeInventory(vecs::EntityID eid, SoaState* state);
 
     f64v3 getEntityEyeVoxelPosition(SoaState* state, vecs::EntityID eid);
     f64v3 getEntityViewVoxelDirection(SoaState* state, vecs::EntityID eid);

@@ -121,4 +121,6 @@ bool ItemPackLoader::loadV1(const std::vector<ui8>& fileData, OUT ItemPack& pack
         pack.reserveID(item.name, item.id);
         pack.append(item);
     }
+
+    return true;
 }

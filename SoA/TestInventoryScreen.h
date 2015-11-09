@@ -15,13 +15,16 @@
 #ifndef TESTINVENTORYSCREEN_H_
 #define TESTINVENTORYSCREEN_H_
 
-#include "InventoryComponentRenderer.h"
-
 #include <Vorb/ui/IGameScreen.h>
 #include <Vorb/graphics/SpriteFont.h>
 
-class TestInventoryScreen : public vui::IGameScreen {
+#include "CommonState.h"
+#include "InventoryComponentRenderer.h"
+#include "SoaController.h"
+
+class TestInventoryScreen : public vui::IAppScreen<App> {
 public:
+    TestInventoryScreen(const App* app, CommonState* state);
     /************************************************************************/
     /* IGameScreen functionality                                            */
     /************************************************************************/
@@ -43,6 +46,11 @@ private:
     InventoryComponentRenderer m_renderer; ///< This handles all rendering for the inventory
     InventoryScriptedUI* m_ui; ///< The UI form
     vg::SpriteFont m_formFont; ///< The UI font
+
+    CommonState* m_commonState;
+    SoaState* m_soaState;
+
+    SoaController controller;
 
     bool m_shouldReloadUI = false;
 };
