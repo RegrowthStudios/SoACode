@@ -591,6 +591,7 @@ EXIT 0</Command>
     <ClInclude Include="BlockLoader.h" />
     <ClInclude Include="HeadComponentUpdater.h" />
     <ClInclude Include="ImageAssetLoader.h" />
+    <ClInclude Include="InventoryComponentLoader.h" />
     <ClInclude Include="IRenderStage.h" />
     <ClInclude Include="LenseFlareRenderer.h" />
     <ClInclude Include="LiquidVoxelRenderStage.h" />
@@ -816,6 +817,7 @@ EXIT 0</Command>
     <ClCompile Include="BlockLoader.cpp" />
     <ClCompile Include="HeadComponentUpdater.cpp" />
     <ClCompile Include="ImageAssetLoader.cpp" />
+    <ClCompile Include="InventoryComponentLoader.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="LenseFlareRenderer.cpp" />
     <ClCompile Include="LiquidVoxelRenderStage.cpp" />

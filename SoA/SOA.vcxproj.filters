@@ -195,6 +195,9 @@
     <Filter Include="SOA Files\ECS\ComponentBuilders">
       <UniqueIdentifier>{8abe075e-c1df-4773-9ffd-b200f0dd9087}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOA Files\ECS\Loaders">
+      <UniqueIdentifier>{e9884f04-eff4-4cd5-93ce-cdf72cbd016a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -878,6 +881,9 @@
     <ClInclude Include="VoxelUpdateBufferer.h">
       <Filter>SOA Files\Voxel</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryComponentLoader.h">
+      <Filter>SOA Files\ECS\Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1449,6 +1455,9 @@
     </ClCompile>
     <ClCompile Include="VoxelNodeSetterTask.cpp">
       <Filter>SOA Files\Game\Universe\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryComponentLoader.cpp">
+      <Filter>SOA Files\ECS\Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
