@@ -17,6 +17,10 @@ InventoryScriptedUI::~InventoryScriptedUI() {
     // Empty
 }
 
+void InventoryScriptedUI::setSoaState(SoaState* soaState) {
+    m_soaState = soaState;
+}
+
 void InventoryScriptedUI::setInputMapper(InputMapper* inputMapper) {
     m_inputMapper = inputMapper;
 }
@@ -38,17 +42,31 @@ void InventoryScriptedUI::registerScriptValues(vui::FormScriptEnvironment* newFo
     env->addCRDelegate("getName", makeRDelegate(*this, &InventoryScriptedUI::getName));
 
     // TODO(Matthew): Extend scripting to get inventory information.
-    //env->setNamespaces("Inventory");
-    //env->addCRDelegate("getItemList", makeRDelegate(*this, &InventoryScriptedUI::getItemList
+    env->setNamespaces("Inventory");
+    env->addCRDelegate("getSize", makeRDelegate(*this, &InventoryScriptedUI::getInventorySize));
+    env->addCRDelegate("getItem", makeRDelegate(*this, &InventoryScriptedUI::getItem));
+
+    env->setNamespaces("Item");
+    env->addCRDelegate("getName", makeRDelegate(*this, &InventoryScriptedUI::getItemName));
+    env->addCRDelegate("getCount", makeRDelegate(*this, &InventoryScriptedUI::getItemCount));
+    env->addCRDelegate("getMaxCount", makeRDelegate(*this, &InventoryScriptedUI::getItemMaxCount));
+    env->addCRDelegate("getWeight", makeRDelegate(*this, &InventoryScriptedUI::getItemWeight));
+    env->addCRDelegate("getValue", makeRDelegate(*this, &InventoryScriptedUI::getItemValue));
+    env->addCRDelegate("getDurability", makeRDelegate(*this, &InventoryScriptedUI::getItemDurability));
+    env->addCRDelegate("getMaxDurability", makeRDelegate(*this, &InventoryScriptedUI::getItemMaxDurability));
+    env->addCRDelegate("getItemPack", makeRDelegate(*this, &InventoryScriptedUI::getItemPack));
+
+    env->setNamespaces("ItemPack");
+    env->addCRDelegate("getName", makeRDelegate(*this, &InventoryScriptedUI::getItemPackName));
 
     env->setNamespaces();
 }
 
-size_t InventoryScriptedUI::getNumInputs() {
+ui32 InventoryScriptedUI::getNumInputs() {
     return m_inputMapper->getInputLookup().size();
 }
 
-InputMapper::InputID InventoryScriptedUI::getInput(int index) {
+InputMapper::InputID InventoryScriptedUI::getInput(ui32 index) {
     // This is slow, but that is ok.
     auto& it = m_inputMapper->getInputLookup().begin();
     std::advance(it, index);
@@ -74,3 +92,51 @@ nString InventoryScriptedUI::getDefaultKeyString(InputMapper::InputID id) {
 nString InventoryScriptedUI::getName(InputMapper::InputID id) {
     return m_inputMapper->get(id).name;
 }
+
+ui32 InventoryScriptedUI::getInventorySize() {
+    auto& invCmp = m_soaState->gameSystem->inventory.getFromEntity(m_soaState->clientState.playerEntity);
+    return invCmp.items.size();
+}
+
+ItemStack* InventoryScriptedUI::getItem(ui32 index) {
+    auto& invCmp = m_soaState->gameSystem->inventory.getFromEntity(m_soaState->clientState.playerEntity);
+    return &invCmp.items[index];
+}
+
+// TODO(Matthew): Check if item exists else return 0.
+nString InventoryScriptedUI::getItemName(ItemStack* itemStack) {
+    return m_soaState->items[itemStack->id].name;
+}
+
+ui32 InventoryScriptedUI::getItemCount(ItemStack* itemStack) {
+    return itemStack->count;
+}
+
+ui32 InventoryScriptedUI::getItemMaxCount(ItemStack* itemStack) {
+    return m_soaState->items[itemStack->id].maxCount;
+}
+
+ui32 InventoryScriptedUI::getItemWeight(ItemStack* itemStack) {
+    return m_soaState->items[itemStack->id].weight;
+}
+
+ui32 InventoryScriptedUI::getItemValue(ItemStack* itemStack) {
+    return m_soaState->items[itemStack->id].value;
+}
+
+ui32 InventoryScriptedUI::getItemDurability(ItemStack* itemStack) {
+    return itemStack->durability;
+}
+
+ui32 InventoryScriptedUI::getItemMaxDurability(ItemStack* itemStack) {
+    return m_soaState->items[itemStack->id].maxDurability;
+}
+
+ItemPack* InventoryScriptedUI::getItemPack(ItemStack* itemStack) {
+    return itemStack->pack;
+}
+
+nString InventoryScriptedUI::getItemPackName(ItemPack* itemPack) {
+    return itemPack->name;
+}
+
