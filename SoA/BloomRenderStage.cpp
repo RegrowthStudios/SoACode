@@ -8,7 +8,7 @@
 #include "ShaderLoader.h"
 #include "LoadContext.h"
 #include "Errors.h"
-#include "Vorb/ui/GameWindow.h"
+#include <Vorb/ui/GameWindow.h>
 
 #define TASK_WORK  4                     // (arbitrary) weight of task
 #define TOTAL_TASK 4                    // number of tasks
@@ -114,7 +114,7 @@ void BloomRenderStage::dispose(StaticLoadContext& context) {
     m_programGaussianSecond.dispose();
 }
 
-void BloomRenderStage::render(const Camera* camera) {
+void BloomRenderStage::render(const vg::Camera3D<f64>* camera) {
     // get initial bound FBO and bound color texture to use it on final pass
     GLint initial_fbo, initial_texture;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &initial_fbo);

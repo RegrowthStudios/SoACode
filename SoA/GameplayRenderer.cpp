@@ -386,10 +386,10 @@ void GameplayRenderer::updateCameras() {
         m_voxelCamera.setClippingPlane(0.1f, 10000.0f);
         m_voxelCamera.setPosition(m_renderState->playerPosition.gridPosition.pos + m_renderState->playerHead.relativePosition);
         m_voxelCamera.setOrientation(m_renderState->playerPosition.orientation * m_renderState->playerHead.relativeOrientation);
-        m_voxelCamera.update();
+        m_voxelCamera.update(0.0f);
     }
     // Player is relative to a planet, so add position if needed
-    CinematicCamera& spaceCamera = m_state->clientState.spaceCamera;
+    vg::CinematicCamera3D<f64>& spaceCamera = m_state->clientState.spaceCamera;
     // TODO(Ben): Shouldn't be touching ECS here.
     auto& phycmp = gs->physics.getFromEntity(m_state->clientState.playerEntity);
     auto& spcmp = gs->spacePosition.get(phycmp.spacePosition);
@@ -405,7 +405,7 @@ void GameplayRenderer::updateCameras() {
     } else {
         spaceCamera.setPosition(m_renderState->spaceCameraPos);
     }
-    spaceCamera.setIsDynamic(false);
+    //spaceCamera.setIsDynamic(false);
     spaceCamera.setFocalLength(0.0f);
     spaceCamera.setClippingPlane(0.1f, 100000000000.0f);
    
@@ -415,7 +415,8 @@ void GameplayRenderer::updateCameras() {
         spaceCamera.setOrientation(m_renderState->spaceCameraOrientation);
     }
     
-    spaceCamera.update();
+    // TODO(Matthew): Pass in correct delta time.
+    spaceCamera.update(0.01f);
 }
 
 void GameplayRenderer::dumpScreenshot() {

@@ -18,10 +18,10 @@
 #include <Vorb/ecs/ECS.h>
 #include <Vorb/VorbPreDecl.inl>
 #include <Vorb/AssetLoader.h>
+#include <Vorb/graphics/Camera.h>
 
 #include "CloudsComponentRenderer.h"
 #include "AtmosphereComponentRenderer.h"
-#include "Camera.h"
 #include "FarTerrainComponentRenderer.h"
 #include "GasGiantComponentRenderer.h"
 #include "LenseFlareRenderer.h"
@@ -45,7 +45,7 @@ class SpaceSystemRenderStage : public IRenderStage {
 public:
     void init(vui::GameWindow* window, StaticLoadContext& context) override;
 
-    void hook(SoaState* state, const Camera* spaceCamera, const Camera* farTerrainCamera = nullptr);
+    void hook(SoaState* state, const vg::Camera3D<f64>* spaceCamera, const vg::Camera3D<f64>* farTerrainCamera = nullptr);
 
     void load(StaticLoadContext& context) override;
 
@@ -54,12 +54,12 @@ public:
     //TODO(Ben): Pointer to window viewport instead?
     void setViewport(const ui32v2& viewport) { m_viewport = f32v2(viewport); }
 
-    void setFarTerrainCamera(const Camera* camera) { m_farTerrainCamera = camera; }
+    void setFarTerrainCamera(const vg::Camera3D<f64>* camera) { m_farTerrainCamera = camera; }
 
     /// Call this every frame before render
     void setRenderState(const MTRenderState* renderState);
     /// Draws the render stage
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
 
     void reloadShaders();
 
@@ -90,8 +90,8 @@ private:
     f32v2 m_viewport;
     SpaceSystem* m_spaceSystem = nullptr;
     const MainMenuSystemViewer* m_mainMenuSystemViewer = nullptr;
-    const Camera* m_spaceCamera = nullptr;
-    const Camera* m_farTerrainCamera = nullptr;
+    const vg::Camera3D<f64>* m_spaceCamera = nullptr;
+    const vg::Camera3D<f64>* m_farTerrainCamera = nullptr;
     const MTRenderState* m_renderState = nullptr;
     
     CloudsComponentRenderer m_cloudsComponentRenderer;

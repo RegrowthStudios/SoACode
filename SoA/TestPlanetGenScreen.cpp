@@ -79,8 +79,6 @@ void TestPlanetGenScreen::onEntry(const vui::GameTime& gameTime) {
     f32 width = (f32)m_game->getWindow().getWidth();
     f32 height = (f32)m_game->getWindow().getHeight();
     m_camera.setAspectRatio(width / height);
-    m_camera.setDirection(f32v3(0.0f, 0.0f, -1.0f));
-    m_camera.setUp(f32v3(0.0f, 1.0f, 0.0f));
 }
 
 void TestPlanetGenScreen::onExit(const vui::GameTime& gameTime) {
@@ -100,7 +98,7 @@ void TestPlanetGenScreen::draw(const vui::GameTime& gameTime) {
 
     m_camera.setClippingPlane((f32)(m_eyeDist / 2.0), (f32)(m_eyeDist + PLANET_RADIUS * 10.0));
     m_camera.setPosition(f64v3(m_eyePos));
-    m_camera.update();
+    m_camera.update(gameTime.elapsed);
 
     f32v3 lightPos = vmath::normalize(f32v3(0.0f, 0.0f, 1.0f));
 

@@ -86,7 +86,7 @@ void GameplayLoadScreen::update(const vui::GameTime& gameTime) {
 }
 
 void GameplayLoadScreen::draw(const vui::GameTime& gameTime) {
-    m_commonState->state->clientState.spaceCamera.updateProjection();
+    m_commonState->state->clientState.spaceCamera.update(gameTime.elapsed);
     m_mainMenuScreen->m_renderer.render();
 }
 

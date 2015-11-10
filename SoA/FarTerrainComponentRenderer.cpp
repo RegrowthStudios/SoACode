@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "FarTerrainComponentRenderer.h"
 
-#include "Camera.h"
 #include "PlanetGenData.h"
 #include "ShaderLoader.h"
 #include "SpaceSystemComponents.h"
@@ -9,6 +8,7 @@
 #include "VoxelSpaceUtils.h"
 
 #include <Vorb/os.h>
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/graphics/ShaderManager.h>
 #include <Vorb/io/IOManager.h>
 #include <Vorb/utils.h>
@@ -24,7 +24,7 @@ void FarTerrainComponentRenderer::initGL() {
 }
 
 void FarTerrainComponentRenderer::draw(const FarTerrainComponent& cmp,
-                                       const Camera* camera,
+                                       const vg::Camera3D<f64>* camera,
                                        const f64v3& lightDir,
                                        const f32 zCoef,
                                        const SpaceLightComponent* spComponent,

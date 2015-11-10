@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "PhysicsBlockRenderStage.h"
 
-#include "Camera.h"
+#include <Vorb/graphics/Camera.h>
+
 #include "ChunkRenderer.h"
 #include "GameRenderParams.h"
 #include "SoaOptions.h"
@@ -15,7 +16,7 @@ PhysicsBlockRenderStage::PhysicsBlockRenderStage(GameRenderParams* gameRenderPar
     // Empty
 }
 
-void PhysicsBlockRenderStage::render(const Camera* camera) {
+void PhysicsBlockRenderStage::render(const vg::Camera3D<f64>* camera) {
 
     /* _glProgram->use();
 

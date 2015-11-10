@@ -2,7 +2,7 @@
 #include "SonarRenderStage.h"
 
 #include <Vorb/graphics/GLProgram.h>
-#include "Camera.h"
+#include <Vorb/graphics/Camera.h>
 #include "Chunk.h"
 #include "BlockPack.h"
 #include "BlockTexturePack.h"
@@ -22,7 +22,7 @@ SonarRenderStage::SonarRenderStage(const GameRenderParams* gameRenderParams) :
     // Empty
 }
 
-void SonarRenderStage::render(const Camera* camera) {
+void SonarRenderStage::render(const vg::Camera3D<f64>* camera) {
     glDisable(GL_DEPTH_TEST);
     ChunkMeshManager* cmm = m_gameRenderParams->chunkMeshmanager;
 

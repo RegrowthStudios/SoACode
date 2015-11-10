@@ -22,7 +22,7 @@ public:
     virtual void dispose(StaticLoadContext& context) override;
 
     /// Draws the render stage
-    virtual void render(const Camera* camera = nullptr) override;
+    virtual void render(const vg::Camera3D<f64>* camera = nullptr) override;
 
 	inline void set(VGTexture depthTexture, VGTexture normalTexture, VGTexture colorTexture, VGFramebuffer hdrFrameBuffer) {
         m_depthTexture = depthTexture;

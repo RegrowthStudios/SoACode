@@ -46,7 +46,7 @@ void ExposureCalcRenderStage::dispose(StaticLoadContext& context) {
     m_needsScriptLoad = true;
 }
 
-void ExposureCalcRenderStage::render(const Camera* camera /*= nullptr*/) {
+void ExposureCalcRenderStage::render(const vg::Camera3D<f64>* camera /*= nullptr*/) {
     if (m_renderTargets.empty()) {
         m_renderTargets.resize(m_mipLevels);
         for (size_t i = 0; i < m_mipLevels; i++) {

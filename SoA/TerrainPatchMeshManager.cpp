@@ -3,10 +3,10 @@
 
 #include "Errors.h"
 #include "PlanetGenLoader.h"
-#include "Camera.h"
 
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/TextureRecycler.hpp>
+#include <Vorb/graphics/Camera.h>
 
 #include "FarTerrainPatch.h"
 #include "PlanetGenData.h"
@@ -28,7 +28,7 @@ void TerrainPatchMeshManager::update() {
 }
 
 void TerrainPatchMeshManager::drawSphericalMeshes(const f64v3& relativePos,
-                                                  const Camera* camera,
+                                                  const vg::Camera3D<f64>* camera,
                                                   const f64q& orientation,
                                                   vg::GLProgram& program,
                                                   vg::GLProgram& waterProgram,
@@ -45,16 +45,16 @@ void TerrainPatchMeshManager::drawSphericalMeshes(const f64v3& relativePos,
     const f64v3 rotpos = invOrientation * relativePos;
     const f32v3 rotLightDir = f32v3(invOrientation * f64v3(lightDir));
     // Convert f64q to f32q
-    f32q orientationF32;
-    orientationF32.x = (f32)orientation.x;
-    orientationF32.y = (f32)orientation.y;
-    orientationF32.z = (f32)orientation.z;
-    orientationF32.w = (f32)orientation.w;
+    f64q orientationF64;
+    orientationF64.x = orientation.x;
+    orientationF64.y = orientation.y;
+    orientationF64.z = orientation.z;
+    orientationF64.w = orientation.w;
     // Convert to matrix
-    f32m4 rotationMatrix = vmath::toMat4(orientationF32);
+    f64m4 rotationMatrix = vmath::toMat4(orientationF64);
     f32m4 W(1.0);
     setMatrixTranslation(W, -relativePos);
-    f32m4 WVP = camera->getViewProjectionMatrix() * W * rotationMatrix;
+    f32m4 WVP = camera->getViewProjectionMatrix() * (f64m4)W * rotationMatrix;
 
     if (m_waterMeshes.size()) {
         // Bind textures
@@ -141,7 +141,7 @@ void TerrainPatchMeshManager::drawSphericalMeshes(const f64v3& relativePos,
                     // Check frustum culling
                     // TODO(Ben): There could be a way to reduce the number of frustum checks
                     // via caching or checking a parent
-                    f32v3 relSpherePos = orientationF32 * m->m_aabbCenter - f32v3(relativePos);
+                    f32v3 relSpherePos = (f32q)orientationF64 * m->m_aabbCenter - f32v3(relativePos);
                     if (camera->sphereInFrustum(relSpherePos,
                         m->m_boundingSphereRadius)) {
                         m->draw(WVP, program, drawSkirts);
@@ -219,7 +219,7 @@ void TerrainPatchMeshManager::sortFarMeshes(const f64v3& relPos) {
 }
 
 void TerrainPatchMeshManager::drawFarMeshes(const f64v3& relativePos,
-                                            const Camera* camera,
+                                            const vg::Camera3D<f64>* camera,
                                             vg::GLProgram& program,
                                             vg::GLProgram& waterProgram,
                                             const f32v3& lightDir,

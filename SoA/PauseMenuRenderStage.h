@@ -24,7 +24,7 @@ public:
     void hook(const PauseMenu* pauseMenu);
 
     // Draws the render stage
-    virtual void render(const Camera* camera = nullptr) override;
+    virtual void render(const vg::Camera3D<f64>* camera = nullptr) override;
 
 private:
     const PauseMenu* _pauseMenu = nullptr; ///< Handle to pause menu for rendering

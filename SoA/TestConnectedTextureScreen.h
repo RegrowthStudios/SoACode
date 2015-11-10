@@ -16,6 +16,7 @@
 #define TestConnectedTextureScreen_h__
 
 #include <Vorb/Events.hpp>
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/graphics/GBuffer.h>
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/graphics/RTSwapChain.hpp>
@@ -24,7 +25,6 @@
 #include <Vorb/ui/IGameScreen.h>
 
 #include "BlockPack.h"
-#include "Camera.h"
 #include "Chunk.h"
 #include "CommonState.h"
 #include "ChunkMesher.h"
@@ -58,7 +58,7 @@ private:
     };
 
     AutoDelegatePool m_hooks; ///< Input hooks reservoir
-    Camera m_camera;
+    vg::Camera3D<f64> m_camera;
     BlockPack m_blocks; ///< Block data
     CommonState* m_commonState;
     SoaState* m_soaState;

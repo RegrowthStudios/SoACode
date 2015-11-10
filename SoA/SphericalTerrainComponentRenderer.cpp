@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "SphericalTerrainComponentRenderer.h"
 
-#include "Camera.h"
 #include "SpaceSystemComponents.h"
 #include "TerrainPatchMeshManager.h"
 #include "TerrainPatch.h"
 #include "soaUtils.h"
 #include "ShaderLoader.h"
 
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/graphics/ShaderManager.h>
 #include <Vorb/io/IOManager.h>
@@ -37,7 +37,7 @@ void SphericalTerrainComponentRenderer::initGL() {
 }
 
 void SphericalTerrainComponentRenderer::draw(SphericalTerrainComponent& cmp,
-                                             const Camera* camera,
+                                             const vg::Camera3D<f64>* camera,
                                              const f32v3& lightDir,
                                              const f64v3& position,
                                              const f32 zCoef,

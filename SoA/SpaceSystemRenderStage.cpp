@@ -5,9 +5,9 @@
 #include <Vorb/os.h>
 #include <Vorb/graphics/DepthState.h>
 #include <Vorb/graphics/RasterizerState.h>
+#include <Vorb/graphics/Camera.h>
 
 #include "App.h"
-#include "Camera.h"
 #include "DebugRenderer.h"
 #include "Errors.h"
 #include "MTRenderState.h"
@@ -55,7 +55,7 @@ void SpaceSystemRenderStage::init(vui::GameWindow* window, StaticLoadContext& co
     context.addAnticipatedWork(TOTAL_WORK, NUM_TASKS);
 }
 
-void SpaceSystemRenderStage::hook(SoaState* state, const Camera* spaceCamera, const Camera* farTerrainCamera /*= nullptr*/) {
+void SpaceSystemRenderStage::hook(SoaState* state, const vg::Camera3D<f64>* spaceCamera, const vg::Camera3D<f64>* farTerrainCamera /*= nullptr*/) {
     m_viewport = m_window->getViewportDims();
     m_spaceSystem = state->spaceSystem;
     m_mainMenuSystemViewer = state->clientState.systemViewer;
@@ -121,7 +121,7 @@ void SpaceSystemRenderStage::setRenderState(const MTRenderState* renderState) {
     m_renderState = renderState;
 }
 
-void SpaceSystemRenderStage::render(const Camera* camera) {
+void SpaceSystemRenderStage::render(const vg::Camera3D<f64>* camera) {
     drawBodies();
     if (m_showAR) m_systemARRenderer.draw(m_spaceSystem, m_spaceCamera,
                                           m_mainMenuSystemViewer,

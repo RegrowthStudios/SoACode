@@ -2,8 +2,9 @@
 #include "LiquidVoxelRenderStage.h"
 
 #include <Vorb/graphics/GLProgram.h>
+#include <Vorb/graphics/Camera.h>
+
 #include "BlockTexturePack.h"
-#include "Camera.h"
 #include "Chunk.h"
 #include "ChunkMeshManager.h"
 #include "ChunkRenderer.h"
@@ -17,7 +18,7 @@ void LiquidVoxelRenderStage::hook(ChunkRenderer* renderer, const GameRenderParam
     m_gameRenderParams = gameRenderParams;
 }
 
-void LiquidVoxelRenderStage::render(const Camera* camera) {
+void LiquidVoxelRenderStage::render(const vg::Camera3D<f64>* camera) {
     ChunkMeshManager* cmm = m_gameRenderParams->chunkMeshmanager;
     
     m_renderer->beginLiquid(m_gameRenderParams->blockTexturePack->getAtlasTexture(), m_gameRenderParams->sunlightDirection,

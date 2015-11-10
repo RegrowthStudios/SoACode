@@ -17,10 +17,11 @@
 
 #include "BlockTextureLoader.h"
 #include "BlockTexturePack.h"
-#include "Camera.h"
 #include "MainMenuSystemViewer.h"
 #include "ModPathResolver.h"
 #include "VoxelEditor.h"
+
+#include <Vorb/graphics/Camera.h>
 
 class DebugRenderer;
 
@@ -41,7 +42,7 @@ struct ClientState {
     vecs::EntityID playerEntity = 0;
 
     // TODO(Ben): This is temporary!
-    CinematicCamera spaceCamera; ///< The camera that looks at the planet from space
+    vg::CinematicCamera3D<f64> spaceCamera; ///< The camera that looks at the planet from space
 
     bool isNewGame = true;
     f64v3 startSpacePos = f64v3(0.0f); ///< Starting position of player entity

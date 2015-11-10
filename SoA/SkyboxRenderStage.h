@@ -19,7 +19,8 @@
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/AssetLoader.h>
 
-class Camera;
+DECL_VG(template <class T>
+        class Camera3D)
 class ModPathResolver;
 
 class SkyboxRenderStage : public IRenderStage
@@ -32,11 +33,11 @@ public:
     void load(StaticLoadContext& context) override;
 
     // Draws the render stage
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
 private:
     void drawSpace(f32m4 &VP);
     // Update projection matrix
-    void updateProjectionMatrix(const Camera* camera);
+    void updateProjectionMatrix(const vg::Camera3D<f64>* camera);
     void loadTexture(const char* relPath, int index);
 
     SkyboxRenderer m_skyboxRenderer; ///< Renders the skybox

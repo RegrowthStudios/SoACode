@@ -18,19 +18,20 @@
 #include <Vorb/VorbPreDecl.inl>
 #include <Vorb/graphics/GLProgram.h>
 
-class Camera;
 struct AtmosphereComponent;
 struct AxisRotationComponent;
 struct NamePositionComponent;
 struct SpaceLightComponent;
 struct SphericalTerrainComponent;
+DECL_VG(template <class T>
+        class Camera3D)
 
 class SphericalTerrainComponentRenderer {
 public:
     ~SphericalTerrainComponentRenderer();
     void initGL();
     void draw(SphericalTerrainComponent& cmp,
-              const Camera* camera,
+              const vg::Camera3D<f64>* camera,
               const f32v3& lightDir,
               const f64v3& position,
               const f32 zCoef,
