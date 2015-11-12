@@ -3,6 +3,7 @@
 
 #include <Vorb/ui/InputDispatcher.h>
 #include <Vorb/colors.h>
+#include <Vorb/types.h>
 
 #include "App.h"
 #include "ChunkRenderer.h"
@@ -371,17 +372,25 @@ void TestBiomeScreen::initChunks() {
 
 void TestBiomeScreen::initInput() {
     m_mouseButtons[0] = false;
+    m_mouseButtons[1] = false;
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onMotion, [&](Sender s, const vui::MouseMotionEvent& e) {
-        if (m_mouseButtons[0]) {
-<<<<<<< Updated upstream
-            m_camera.rotateFromMouseAbsoluteUp(-e.dx, -e.dy, 0.01f, true);
-=======
-            m_camera.rotateFromMouse(-e.dx, -e.dy, 0.01f);
->>>>>>> Stashed changes
+        if (m_mouseButtons[0] && m_mouseButtons[1]) {
+            f64v3 dir = m_camera.getDirection();
+            printf(("Direction: X - " + std::to_string(dir.x) + " -- Y - " + std::to_string(dir.y) + " -- Z - " + std::to_string(dir.z) + "\n").c_str());
+            m_camera.applyRoll(M_PI * 0.005);
+        } else if (m_mouseButtons[0]) {
+            f64v3 rig = m_camera.getRight();
+            printf(("Right: X - " + std::to_string(rig.x) + " -- Y - " + std::to_string(rig.y) + " -- Z - " + std::to_string(rig.z) + "\n").c_str());
+            m_camera.applyPitch(M_PI * 0.005);
+        } else if (m_mouseButtons[1]) {
+            f64v3 up = m_camera.getUp();
+            printf(("Up: X - " + std::to_string(up.x) + " -- Y - " + std::to_string(up.y) + " -- Z - " + std::to_string(up.z) + "\n").c_str());
+            m_camera.applyYaw(M_PI * 0.005);
         }
     });
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onButtonDown, [&](Sender s, const vui::MouseButtonEvent& e) {
         if (e.button == vui::MouseButton::LEFT) m_mouseButtons[0] = !m_mouseButtons[0];
+        if (e.button == vui::MouseButton::RIGHT) m_mouseButtons[1] = !m_mouseButtons[1];
         if (m_mouseButtons[0]) {
             SDL_SetRelativeMouseMode(SDL_TRUE);
         }
