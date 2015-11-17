@@ -386,7 +386,7 @@ void GameplayRenderer::updateCameras() {
         m_voxelCamera.setClippingPlane(0.1f, 10000.0f);
         m_voxelCamera.setPosition(m_renderState->playerPosition.gridPosition.pos + m_renderState->playerHead.relativePosition);
         m_voxelCamera.setOrientation(m_renderState->playerPosition.orientation * m_renderState->playerHead.relativeOrientation);
-        m_voxelCamera.update(0.0f);
+        m_voxelCamera.update();
     }
     // Player is relative to a planet, so add position if needed
     vg::CinematicCamera3D<f64>& spaceCamera = m_state->clientState.spaceCamera;

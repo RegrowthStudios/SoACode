@@ -4,6 +4,7 @@
 #include <Vorb/ui/InputDispatcher.h>
 #include <Vorb/colors.h>
 #include <Vorb/types.h>
+#include <Vorb/math/TweeningMath.hpp>
 
 #include "App.h"
 #include "ChunkRenderer.h"
@@ -149,8 +150,8 @@ void TestBiomeScreen::onExit(const vui::GameTime& gameTime) {
 }
 
 void TestBiomeScreen::update(const vui::GameTime& gameTime) {
-    f64 speed = 10.0;
-    if (m_movingFast) speed *= 5.0;
+    f64 speed = 5.0;
+    if (m_movingFast) speed *= 10.0;
     if (m_movingForward) {
         f64v3 offset = m_camera.getDirection() * speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
@@ -175,7 +176,7 @@ void TestBiomeScreen::update(const vui::GameTime& gameTime) {
         f64v3 offset = f64v3(0, 1, 0) *  -speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
-    m_camera.update(gameTime.elapsed);
+    m_camera.update();
 }
 
 void TestBiomeScreen::draw(const vui::GameTime& gameTime) {
@@ -375,11 +376,17 @@ void TestBiomeScreen::initInput() {
     m_mouseButtons[1] = false;
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onMotion, [&](Sender s, const vui::MouseMotionEvent& e) {
         if (m_mouseButtons[0]) {
-            m_camera.rotateFromMouse(0.0, -1.0 * e.dy, 0.01);
+            m_camera.rotateFromMouse(-1.0 * e.dx, -1.0 * e.dy, 0.002);
         } else if (m_mouseButtons[1]) {
-            m_camera.rollFromMouse(e.dx, 0.01);
+            m_camera.rollFromMouse(e.dx, 0.002);
         } else {
             m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(0.0, 0.0, 0.0)));
+        }
+        if (m_movingForward) {
+            m_camera.setWobbleAmplitude(M_PI * 0.01);
+            m_camera.setWobblePeriod(2.0);
+            m_camera.setWobbleTweening(vmath::easeInOutCirc);
+            m_camera.enableWobble(true);
         }
     });
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onButtonDown, [&](Sender s, const vui::MouseButtonEvent& e) {

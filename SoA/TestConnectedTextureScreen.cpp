@@ -142,7 +142,7 @@ void TestConnectedTextureScreen::update(const vui::GameTime& gameTime) {
         f64v3 offset = f64v3(0, 1, 0) *  -speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
-    m_camera.update(gameTime.elapsed);
+    m_camera.update();
 }
 
 void TestConnectedTextureScreen::draw(const vui::GameTime& gameTime) {
