@@ -374,21 +374,10 @@ void TestBiomeScreen::initInput() {
     m_mouseButtons[0] = false;
     m_mouseButtons[1] = false;
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onMotion, [&](Sender s, const vui::MouseMotionEvent& e) {
-        if (m_mouseButtons[0] && m_mouseButtons[1]) {
-            //f64v3 dir = m_camera.getDirection();
-            //printf(("Direction: X - " + std::to_string(dir.x) + " -- Y - " + std::to_string(dir.y) + " -- Z - " + std::to_string(dir.z) + "\n").c_str());
-            m_camera.applyRoll(M_PI * 0.005);
-            //m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(0.0, 0.0, 1.0)));
-        } else if (m_mouseButtons[0]) {
-            //f64v3 rig = m_camera.getRight();
-            //printf(("Right: X - " + std::to_string(rig.x) + " -- Y - " + std::to_string(rig.y) + " -- Z - " + std::to_string(rig.z) + "\n").c_str());
-            m_camera.applyPitch(M_PI * 0.005);
-            //m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(1.0, 0.0, 0.0)));
+        if (m_mouseButtons[0]) {
+            m_camera.rotateFromMouse(0.0, -1.0 * e.dy, 0.01);
         } else if (m_mouseButtons[1]) {
-            //f64v3 up = m_camera.getUp();
-            //printf(("Up: X - " + std::to_string(up.x) + " -- Y - " + std::to_string(up.y) + " -- Z - " + std::to_string(up.z) + "\n").c_str());
-            m_camera.applyYaw(M_PI * 0.005);
-            //m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(0.0, 1.0, 0.0)));
+            m_camera.rollFromMouse(e.dx, 0.01);
         } else {
             m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(0.0, 0.0, 0.0)));
         }
