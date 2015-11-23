@@ -47,7 +47,8 @@ private:
     };
 
     AutoDelegatePool m_hooks; ///< Input hooks reservoir
-    vg::FPSCamera3D<f64> m_camera;
+    //vg::FPSCamera3D<f64> m_camera;
+    vg::CinematicCamera3D<f64> m_camera;
     BlockPack m_blocks; ///< Block data
     CommonState* m_commonState;
     SoaState* m_soaState;

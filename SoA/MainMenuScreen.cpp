@@ -62,7 +62,7 @@ void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
     // Get the state handle
     m_mainMenuSystemViewer = m_soaState->clientState.systemViewer;
 
-    m_soaState->clientState.spaceCamera.init();
+    m_soaState->clientState.spaceCamera.init(4.0/3.0, 75.0f);
     
 
     initInput();
