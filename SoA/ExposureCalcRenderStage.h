@@ -42,7 +42,7 @@ public:
 
     /// Draws the render stage
     /// @pre no FBO is bound
-    virtual void render(const Camera* camera = nullptr) override;
+    virtual void render(const vg::Camera3D<f64>* camera = nullptr) override;
 
     void setFrameBuffer(vg::GBuffer* hdrFrameBuffer) { m_hdrFrameBuffer = hdrFrameBuffer; }
 

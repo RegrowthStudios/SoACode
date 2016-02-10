@@ -7,15 +7,16 @@
 #include "VoxelSpaceConversions.h"
 
 class ChunkMesh;
-class Camera;
 class ChunkMeshManager;
 class BlockPack;
 class BlockTexturePack;
+DECL_VG(template <class T>
+        class Camera3D)
 
 class GameRenderParams {
 public:
     void calculateParams(const f64v3& worldCameraPos,
-                         const Camera* ChunkCamera,
+                         const vg::Camera3D<f64>* ChunkCamera,
                          const VoxelPosition3D& voxPosition,
                          f64 voxelWorldRadius,
                          ChunkMeshManager* ChunkMeshmanager,
@@ -30,7 +31,7 @@ public:
     float fogEnd;
     float fogStart;
     float lightActive;
-    const Camera* chunkCamera;
+    const vg::Camera3D<f64>* chunkCamera;
     ChunkMeshManager* chunkMeshmanager;
     BlockPack* blocks;
     BlockTexturePack* blockTexturePack;

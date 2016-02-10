@@ -18,7 +18,8 @@
 #include <Vorb/VorbPreDecl.inl>
 #include <Vorb/graphics/GLProgram.h>
 
-class Camera;
+DECL_VG(template <class T>
+        class Camera3D)
 struct AtmosphereComponent;
 struct AxisRotationComponent;
 struct FarTerrainComponent;
@@ -31,7 +32,7 @@ public:
     ~FarTerrainComponentRenderer();
     void initGL();
     void draw(const FarTerrainComponent& cmp,
-              const Camera* camera,
+              const vg::Camera3D<f64>* camera,
               const f64v3& lightDir,
               const f32 zCoef,
               const SpaceLightComponent* spComponent,

@@ -44,7 +44,7 @@ public:
     void dispose(StaticLoadContext& context) override;
 
     /// Draws the render stage
-    void render(const Camera* camera = nullptr) override;
+    void render(const vg::Camera3D<f64>* camera = nullptr) override;
 
 private:
     float gauss(int i, float sigma2);

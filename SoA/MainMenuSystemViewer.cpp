@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "MainMenuSystemViewer.h"
 
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/ui/InputDispatcher.h>
 #include <Vorb/utils.h>
 
-#include "Camera.h"
 #include "SpaceSystem.h"
 #include "TerrainPatch.h"
 #include "SphericalHeightmapGenerator.h"
@@ -12,7 +12,7 @@
 const f32 MainMenuSystemViewer::MIN_SELECTOR_SIZE = 12.0f;
 const f32 MainMenuSystemViewer::MAX_SELECTOR_SIZE = 160.0f;
 
-void MainMenuSystemViewer::init(ui32v2 viewport, CinematicCamera* camera,
+void MainMenuSystemViewer::init(ui32v2 viewport, vg::CinematicCamera3D<f64>* camera,
                                 SpaceSystem* spaceSystem, InputMapper* inputManager) {  
     m_viewport = viewport;
     m_camera = camera;
@@ -27,12 +27,12 @@ void MainMenuSystemViewer::init(ui32v2 viewport, CinematicCamera* camera,
 
     // Initialize the camera
     m_camera->setClippingPlane(10000.0f, 30000000000000.0f);
-    m_camera->setTarget(f64v3(0.0, 0.0, 0.0), f32v3(1.0f, 0.0f, 0.0f), f32v3(0.0f, 0.0f, 1.0f), 20000.0);
+    //m_camera->setTarget(f64v3(0.0, 0.0, 0.0), f32v3(1.0f, 0.0f, 0.0f), f32v3(0.0f, 0.0f, 1.0f), 20000.0);
 
     targetBody("Aldrin");
     // Force target focal point
     m_camera->setFocalPoint(getTargetPosition() -
-                            f64v3(vmath::normalize(m_camera->getDirection())) * getTargetRadius());
+                            f64v3(vmath::normalize((f64v3)m_camera->getDirection())) * getTargetRadius());
 
     // Register events
     startInput();
@@ -49,10 +49,10 @@ void MainMenuSystemViewer::update() {
 
     m_camera->setClippingPlane((f32)(0.1 * KM_PER_M), m_camera->getFarClip());
     // Target closest point on sphere
-    m_camera->setTargetFocalPoint(getTargetPosition() -
-                                  f64v3(vmath::normalize(m_camera->getDirection())) * getTargetRadius());
+    //m_camera->setTargetFocalPoint(getTargetPosition() -
+    //                              f64v3(vmath::normalize((f64v3)m_camera->getDirection())) * getTargetRadius());
 
-    m_camera->update();
+    //m_camera->update();
 
     for (auto& it : m_spaceSystem->namePosition) {
         vecs::ComponentID componentID;
@@ -170,7 +170,7 @@ void MainMenuSystemViewer::onMouseButtonDown(Sender sender, const vui::MouseButt
 
                 // Check distance so we pick only the closest one
                 f64v3 pos = m_spaceSystem->namePosition.getFromEntity(it.first).position;
-                f64 dist = vmath::length(pos - m_camera->getPosition());
+                f64 dist = vmath::length((f64v3)(pos - m_camera->getPosition()));
                 if (dist < closestDist) {
                     closestDist = dist;
                     closestEntity = it.first;
@@ -202,10 +202,10 @@ void MainMenuSystemViewer::onMouseButtonUp(Sender sender, const vui::MouseButton
 
 void MainMenuSystemViewer::onMouseWheel(Sender sender, const vui::MouseWheelEvent& e) {
 #define SCROLL_SPEED 0.1f
-    m_camera->offsetTargetFocalLength((f32)m_camera->getTargetFocalLength() * SCROLL_SPEED * -e.dy);
-    if (m_camera->getTargetFocalLength() < 0.1f) {
-        m_camera->setTargetFocalLength(0.1f);
-    }
+    //m_camera->offsetTargetFocalLength((f32)m_camera->getTargetFocalLength() * SCROLL_SPEED * -e.dy);
+    //if (m_camera->getTargetFocalLength() < 0.1f) {
+    //    m_camera->setTargetFocalLength(0.1f);
+    //}
 }
 
 void MainMenuSystemViewer::onMouseMotion(Sender sender, const vui::MouseMotionEvent& e) {

@@ -2,9 +2,9 @@
 #include "ChunkGridRenderStage.h"
 
 #include <Vorb/graphics/GLProgram.h>
+#include <Vorb/graphics/Camera.h>
 
 #include "Camera.h"
-#include "Chunk.h"
 #include "Frustum.h"
 #include "GameRenderParams.h"
 #include "ShaderLoader.h"
@@ -52,7 +52,7 @@ void ChunkGridRenderStage::init(vui::GameWindow* window, StaticLoadContext& cont
 
 /// NOTE: There is a race condition with _chunkSlots here, but since _chunkSlots is a read only vector,
 /// it should not cause a crash. However data may be partially incorrect.
-void ChunkGridRenderStage::render(const Camera* camera) {
+void ChunkGridRenderStage::render(const vg::Camera3D<f64>* camera) {
     if (!m_isActive) return;
     if (!m_state) return;
 
@@ -168,7 +168,7 @@ void ChunkGridRenderStage::drawGrid(std::vector<ChunkGridVertex> vertices, std::
     // Set Matrix
     glUniformMatrix4fv(m_program.getUniform("MVP"), 1,
         GL_FALSE,
-        &(m_gameRenderParams->chunkCamera->getViewProjectionMatrix()[0][0]));
+        (GLfloat*)&(m_gameRenderParams->chunkCamera->getViewProjectionMatrix()[0][0]));
     // Draw the grid     
     // Bind the VAO
     glBindVertexArray(m_vao);

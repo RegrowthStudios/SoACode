@@ -2,9 +2,9 @@
 #include "TransparentVoxelRenderStage.h"
 
 #include <Vorb/graphics/GLProgram.h>
+#include <Vorb/graphics/Camera.h>
 #include "BlockPack.h"
 #include "BlockTexturePack.h"
-#include "Camera.h"
 #include "ChunkMeshManager.h"
 #include "ChunkRenderer.h"
 #include "GameRenderParams.h"
@@ -19,7 +19,7 @@ void TransparentVoxelRenderStage::hook(ChunkRenderer* renderer, const GameRender
     m_gameRenderParams = gameRenderParams;
 }
 
-void TransparentVoxelRenderStage::render(const Camera* camera) {
+void TransparentVoxelRenderStage::render(const vg::Camera3D<f64>* camera) {
     glDepthMask(GL_FALSE);
     ChunkMeshManager* cmm = m_gameRenderParams->chunkMeshmanager;
 

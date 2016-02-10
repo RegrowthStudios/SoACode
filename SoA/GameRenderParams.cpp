@@ -2,12 +2,12 @@
 #include "GameRenderParams.h"
 
 #include <Vorb/utils.h>
+#include <Vorb/graphics/Camera.h>
 
-#include "Camera.h"
 #include "GameManager.h"
 
 void GameRenderParams::calculateParams(const f64v3& worldCameraPos,
-                                       const Camera* ChunkCamera,
+                                       const vg::Camera3D<f64>* ChunkCamera,
                                        const VoxelPosition3D& voxPosition,
                                        f64 voxelWorldRadius,
                                        ChunkMeshManager* ChunkMeshmanager,

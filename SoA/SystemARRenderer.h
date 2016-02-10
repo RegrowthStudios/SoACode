@@ -20,11 +20,12 @@
 #include "OrbitComponentRenderer.h"
 #include <Vorb/graphics/GLProgram.h>
 
-class Camera;
 class MainMenuSystemViewer;
 class SpaceSystem;
 class ModPathResolver;
 
+DECL_VG(template <class T>
+        class Camera3D)
 DECL_VG(class SpriteBatch;
         class SpriteFont)
 
@@ -36,7 +37,7 @@ public:
     void init(const ModPathResolver* textureResolver);
     void initGL();
 
-    void draw(SpaceSystem* spaceSystem, const Camera* camera,
+    void draw(SpaceSystem* spaceSystem, const vg::Camera3D<f64>* camera,
               OPT const MainMenuSystemViewer* systemViewer,
               const f32v2& viewport);
 
@@ -56,7 +57,7 @@ private:
     // Helper variables to avoid passing
     const ModPathResolver* m_textureResolver = nullptr;
     SpaceSystem* m_spaceSystem = nullptr;
-    const Camera* m_camera = nullptr;
+    const vg::Camera3D<f64>* m_camera = nullptr;
     const MainMenuSystemViewer* m_systemViewer = nullptr;
     VGTexture m_selectorTexture = 0;
     VGTexture m_baryTexture = 0;

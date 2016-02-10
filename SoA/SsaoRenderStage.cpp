@@ -4,11 +4,11 @@
 #include <Vorb/Random.h>
 #include <Vorb/graphics/SamplerState.h>
 #include <Vorb/utils.h>
+#include <Vorb/graphics/Camera.h>
 
 #include <random>
 
 #include "Errors.h"
-#include "Camera.h"
 #include "ShaderLoader.h"
 
 void SSAORenderStage::hook(vg::FullQuadVBO* quad, unsigned int width, unsigned int height) {
@@ -65,7 +65,7 @@ void SSAORenderStage::dispose(StaticLoadContext& context)
     m_blurShader.dispose();
 }
 
-void SSAORenderStage::render(const Camera* camera)
+void SSAORenderStage::render(const vg::Camera3D<f64>* camera)
 {
     glDisable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);

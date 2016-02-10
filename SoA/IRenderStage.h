@@ -18,10 +18,11 @@
 #include <Vorb/RPC.h>
 #include <Vorb/VorbPreDecl.inl>
 
-class Camera;
 class StaticLoadContext;
 struct SoaState;
 DECL_VUI(class GameWindow)
+DECL_VG(template <class T>
+        class Camera3D)
 
 class IRenderStage {
 public:
@@ -58,7 +59,7 @@ public:
     *
     * @param camera: Viewpoint for the rendering
     */
-    virtual void render(const Camera* camera) = 0;
+    virtual void render(const vg::Camera3D<f64>* camera) = 0;
 
     virtual const volatile bool& isBuilt() const { return m_built; }
 

@@ -72,7 +72,7 @@ void NightVisionRenderStage::dispose(StaticLoadContext& context) {
     }
 }
 
-void NightVisionRenderStage::render(const Camera* camera /*= nullptr*/) {
+void NightVisionRenderStage::render(const vg::Camera3D<f64>* camera /*= nullptr*/) {
     m_et += NIGHT_VISION_DEFAULT_NOISE_TIME_STEP;
 
     //_visionColorHSL.r = fmod(_visionColorHSL.r = 0.005f, 6.28f);

@@ -2,7 +2,8 @@
 #include "HdrRenderStage.h"
 
 #include <Vorb/graphics/ShaderManager.h>
-#include "Camera.h"
+#include <Vorb/graphics/Camera.h>
+
 #include "Chunk.h"
 #include "ChunkMeshManager.h"
 #include "ChunkRenderer.h"
@@ -20,7 +21,7 @@ void HdrRenderStage::dispose(StaticLoadContext& context) {
     if (m_programDoFBlur.isCreated()) m_programDoFBlur.dispose();
 }
 
-void HdrRenderStage::render(const Camera* camera /*= nullptr*/) {
+void HdrRenderStage::render(const vg::Camera3D<f64>* camera /*= nullptr*/) {
     f32m4 oldVP = m_oldVP;
     f32m4 vp;
     if (camera) {

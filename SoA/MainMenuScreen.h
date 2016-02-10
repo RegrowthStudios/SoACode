@@ -25,8 +25,8 @@
 #include "LoadMonitor.h"
 #include "MainMenuRenderer.h"
 #include "MainMenuScriptedUI.h"
-#include "Camera.h"
 #include <Vorb/ui/FormScriptEnvironment.h>
+#include <Vorb/graphics/Camera.h>
 
 class App;
 

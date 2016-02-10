@@ -62,7 +62,7 @@ void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
     // Get the state handle
     m_mainMenuSystemViewer = m_soaState->clientState.systemViewer;
 
-    m_soaState->clientState.spaceCamera.init(m_window->getAspectRatio());
+    m_soaState->clientState.spaceCamera.init(4.0/3.0, 75.0f);
     
 
     initInput();
@@ -146,9 +146,9 @@ void MainMenuScreen::update(const vui::GameTime& gameTime) {
             m_soaState->time += TIME_WARP_SPEED;
         }
         if (isWarping) {
-            m_soaState->clientState.spaceCamera.setSpeed(1.0);
+            //m_soaState->clientState.spaceCamera.setSpeed(1.0);
         } else {
-            m_soaState->clientState.spaceCamera.setSpeed(0.3);
+            //m_soaState->clientState.spaceCamera.setSpeed(0.3);
         }
     }
 
@@ -162,7 +162,7 @@ void MainMenuScreen::update(const vui::GameTime& gameTime) {
 }
 
 void MainMenuScreen::draw(const vui::GameTime& gameTime) {
-    m_soaState->clientState.spaceCamera.updateProjection();
+    m_soaState->clientState.spaceCamera.update(gameTime.elapsed);
     m_renderer.render();
 }
 
@@ -275,7 +275,7 @@ void MainMenuScreen::reloadUI() {
 void MainMenuScreen::onReloadSystem(Sender s, ui32 a) {
     SoaEngine::destroySpaceSystem(m_soaState);
     SoaEngine::loadSpaceSystem(m_soaState, "StarSystems/Trinity");
-    CinematicCamera tmp = m_soaState->clientState.spaceCamera; // Store camera so the view doesn't change
+    vg::CinematicCamera3D<f64> tmp = m_soaState->clientState.spaceCamera; // Store camera so the view doesn't change
     m_soaState->clientState.systemViewer->init(m_window->getViewportDims(),
                                                &m_soaState->clientState.spaceCamera, m_soaState->spaceSystem,
                                    m_inputMapper);

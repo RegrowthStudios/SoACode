@@ -33,7 +33,7 @@ public:
                             vg::GLProgram* glProgram);
 
     // Draws the render stage
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
 
 private:
     vg::GLProgram* _glProgram; ///< Shader program that renders the voxels

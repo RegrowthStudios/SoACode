@@ -19,7 +19,8 @@
 #include <Vorb/RPC.h>
 #include <Vorb/VorbPreDecl.inl>
 
-class Camera;
+DECL_VG(template <class T>
+        class Camera3D)
 class TerrainPatchMesh;
 struct AtmosphereComponent;
 struct PlanetGenData;
@@ -48,7 +49,7 @@ public:
     /// @param aCmp: Atmosphere component for rendering
     /// @param drawSkirts: True when you want to also draw skirts
     void drawSphericalMeshes(const f64v3& relativePos,
-                             const Camera* camera,
+                             const vg::Camera3D<f64>* camera,
                              const f64q& orientation,
                              vg::GLProgram& program, vg::GLProgram& waterProgram,
                              const f32v3& lightDir,
@@ -67,7 +68,7 @@ public:
     /// @param aCmp: Atmosphere component for rendering
     /// @param drawSkirts: True when you want to also draw skirts
     void drawFarMeshes(const f64v3& relativePos,
-                       const Camera* camera,
+                       const vg::Camera3D<f64>* camera,
                        vg::GLProgram& program, vg::GLProgram& waterProgram,
                        const f32v3& lightDir,
                        f32 alpha, f32 radius,

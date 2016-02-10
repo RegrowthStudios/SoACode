@@ -3,7 +3,8 @@
 
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/graphics/ShaderManager.h>
-#include "Camera.h"
+#include <Vorb/graphics/Camera.h>
+
 #include "Chunk.h"
 #include "BlockPack.h"
 #include "BlockTexturePack.h"
@@ -20,7 +21,7 @@ void OpaqueVoxelRenderStage::hook(ChunkRenderer* renderer, const GameRenderParam
     m_renderer = renderer;
 }
 
-void OpaqueVoxelRenderStage::render(const Camera* camera) {
+void OpaqueVoxelRenderStage::render(const vg::Camera3D<f64>* camera) {
     ChunkMeshManager* cmm = m_gameRenderParams->chunkMeshmanager;
 
     const f64v3& position = m_gameRenderParams->chunkCamera->getPosition();

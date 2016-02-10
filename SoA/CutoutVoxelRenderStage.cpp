@@ -2,7 +2,8 @@
 #include "CutoutVoxelRenderStage.h"
 
 #include <Vorb/graphics/GLProgram.h>
-#include "Camera.h"
+#include <Vorb/graphics/Camera.h>
+
 #include "Chunk.h"
 #include "BlockPack.h"
 #include "BlockTexturePack.h"
@@ -18,7 +19,7 @@ void CutoutVoxelRenderStage::hook(ChunkRenderer* renderer, const GameRenderParam
     m_gameRenderParams = gameRenderParams;
 }
 
-void CutoutVoxelRenderStage::render(const Camera* camera) {
+void CutoutVoxelRenderStage::render(const vg::Camera3D<f64>* camera) {
     ChunkMeshManager* cmm = m_gameRenderParams->chunkMeshmanager;
     
 

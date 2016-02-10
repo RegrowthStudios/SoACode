@@ -7,9 +7,9 @@
 #include <Vorb/ui/IGameScreen.h>
 #include <Vorb/io/IOManager.h>
 #include <Vorb/FixedSizeArrayRecycler.hpp>
+#include <Vorb/graphics/Camera.h>
 
 #include "BlockPack.h"
-#include "Camera.h"
 #include "Chunk.h"
 #include "ChunkAllocator.h"
 #include "ChunkMesher.h"
@@ -47,7 +47,8 @@ private:
     };
 
     AutoDelegatePool m_hooks; ///< Input hooks reservoir
-    Camera m_camera;
+    //vg::FPSCamera3D<f64> m_camera;
+    vg::CinematicCamera3D<f64> m_camera;
     BlockPack m_blocks; ///< Block data
     CommonState* m_commonState;
     SoaState* m_soaState;

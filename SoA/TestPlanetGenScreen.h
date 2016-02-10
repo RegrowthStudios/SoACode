@@ -16,7 +16,6 @@
 #define TestPlanetGenScreen_h__
 
 #include "AtmosphereComponentRenderer.h"
-#include "Camera.h"
 #include "SpaceSystem.h"
 #include "SpaceSystemComponents.h"
 #include "SpaceSystemUpdater.h"
@@ -25,6 +24,7 @@
 #include "PlanetGenLoader.h"
 #include "SoaState.h"
 #include <Vorb/Events.hpp>
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/graphics/GLProgram.h>
 #include <Vorb/ui/IGameScreen.h>
 #include <Vorb/VorbPreDecl.inl>
@@ -56,7 +56,7 @@ private:
     f64 m_eyeDist = PLANET_RADIUS;
     SpaceSystemUpdater m_updater;
     SpaceLightComponent m_slCmp;
-    Camera m_camera;
+    vg::Camera3D<f64> m_camera;
     AutoDelegatePool m_hooks;
     vio::IOManager m_iom;
     SoaState m_state;

@@ -17,20 +17,22 @@
 #define MainMenuSystemViewer_h__
 
 #include <Vorb/Vorb.h>
+#include <Vorb/VorbPreDecl.inl>
 // Temporary
 #include <Vorb/ui/MouseInputDispatcher.h>
 #include <Vorb/ecs/ECS.h>
 
 #include "VoxelCoordinateSpaces.h"
 
-class CinematicCamera;
 class InputMapper;
 class SpaceSystem;
+DECL_VG(template <class T>
+        class CinematicCamera3D)
 
 class MainMenuSystemViewer {
 public:
 
-    void init(ui32v2 viewport, CinematicCamera* camera, SpaceSystem* spaceSystem, InputMapper* inputManager);
+    void init(ui32v2 viewport, vg::CinematicCamera3D<f64>* camera, SpaceSystem* spaceSystem, InputMapper* inputManager);
 
     void dispose();
 
@@ -110,7 +112,7 @@ private:
 
     vecs::EntityID m_selectedPlanet = 0;
 
-    CinematicCamera* m_camera = nullptr;
+    vg::CinematicCamera3D<f64>* m_camera = nullptr;
     SpaceSystem* m_spaceSystem = nullptr;
     InputMapper* m_inputManager = nullptr;
 };

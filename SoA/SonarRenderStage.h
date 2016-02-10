@@ -19,9 +19,11 @@
 
 #include <Vorb/graphics/GLProgram.h>
 
-class Camera;
 class GameRenderParams;
 class MeshManager;
+
+DECL_VG(template <class T>
+        class Camera3D)
 
 class SonarRenderStage : public IRenderStage
 {
@@ -32,7 +34,7 @@ public:
     SonarRenderStage(const GameRenderParams* gameRenderParams);
 
     // Draws the render stage
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
 private:
     vg::GLProgram m_program;
     const GameRenderParams* m_gameRenderParams; ///< Handle to shared parameters

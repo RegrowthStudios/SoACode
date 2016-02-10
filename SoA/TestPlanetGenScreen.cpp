@@ -79,8 +79,6 @@ void TestPlanetGenScreen::onEntry(const vui::GameTime& gameTime) {
     f32 width = (f32)m_game->getWindow().getWidth();
     f32 height = (f32)m_game->getWindow().getHeight();
     m_camera.setAspectRatio(width / height);
-    m_camera.setDirection(f32v3(0.0f, 0.0f, -1.0f));
-    m_camera.setUp(f32v3(0.0f, 1.0f, 0.0f));
 }
 
 void TestPlanetGenScreen::onExit(const vui::GameTime& gameTime) {

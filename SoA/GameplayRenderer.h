@@ -14,12 +14,12 @@
 #ifndef GamePlayRenderer_h__
 #define GamePlayRenderer_h__
 
+#include <Vorb/graphics/Camera.h>
 #include <Vorb/graphics/FullQuadVBO.h>
 #include <Vorb/graphics/GBuffer.h>
 #include <Vorb/graphics/RTSwapChain.hpp>
 #include <Vorb/RPC.h>
 
-#include "Camera.h"
 #include "ChunkGridRenderStage.h"
 #include "ChunkRenderer.h"
 #include "ColoredFullQuadRenderer.h"
@@ -129,7 +129,7 @@ private:
     void updateCameras();
     void dumpScreenshot();
 
-    Camera m_voxelCamera;
+    vg::Camera3D<f64> m_voxelCamera;
     ChunkRenderer m_chunkRenderer;
 
     ColoredFullQuadRenderer m_coloredQuadRenderer; ///< For rendering full screen colored quads

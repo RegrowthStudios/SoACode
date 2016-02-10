@@ -3,6 +3,8 @@
 
 #include <Vorb/ui/InputDispatcher.h>
 #include <Vorb/colors.h>
+#include <Vorb/types.h>
+#include <Vorb/math/TweeningMath.hpp>
 
 #include "App.h"
 #include "ChunkRenderer.h"
@@ -125,11 +127,9 @@ void TestBiomeScreen::onEntry(const vui::GameTime& gameTime) {
     }
 
     { // Init the camera
-        m_camera.init(m_commonState->window->getAspectRatio());
+        m_camera.init((f64)m_commonState->window->getAspectRatio(), 75.0);
         m_camera.setPosition(f64v3(16.0, 17.0, 33.0));
-        m_camera.setDirection(f32v3(0.0f, 0.0f, -1.0f));
-        m_camera.setRight(f32v3(1.0f, 0.0f, 0.0f));
-        m_camera.setUp(f32v3(0.0f, 1.0f, 0.0f));
+
     }
 
     initInput();
@@ -150,33 +150,34 @@ void TestBiomeScreen::onExit(const vui::GameTime& gameTime) {
 }
 
 void TestBiomeScreen::update(const vui::GameTime& gameTime) {
-    f32 speed = 10.0f;
-    if (m_movingFast) speed *= 5.0f;
+    f64 speed = 5.0;
+    if (m_movingFast) speed *= 10.0;
     if (m_movingForward) {
-        f32v3 offset = m_camera.getDirection() * speed * (f32)gameTime.elapsed;
+        f64v3 offset = m_camera.getDirection() * speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
     if (m_movingBack) {
-        f32v3 offset = m_camera.getDirection() * -speed * (f32)gameTime.elapsed;
+        f64v3 offset = m_camera.getDirection() * -speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
     if (m_movingLeft) {
-        f32v3 offset = m_camera.getRight() * -speed * (f32)gameTime.elapsed;
+        f64v3 offset = m_camera.getRight() * -speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
     if (m_movingRight) {
-        f32v3 offset = m_camera.getRight() * speed * (f32)gameTime.elapsed;
+        f64v3 offset = m_camera.getRight() * speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
     if (m_movingUp) {
-        f32v3 offset = f32v3(0, 1, 0) * speed * (f32)gameTime.elapsed;
+        f64v3 offset = f64v3(0, 1, 0) * speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
     if (m_movingDown) {
-        f32v3 offset = f32v3(0, 1, 0) *  -speed * (f32)gameTime.elapsed;
+        f64v3 offset = f64v3(0, 1, 0) *  -speed * gameTime.elapsed;
         m_camera.offsetPosition(offset);
     }
-    m_camera.update();
+    //m_camera.update();
+    m_camera.update(gameTime.elapsed);
 }
 
 void TestBiomeScreen::draw(const vui::GameTime& gameTime) {
@@ -373,13 +374,34 @@ void TestBiomeScreen::initChunks() {
 
 void TestBiomeScreen::initInput() {
     m_mouseButtons[0] = false;
+    m_mouseButtons[1] = false;
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onMotion, [&](Sender s, const vui::MouseMotionEvent& e) {
         if (m_mouseButtons[0]) {
-            m_camera.rotateFromMouseAbsoluteUp(-e.dx, -e.dy, 0.01f, true);
+            //m_camera.rotateFromMouse(-1.0 * e.dx, -1.0 * e.dy, 0.002);
+            m_camera.setPosition(f64v3(0.0));
+            m_camera.setOrientation(f64q());
+            m_camera.init(4.0/3.0f, 75.0f);
+            m_camera.addActualPointToPath(f64v3(0.0), f64v3(0.0, 0.0, M_PI), 150.0);
+            m_camera.addControlPointToPath(f64v3(0.0, 20.0, 0.0), f64v3(M_PI / 2.0, M_PI / 2.0, 0.0));
+            m_camera.addActualPointToPath(f64v3(20.0, 10.0, 0.0), f64v3(M_PI / 2.0, 0.0, 0.0), 150.0);
+            m_camera.run();
+        } else if (m_mouseButtons[1]) {
+            //m_camera.rollFromMouse(e.dx, 0.002);
+        } else {
+            //m_camera.setOrientation(vmath::angleAxis(M_PI / 2, f64v3(0.0, 0.0, 0.0)));
         }
+        /*if (m_movingForward) {
+            m_camera.setWobblePeriod(10.0);
+            m_camera.setWobbleAmplitude(M_PI * 0.05);
+            m_camera.enableWobble(true);
+            m_camera.setBobPeriod(5.0);
+            m_camera.setBobAmplitude(0.2);
+            m_camera.enableBob(true);
+            }*/
     });
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onButtonDown, [&](Sender s, const vui::MouseButtonEvent& e) {
         if (e.button == vui::MouseButton::LEFT) m_mouseButtons[0] = !m_mouseButtons[0];
+        if (e.button == vui::MouseButton::RIGHT) m_mouseButtons[1] = !m_mouseButtons[1];
         if (m_mouseButtons[0]) {
             SDL_SetRelativeMouseMode(SDL_TRUE);
         }

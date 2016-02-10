@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SystemARRenderer.h"
 
-#include "Camera.h"
 #include "MainMenuSystemViewer.h"
 #include "ModPathResolver.h"
 #include "ShaderLoader.h"
@@ -15,6 +14,7 @@
 #include <Vorb/graphics/SpriteBatch.h>
 #include <Vorb/graphics/SpriteFont.h>
 #include <Vorb/utils.h>
+#include <Vorb/graphics/Camera.h>
 
 namespace {
     const cString VERT_SRC = R"(
@@ -58,7 +58,7 @@ void SystemARRenderer::initGL() {
     if (m_selectorTexture == 0) loadTextures();
 }
 
-void SystemARRenderer::draw(SpaceSystem* spaceSystem, const Camera* camera,
+void SystemARRenderer::draw(SpaceSystem* spaceSystem, const vg::Camera3D<f64>* camera,
                             OPT const MainMenuSystemViewer* systemViewer,
                             const f32v2& viewport) {
     // Get handles so we don't have huge parameter lists

@@ -40,7 +40,7 @@ public:
     void setState(const MTRenderState* state) { m_state = state; }
 
     virtual void init(vui::GameWindow* window, StaticLoadContext& context) override;
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
     virtual void dispose(StaticLoadContext& context) override;
 private:
     void drawGrid(std::vector<ChunkGridVertex> vertices, std::vector<ui32> indices);

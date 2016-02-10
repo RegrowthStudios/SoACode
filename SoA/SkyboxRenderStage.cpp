@@ -4,8 +4,8 @@
 #include <GL/glew.h>
 #include <Vorb/graphics/DepthState.h>
 #include <Vorb/io/IOManager.h>
+#include <Vorb/graphics/Camera.h>
 
-#include "Camera.h"
 #include "Errors.h"
 #include "LoadContext.h"
 #include "ModPathResolver.h"
@@ -114,7 +114,7 @@ void SkyboxRenderStage::load(StaticLoadContext& context) {
     }, false);
 }
 
-void SkyboxRenderStage::render(const Camera* camera) {
+void SkyboxRenderStage::render(const vg::Camera3D<f64>* camera) {
 
     // Check if FOV or Aspect Ratio changed
     if (m_fieldOfView != camera->getFieldOfView() ||
@@ -122,7 +122,7 @@ void SkyboxRenderStage::render(const Camera* camera) {
         updateProjectionMatrix(camera);
     }
     // Draw using custom proj and camera view
-    drawSpace(m_projectionMatrix * camera->getViewMatrix());
+    drawSpace(m_projectionMatrix * (f32m4)camera->getViewMatrix());
 }
 
 
@@ -132,7 +132,7 @@ void SkyboxRenderStage::drawSpace(f32m4 &VP) {
     vg::DepthState::FULL.set();
 }
 
-void SkyboxRenderStage::updateProjectionMatrix(const Camera* camera) {
+void SkyboxRenderStage::updateProjectionMatrix(const vg::Camera3D<f64>* camera) {
     // Set the camera clipping plane for rendering the skybox and set the projection matrix
     // The clipping dimensions don't matter so long as the skybox fits inside them
     #define SKYBOX_ZNEAR 0.01f

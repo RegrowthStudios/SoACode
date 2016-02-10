@@ -25,7 +25,7 @@ public:
     void hook(const PDA* pda);
 
     /// Draws the render stage
-    virtual void render(const Camera* camera) override;
+    virtual void render(const vg::Camera3D<f64>* camera) override;
 private:
     const PDA* _pda = nullptr; ///< Handle to the PDA
 };
