@@ -25,8 +25,8 @@ Event<SphericalVoxelComponent&, vecs::EntityID> SpaceSystemAssemblages::onAddSph
 Event<SphericalVoxelComponent&, vecs::EntityID> SpaceSystemAssemblages::onRemoveSphericalVoxelComponent;
 
 vecs::EntityID SpaceSystemAssemblages::createOrbit(SpaceSystem* spaceSystem,
-                                                   const SystemOrbitProperties* sysProps,
-                                                   SystemBody* body, f64 bodyRadius) {
+                                                   const SystemOrbitKegProperties* sysProps,
+                                                   SystemBodyProperties* body, f64 bodyRadius) {
     body->entity = spaceSystem->addEntity();
     const vecs::EntityID& id = body->entity;
 
@@ -43,9 +43,9 @@ vecs::EntityID SpaceSystemAssemblages::createOrbit(SpaceSystem* spaceSystem,
 }
 
 vecs::EntityID SpaceSystemAssemblages::createPlanet(SpaceSystem* spaceSystem,
-                                    const SystemOrbitProperties* sysProps,
+                                    const SystemOrbitKegProperties* sysProps,
                                     const PlanetProperties* properties,
-                                    SystemBody* body,
+                                    SystemBodyProperties* body,
                                     vcore::ThreadPool<WorkerData>* threadPool) {
     body->entity = spaceSystem->addEntity();
     const vecs::EntityID& id = body->entity;
@@ -91,9 +91,9 @@ void SpaceSystemAssemblages::destroyPlanet(SpaceSystem* gameSystem, vecs::Entity
 }
 
 vecs::EntityID SpaceSystemAssemblages::createStar(SpaceSystem* spaceSystem,
-                                  const SystemOrbitProperties* sysProps,
+                                  const SystemOrbitKegProperties* sysProps,
                                   const StarProperties* properties,
-                                  SystemBody* body) {
+                                  SystemBodyProperties* body) {
     body->entity = spaceSystem->addEntity();
     const vecs::EntityID& id = body->entity;
 
@@ -124,9 +124,9 @@ void SpaceSystemAssemblages::destroyStar(SpaceSystem* gameSystem, vecs::EntityID
 
 /// GasGiant entity
 vecs::EntityID SpaceSystemAssemblages::createGasGiant(SpaceSystem* spaceSystem,
-                                      const SystemOrbitProperties* sysProps,
+                                      const SystemOrbitKegProperties* sysProps,
                                       const GasGiantProperties* properties,
-                                      SystemBody* body) {
+                                      SystemBodyProperties* body) {
     body->entity = spaceSystem->addEntity();
     const vecs::EntityID& id = body->entity;
 

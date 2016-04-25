@@ -31,8 +31,8 @@ struct SoaState;
 struct SphericalTerrainComponent;
 struct SphericalVoxelComponent;
 struct StarProperties;
-struct SystemBody;
-struct SystemOrbitProperties;
+struct SystemBodyProperties;
+struct SystemOrbitKegProperties;
 
 DECL_VG(
     class GLProgram;
@@ -49,29 +49,29 @@ namespace SpaceSystemAssemblages {
    
     // Plain orbit entity
     extern vecs::EntityID createOrbit(SpaceSystem* spaceSystem,
-                                       const SystemOrbitProperties* sysProps,
-                                       SystemBody* body, f64 bodyRadius);
+                                       const SystemOrbitKegProperties* sysProps,
+                                       SystemBodyProperties* body, f64 bodyRadius);
 
     /// Planet entity
     extern vecs::EntityID createPlanet(SpaceSystem* spaceSystem,
-                                        const SystemOrbitProperties* sysProps,
+                                        const SystemOrbitKegProperties* sysProps,
                                         const PlanetProperties* properties,
-                                        SystemBody* body,
+                                        SystemBodyProperties* body,
                                         vcore::ThreadPool<WorkerData>* threadPool);
     extern void destroyPlanet(SpaceSystem* gameSystem, vecs::EntityID planetEntity);
 
     /// Star entity
     extern vecs::EntityID createStar(SpaceSystem* spaceSystem,
-                                        const SystemOrbitProperties* sysProps,
+                                        const SystemOrbitKegProperties* sysProps,
                                         const StarProperties* properties,
-                                        SystemBody* body);
+                                        SystemBodyProperties* body);
     extern void destroyStar(SpaceSystem* gameSystem, vecs::EntityID planetEntity);
 
     /// GasGiant entity
     extern vecs::EntityID createGasGiant(SpaceSystem* spaceSystem,
-                                        const SystemOrbitProperties* sysProps,
+                                        const SystemOrbitKegProperties* sysProps,
                                         const GasGiantProperties* properties,
-                                        SystemBody* body);
+                                        SystemBodyProperties* body);
     extern void destroyGasGiant(SpaceSystem* gameSystem, vecs::EntityID planetEntity);
 
     /************************************************************************/

@@ -21,8 +21,8 @@
 #include "SystemBodyLoader.h"
 
 struct GasGiantProperties;
-struct SystemBody;
-struct SystemOrbitProperties;
+struct SystemBodyProperties;
+struct SystemOrbitKegProperties;
 class SpaceSystem;
 class PlanetGenLoader;
 
@@ -46,18 +46,26 @@ private:
     /// @return true on success
     bool loadSystemProperties();
 
+    /// Loads type specific properties
+    bool loadSecondaryProperties(SystemBodyProperties* body);
+
     // Sets up mass parameters for binaries
-    void initBinaries();
+    void initBarycenters();
+
     // Recursive function for binary creation
-    void initBinary(SystemBody* bary);
+    void initBarycenter(SystemBodyProperties* bary);
 
     // Initializes orbits and parent connections
     void initOrbits();
 
-    void computeRef(SystemBody* body);
+    // Initializes entity component system
+    void initComponents();
 
-    void calculateOrbit(vecs::EntityID entity, f64 parentMass,
-                        SystemBody* body, f64 binaryMassRatio = 0.0);
+    void computeRef(SystemBodyProperties* body);
+
+    void calculateOrbit(SystemBodyProperties* body,
+                        f64 parentMass,
+                        f64 binaryMassRatio = 0.0);
 
     SystemBodyLoader m_bodyLoader;
     
@@ -65,9 +73,11 @@ private:
     SpaceSystem* m_spaceSystem;
     vio::IOManager* m_ioManager = nullptr;
     vcore::ThreadPool<WorkerData>* m_threadpool = nullptr;
-    std::map<nString, SystemBody*> m_barycenters;
-    std::map<nString, SystemBody*> m_systemBodies;
-    std::map<nString, vecs::EntityID> m_bodyLookupMap;
+    std::map<nString, SystemBodyProperties*> m_barycenters;
+    std::map<nString, SystemBodyProperties*> m_systemBodies;
+   // std::map<nString, vecs::EntityID> m_bodyLookupMap;
+
+    std::set<SystemBodyProperties*> m_calculatedOrbits;
 };
 
 #endif // SpaceSystemLoader_h__

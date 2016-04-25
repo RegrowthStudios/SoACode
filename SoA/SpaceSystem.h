@@ -49,8 +49,8 @@ class SpriteFont;
 struct GasGiantProperties;
 struct PlanetProperties;
 struct StarProperties;
-struct SystemBody;
-struct SystemOrbitProperties;
+struct SystemBodyProperties;
+struct SystemOrbitKegProperties;
 
 DECL_VG(class TextureRecycler)
 

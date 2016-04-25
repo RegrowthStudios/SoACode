@@ -115,8 +115,8 @@ typedef vecs::ComponentTable<SpaceLightComponent> SpaceLightComponentTable;
 KEG_TYPE_DECL(SpaceLightComponent);
 
 struct OrbitComponent {
-    f64 a = 0.0; ///< Semi-major of the ellipse in KM
-    f64 b = 0.0; ///< Semi-minor of the ellipse in KM
+    f64 major = 0.0; ///< Semi-major of the ellipse in KM
+    f64 minor = 0.0; ///< Semi-minor of the ellipse in KM
     f64 t = 0.0; ///< Period of a full orbit in sec
     f64 parentMass = 0.0; ///< Mass of the parent in KG
     f64 startMeanAnomaly = 0.0; ///< Start mean anomaly in rad

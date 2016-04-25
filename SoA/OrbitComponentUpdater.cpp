@@ -22,7 +22,7 @@ void OrbitComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
 void OrbitComponentUpdater::updatePosition(OrbitComponent& cmp, f64 time, NamePositionComponent* npComponent,
                                               OrbitComponent* parentOrbComponent /* = nullptr */,
                                               NamePositionComponent* parentNpComponent /* = nullptr */) {
-    if (cmp.a == 0.0) return;
+    if (cmp.major == 0.0) return;
     /// Calculates position as a function of time
     /// http://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion#Position_as_a_function_of_time
 
@@ -34,7 +34,7 @@ void OrbitComponentUpdater::updatePosition(OrbitComponent& cmp, f64 time, NamePo
   
     // Calculate radius
     // http://www.stargazing.net/kepler/ellipse.html
-    f64 r = cmp.a * (1.0 - cmp.e * cmp.e) / (1.0 + cmp.e * cos(v));
+    f64 r = cmp.major * (1.0 - cmp.e * cmp.e) / (1.0 + cmp.e * cos(v));
     
     f64 w = cmp.p - cmp.o; ///< Argument of periapsis
 
@@ -51,7 +51,7 @@ void OrbitComponentUpdater::updatePosition(OrbitComponent& cmp, f64 time, NamePo
     position.z = r * (sino * cosv + coso * sinv * cosi);
 
     // Calculate velocity
-    f64 g = sqrt(M_G * KM_PER_M * cmp.parentMass * (2.0 / r - 1.0 / cmp.a)) * KM_PER_M;
+    f64 g = sqrt(M_G * KM_PER_M * cmp.parentMass * (2.0 / r - 1.0 / cmp.major)) * KM_PER_M;
     f64 sinwv = sin(w + v);
     cmp.relativeVelocity.x = -g * sinwv * cosi;
     cmp.relativeVelocity.y = g * sinwv * sini;

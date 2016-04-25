@@ -27,7 +27,7 @@ public:
     void init(vio::IOManager* iom);
 
     bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
-                                    const SystemOrbitProperties* sysProps, SystemBody* body,
+                                    const SystemOrbitKegProperties* sysProps, SystemBodyProperties* body,
                                     vcore::RPCManager* glrpc = nullptr);
 
 private:

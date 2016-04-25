@@ -20,6 +20,7 @@
 #include <Vorb/ui/GameWindow.h>
 
 void SpaceSystemLoader::init(const SoaState* soaState) {
+    // TODO(Ben): Don't need all this
     m_soaState = soaState;
     m_spaceSystem = soaState->spaceSystem;
     m_ioManager = soaState->systemIoManager;
@@ -31,16 +32,22 @@ void SpaceSystemLoader::loadStarSystem(const nString& path) {
     m_ioManager->setSearchDirectory((path + "/").c_str());
 
     // Load the path color scheme
-    loadPathColors();
+    //loadPathColors(); // This is rendering.
 
-    // Load the system
+    // Load the system properties
     loadSystemProperties();
 
     // Set up binary masses
-    initBinaries();
+    initBarycenters();
 
     // Set up parent connections and orbits
     initOrbits();
+
+    // Set up component system
+    initComponents();
+
+    // Free excess memory
+    std::set<SystemBodyProperties*>().swap(m_calculatedOrbits);
 }
 
 // Only used in SoaEngine::loadPathColors
@@ -89,11 +96,13 @@ bool SpaceSystemLoader::loadPathColors() {
 }
 
 bool SpaceSystemLoader::loadSystemProperties() {
+    // Read in system properties file
     nString data;
-    if (!m_ioManager->readFileToString("SystemProperties.yml", data)) {
+    if (!m_ioManager->readFileToString("system_properties.yml", data)) {
         pError("Couldn't find " + m_ioManager->getSearchDirectory().getString() + "/SystemProperties.yml");
     }
 
+    // Init keg reader context
     keg::ReadContext context;
     context.env = keg::getGlobalEnvironment();
     context.reader.init(data.c_str());
@@ -104,6 +113,7 @@ bool SpaceSystemLoader::loadSystemProperties() {
         return false;
     }
 
+    // Set up parser
     bool goodParse = true;
     auto f = makeFunctor([this, &goodParse, &context](Sender, const nString& name, keg::Node value) {
         // Parse based on the name
@@ -112,133 +122,248 @@ bool SpaceSystemLoader::loadSystemProperties() {
         } else if (name == "age") {
             m_spaceSystem->age = keg::convert<f32>(value);
         } else {
-            SystemOrbitProperties properties;
-            keg::Error err = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(SystemOrbitProperties));
+      
+            // Find or allocate body
+            SystemBodyProperties* body;
+            auto& it = m_systemBodies.find(name);
+            if (it == m_systemBodies.end()) {
+                // Allocate the body
+                SystemBodyProperties* body = new SystemBodyProperties;
+                m_systemBodies[name] = body;
+            } else {
+                body = it->second;
+            }
+
+            // Parse orbit
+            keg::Error err = keg::parse((ui8*)body, value, context, &KEG_GLOBAL_TYPE(SystemBodyProperties));
             if (err != keg::Error::NONE) {
                 fprintf(stderr, "Failed to parse node %s in SystemProperties.yml\n", name.c_str());
                 goodParse = false;
+                delete body;
             }
 
-            // Allocate the body
-            SystemBody* body = new SystemBody;
-            body->name = name;
-            body->parentName = properties.par;
-            body->properties = properties;
-            if (properties.path.size()) {
-                m_bodyLoader.loadBody(m_soaState, properties.path, &properties, body);
-                m_bodyLookupMap[body->name] = body->entity;
-            } else {
-                // Make default orbit (used for barycenters)
-                SpaceSystemAssemblages::createOrbit(m_spaceSystem, &properties, body, 0.0);
+            // Set up parent connection
+            // At this point, name is actually parent name, to save space
+            if (body->name.length()) {
+                // Check for parent
+                auto& p = m_systemBodies.find(body->name);
+                if (p != m_systemBodies.end()) {
+                    // Grab existing parent
+                    body->parent = p->second;
+                } else {
+                    // Allocate new parent
+                    body->parent = new SystemBodyProperties;
+                    m_systemBodies[body->name] = body->parent;
+                }
+                // Register as child of parent
+                body->parent->children.push_back(body);
             }
-            if (properties.type == SpaceObjectType::BARYCENTER) {
+
+            // Set actual name, overwriting parent name
+            body->name = name;
+           
+            // Special case for barycenters
+            if (body->type == SpaceObjectType::BARYCENTER) {
                 m_barycenters[name] = body;
             }
-            m_systemBodies[name] = body;
+
+            // Load type specific data
+            if (body->path.size()) {
+                loadSecondaryProperties(body);
+            }
         }
+    });
+
+    // Parse file
+    context.reader.forAllInMap(node, f);
+    delete f;
+    context.reader.dispose();
+
+    return goodParse;
+}
+
+bool SpaceSystemLoader::loadSecondaryProperties(SystemBodyProperties* body) {
+#define KEG_CHECK \
+    if (error != keg::Error::NONE) { \
+        fprintf(stderr, "keg error %d for %s\n", (int)error, path); \
+        goodParse = false; \
+        return;  \
+    }
+
+    const nString& path = body->path;
+
+    keg::Error error;
+    nString data;
+    m_ioManager->readFileToString(path.c_str(), data);
+
+    // Set up keg context
+    keg::ReadContext context;
+    context.env = keg::getGlobalEnvironment();
+    context.reader.init(data.c_str());
+    keg::Node node = context.reader.getFirst();
+    if (keg::getType(node) != keg::NodeType::MAP) {
+        std::cout << "Failed to load " + path;
+        context.reader.dispose();
+        return false;
+    }
+
+    bool goodParse = true;
+    bool foundOne = false;
+    auto f = makeFunctor([&](Sender, const nString& type, keg::Node value) {
+        if (foundOne) return;
+
+        // Parse based on type
+        if (type == "planet") {
+            PlanetProperties* properties = new PlanetProperties;
+            body->genType = SpaceObjectGenerationType::PLANET;
+            body->genTypeProperties = properties;
+           
+            error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(PlanetProperties));
+            KEG_CHECK;
+
+            // This should be deferred
+            // Use planet loader to load terrain and biomes
+           // if (properties.generation.length()) {
+          //      properties.planetGenData = m_planetLoader.loadPlanetGenData(properties.generation);
+          //  } else {
+          //      properties.planetGenData = nullptr;
+                // properties.planetGenData = pr.planetLoader->getRandomGenData(properties.density, pr.glrpc);
+         //       properties.atmosphere = m_planetLoader.getRandomAtmosphere();
+         //   }
+
+            // Set the radius for use later
+            //if (properties.planetGenData) {
+          //      properties.planetGenData->radius = properties.diameter / 2.0;
+          //  }
+        } else if (type == "star") {
+            StarProperties* properties = new StarProperties;
+            body->genType = SpaceObjectGenerationType::STAR;
+            body->genTypeProperties = properties;
+
+            error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(StarProperties));
+            KEG_CHECK;
+        } else if (type == "gasGiant") {
+            GasGiantProperties* properties = new GasGiantProperties;
+            body->genType = SpaceObjectGenerationType::GAS_GIANT;
+            body->genTypeProperties = properties;
+
+            error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(GasGiantProperties));
+            KEG_CHECK;
+            // Get full path for color map
+          //  if (properties.colorMap.size()) {
+          //      vio::Path colorPath;
+          //      if (!m_iom->resolvePath(properties.colorMap, colorPath)) {
+          //          fprintf(stderr, "Failed to resolve %s\n", properties.colorMap.c_str());
+          //      }
+          //      properties.colorMap = colorPath.getString();
+          //  }
+            // Get full path for rings
+          //  if (properties.rings.size()) {
+          //      for (size_t i = 0; i < properties.rings.size(); i++) {
+          //          auto& r = properties.rings[i];
+          //          // Resolve the path
+          //          vio::Path ringPath;
+          //          if (!m_iom->resolvePath(r.colorLookup, ringPath)) {
+          //              fprintf(stderr, "Failed to resolve %s\n", r.colorLookup.c_str());
+          //          }
+          //          r.colorLookup = ringPath.getString();
+          //      }
+          //  }
+        }
+
+        //Only parse the first
+        foundOne = true;
     });
     context.reader.forAllInMap(node, f);
     delete f;
     context.reader.dispose();
+
     return goodParse;
 }
 
-void SpaceSystemLoader::initBinaries() {
+void SpaceSystemLoader::initBarycenters() {
     for (auto& it : m_barycenters) {
-        SystemBody* bary = it.second;
+        SystemBodyProperties* bary = it.second;
 
-        initBinary(bary);
+        initBarycenter(bary);
     }
 }
 
-void SpaceSystemLoader::initBinary(SystemBody* bary) {
+void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
     // Don't update twice
     if (bary->isBaryCalculated) return;
     bary->isBaryCalculated = true;
 
-    // Need two components or its not a binary
-    if (bary->properties.comps.size() != 2) return;
+    // Need two components or its not a barycenter
+    if (bary->comps.size() != 2) return;
 
     // A component
-    auto& bodyA = m_systemBodies.find(std::string(bary->properties.comps[0]));
-    if (bodyA == m_systemBodies.end()) return;
-    auto& aProps = bodyA->second->properties;
+    auto& bodyAIt = m_systemBodies.find(std::string(bary->comps[0]));
+    if (bodyAIt == m_systemBodies.end()) return;
+    SystemBodyProperties* propsA = bodyAIt->second;
 
     // B component
-    auto& bodyB = m_systemBodies.find(std::string(bary->properties.comps[1]));
-    if (bodyB == m_systemBodies.end()) return;
-    auto& bProps = bodyB->second->properties;
+    auto& bodyBIt = m_systemBodies.find(std::string(bary->comps[1]));
+    if (bodyBIt == m_systemBodies.end()) return;
+    SystemBodyProperties* propsB = bodyBIt->second;
 
     { // Set orbit parameters relative to A component
-        bProps.ref = bodyA->second->name;
-        bProps.td = 1.0f;
-        bProps.tf = 1.0f;
-        bProps.e = aProps.e;
-        bProps.i = aProps.i;
-        bProps.n = aProps.n;
-        bProps.p = aProps.p + 180.0;
-        bProps.a = aProps.a;
-        auto& oCmp = m_spaceSystem->orbit.getFromEntity(bodyB->second->entity);
-        oCmp.e = bProps.e;
-        oCmp.i = bProps.i * DEG_TO_RAD;
-        oCmp.p = bProps.p * DEG_TO_RAD;
-        oCmp.o = bProps.n * DEG_TO_RAD;
-        oCmp.startMeanAnomaly = bProps.a * DEG_TO_RAD;
+        propsB->ref = propsA->name;
+        propsB->td = 1.0f;
+        propsB->tf = 1.0f;
+        propsB->e = propsA->e;
+        propsB->i = propsA->i;
+        propsB->n = propsA->n;
+        propsB->p = propsA->p + 180.0;
+        propsB->a = propsA->a;
+        // TODO(Ben): Components aren't set up yet.
+        auto& oCmp = m_spaceSystem->orbit.getFromEntity(propsB->entity);
+        oCmp.e = propsB->e;
+        oCmp.i = propsB->i * DEG_TO_RAD;
+        oCmp.p = propsB->p * DEG_TO_RAD;
+        oCmp.o = propsB->n * DEG_TO_RAD;
+        oCmp.startMeanAnomaly = propsB->a * DEG_TO_RAD;
     }
 
-    // Get the A mass
-    auto& aSgCmp = m_spaceSystem->sphericalGravity.getFromEntity(bodyA->second->entity);
-    f64 massA = aSgCmp.mass;
     // Recurse if child is a non-constructed binary
-    if (massA == 0.0) {
-        initBinary(bodyA->second);
-        massA = aSgCmp.mass;
+    if (propsA->mass == 0.0) {
+        initBarycenter(propsA);
     }
 
-    // Get the B mass
-    auto& bSgCmp = m_spaceSystem->sphericalGravity.getFromEntity(bodyB->second->entity);
-    f64 massB = bSgCmp.mass;
     // Recurse if child is a non-constructed binary
-    if (massB == 0.0) {
-        initBinary(bodyB->second);
-        massB = bSgCmp.mass;
+    if (propsB->mass == 0.0) {
+        initBarycenter(propsB);
     }
 
     // Set the barycenter mass
-    bary->mass = massA + massB;
+    bary->mass = propsA->mass + propsB->mass;
 
     auto& barySgCmp = m_spaceSystem->sphericalGravity.getFromEntity(bary->entity);
     barySgCmp.mass = bary->mass;
 
     { // Calculate A orbit
-        SystemBody* body = bodyA->second;
-        body->parent = bary;
-        bary->children.push_back(body);
-        f64 massRatio = massB / (massA + massB);
-        calculateOrbit(body->entity,
+        f64 massRatio = propsB->mass / (propsA->mass + propsB->mass);
+        calculateOrbit(propsA,
                        barySgCmp.mass,
-                       body, massRatio);
+                       massRatio);
     }
 
     { // Calculate B orbit
-        SystemBody* body = bodyB->second;
-        body->parent = bary;
-        bary->children.push_back(body);
-        f64 massRatio = massA / (massA + massB);
-        calculateOrbit(body->entity,
+        f64 massRatio = propsA->mass / (propsA->mass + propsB->mass);
+        calculateOrbit(propsB,
                        barySgCmp.mass,
-                       body, massRatio);
+                       massRatio);
     }
 
-    { // Set orbit colors from A component
-        auto& oCmp = m_spaceSystem->orbit.getFromEntity(bodyA->second->entity);
-        auto& baryOCmp = m_spaceSystem->orbit.getFromEntity(bary->entity);
-        baryOCmp.pathColor[0] = oCmp.pathColor[0];
-        baryOCmp.pathColor[1] = oCmp.pathColor[1];
+    { // Set orbit colors from A component // This is rendering
+    //    auto& oCmp = m_spaceSystem->orbit.getFromEntity(bodyA->second->entity);
+    //    auto& baryOCmp = m_spaceSystem->orbit.getFromEntity(bary->entity);
+    //    baryOCmp.pathColor[0] = oCmp.pathColor[0];
+    //    baryOCmp.pathColor[1] = oCmp.pathColor[1];
     }
 }
 
-void recursiveInclinationCalc(OrbitComponentTable& ct, SystemBody* body, f64 inclination) {
+void recursiveInclinationCalc(OrbitComponentTable& ct, SystemBodyProperties* body, f64 inclination) {
     for (auto& c : body->children) {
         OrbitComponent& orbitC = ct.getFromEntity(c->entity);
         orbitC.i += inclination;
@@ -247,20 +372,7 @@ void recursiveInclinationCalc(OrbitComponentTable& ct, SystemBody* body, f64 inc
 }
 
 void SpaceSystemLoader::initOrbits() {
-    // Set parent connections
-    for (auto& it : m_systemBodies) {
-        SystemBody* body = it.second;
-        const nString& parent = body->parentName;
-        if (parent.length()) {
-            // Check for parent
-            auto& p = m_systemBodies.find(parent);
-            if (p != m_systemBodies.end()) {
-                // Set up parent connection
-                body->parent = p->second;
-                p->second->children.push_back(body);
-            }
-        }
-    }
+    
 
     // Child propagation for inclination
     // TODO(Ben): Do this right
@@ -274,110 +386,124 @@ void SpaceSystemLoader::initOrbits() {
 
     // Finally, calculate the orbits
     for (auto& it : m_systemBodies) {
-        SystemBody* body = it.second;
+        SystemBodyProperties* body = it.second;
         // Calculate the orbit using parent mass
         if (body->parent) {
-            calculateOrbit(body->entity,
-                           m_spaceSystem->sphericalGravity.getFromEntity(body->parent->entity).mass,
-                           body);
+            calculateOrbit(body, body->mass);
         }
     }
 }
 
-void SpaceSystemLoader::computeRef(SystemBody* body) {
-    if (!body->properties.ref.empty()) {
+void SpaceSystemLoader::initComponents() {
+
+    for (auto& it : m_systemBodies) {
+        SystemBodyProperties* body = it.second;
+        // Calculate the orbit using parent mass
+        if (body->path.size()) {
+     //       m_bodyLoader.loadBody(m_soaState, body->path, &properties, body);
+        } else {
+            // Default orbit component
+    //        SpaceSystemAssemblages::createOrbit(m_spaceSystem, &properties, body, 0.0);
+        }
+        switch (body->genType) {
+            case SpaceObjectGenerationType::PLANET:
+                break;
+            case SpaceObjectGenerationType::STAR:
+                break;
+            case SpaceObjectGenerationType::GAS_GIANT:
+                break;
+            default:
+                throw 33;
+        }
+    }
+}
+
+void SpaceSystemLoader::computeRef(SystemBodyProperties* body) {
+    if (!body->ref.empty()) {
         OrbitComponent& orbitC = m_spaceSystem->orbit.getFromEntity(body->entity);
         // Find reference body
-        auto it = m_systemBodies.find(body->properties.ref);
+        auto it = m_systemBodies.find(body->ref);
         if (it != m_systemBodies.end()) {
-            SystemBody* ref = it->second;
+            SystemBodyProperties* ref = it->second;
             // Recursively compute ref if needed
             if (!ref->hasComputedRef) computeRef(ref);
             // Calculate period using reference body
-            orbitC.t = ref->properties.t * body->properties.tf / body->properties.td;
-            body->properties.t = orbitC.t;
+            orbitC.t = ref->t * body->tf / body->td;
+            body->t = orbitC.t;
             // Handle trojans
-            if (body->properties.trojan == TrojanType::L4) {
-                body->properties.a = ref->properties.a + 60.0f;
-                orbitC.startMeanAnomaly = body->properties.a * DEG_TO_RAD;
-            } else if (body->properties.trojan == TrojanType::L5) {
-                body->properties.a = ref->properties.a - 60.0f;
-                orbitC.startMeanAnomaly = body->properties.a * DEG_TO_RAD;
+            if (body->trojan == TrojanType::L4) {
+                body->a = ref->a + 60.0f;
+                orbitC.startMeanAnomaly = body->a * DEG_TO_RAD;
+            } else if (body->trojan == TrojanType::L5) {
+                body->a = ref->a - 60.0f;
+                orbitC.startMeanAnomaly = body->a * DEG_TO_RAD;
             }
         } else {
-            fprintf(stderr, "Failed to find ref body %s\n", body->properties.ref.c_str());
+            fprintf(stderr, "Failed to find ref body %s\n", body->ref.c_str());
         }
     }
     body->hasComputedRef = true;
 }
 
-void SpaceSystemLoader::calculateOrbit(vecs::EntityID entity, f64 parentMass,
-                               SystemBody* body, f64 binaryMassRatio /* = 0.0 */) {
-    OrbitComponent& orbitC = m_spaceSystem->orbit.getFromEntity(entity);
+void SpaceSystemLoader::calculateOrbit(SystemBodyProperties* body,
+                                       f64 parentMass,
+                                       f64 binaryMassRatio /* = 0.0 */) {
 
     // If the orbit was already calculated, don't do it again.
-    if (orbitC.isCalculated) return;
-    orbitC.isCalculated = true;
-
-    // Provide the orbit component with it's parent
-    m_spaceSystem->orbit.getFromEntity(body->entity).parentOrbId =
-        m_spaceSystem->orbit.getComponentID(body->parent->entity);
+    if (m_calculatedOrbits.find(body) != m_calculatedOrbits.end()) return;
+    m_calculatedOrbits.insert(body);
 
     computeRef(body);
 
-    f64 t = orbitC.t;
-    auto& sgCmp = m_spaceSystem->sphericalGravity.getFromEntity(entity);
-    f64 mass = sgCmp.mass;
-    f64 diameter = sgCmp.radius * 2.0;
+    f64 t = body->t;
+    f64 diameter = body->diameter;
 
     if (binaryMassRatio > 0.0) { // Binary orbit
-        orbitC.a = pow((t * t) * M_G * parentMass /
+        body->major = pow((t * t) * M_G * parentMass /
                        (4.0 * (M_PI * M_PI)), 1.0 / 3.0) * KM_PER_M * binaryMassRatio;
     } else { // Regular orbit
         // Calculate semi-major axis
-        orbitC.a = pow((t * t) * M_G * (mass + parentMass) /
+        body->major = pow((t * t) * M_G * (body->mass + parentMass) /
                        (4.0 * (M_PI * M_PI)), 1.0 / 3.0) * KM_PER_M;
     }
 
     // Calculate semi-minor axis
-    orbitC.b = orbitC.a * sqrt(1.0 - orbitC.e * orbitC.e);
-
-    // Set parent pass
-    orbitC.parentMass = parentMass;
+    body->minor = body->major * sqrt(1.0 - body->e * body->e);
 
     // TODO(Ben): Doesn't work right for binaries due to parentMass
     { // Check tidal lock
-        f64 ns = log10(0.003 * pow(orbitC.a, 6.0) * pow(diameter + 500.0, 3.0) / (mass * orbitC.parentMass) * (1.0 + (f64)1e20 / (mass + orbitC.parentMass)));
+        f64 ns = log10(0.003 * pow(body->a, 6.0) * pow(diameter + 500.0, 3.0) / (body->mass * body->parentMass) * (1.0 + (f64)1e20 / (body->mass + body->parentMass)));
         if (ns < 0) {
             // It is tidally locked so lock the rotational period
-            m_spaceSystem->axisRotation.getFromEntity(entity).period = t;
+            body->rotationalPeriod = t;
         }
     }
 
     { // Make the ellipse mesh with stepwise simulation
-        OrbitComponentUpdater updater;
-        static const int NUM_VERTS = 2880;
-        orbitC.verts.resize(NUM_VERTS + 1);
-        f64 timePerDeg = orbitC.t / (f64)NUM_VERTS;
-        NamePositionComponent& npCmp = m_spaceSystem->namePosition.get(orbitC.npID);
-        f64v3 startPos = npCmp.position;
-        for (int i = 0; i < NUM_VERTS; i++) {
+        // TODO(Ben): This is rendering
+        /*    OrbitComponentUpdater updater;
+            static const int NUM_VERTS = 2880;
+            orbitC.verts.resize(NUM_VERTS + 1);
+            f64 timePerDeg = orbitC.t / (f64)NUM_VERTS;
+            NamePositionComponent& npCmp = m_spaceSystem->namePosition.get(orbitC.npID);
+            f64v3 startPos = npCmp.position;
+            for (int i = 0; i < NUM_VERTS; i++) {
 
             if (orbitC.parentOrbId) {
-                OrbitComponent* pOrbC = &m_spaceSystem->orbit.get(orbitC.parentOrbId);
-                updater.updatePosition(orbitC, i * timePerDeg, &npCmp,
-                                       pOrbC,
-                                       &m_spaceSystem->namePosition.get(pOrbC->npID));
+            OrbitComponent* pOrbC = &m_spaceSystem->orbit.get(orbitC.parentOrbId);
+            updater.updatePosition(orbitC, i * timePerDeg, &npCmp,
+            pOrbC,
+            &m_spaceSystem->namePosition.get(pOrbC->npID));
             } else {
-                updater.updatePosition(orbitC, i * timePerDeg, &npCmp);
+            updater.updatePosition(orbitC, i * timePerDeg, &npCmp);
             }
 
             OrbitComponent::Vertex vert;
             vert.position = npCmp.position;
             vert.angle = 1.0f - (f32)i / (f32)NUM_VERTS;
             orbitC.verts[i] = vert;
-        }
-        orbitC.verts.back() = orbitC.verts.front();
-        npCmp.position = startPos;
+            }
+            orbitC.verts.back() = orbitC.verts.front();
+            npCmp.position = startPos;*/
     }
 }

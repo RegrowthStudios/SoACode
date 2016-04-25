@@ -12,7 +12,7 @@ void SystemBodyLoader::init(vio::IOManager* iom) {
 }
 
 bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
-                                const SystemOrbitProperties* sysProps, SystemBody* body,
+                                const SystemOrbitKegProperties* sysProps, SystemBodyProperties* body,
                                 vcore::RPCManager* glrpc /* = nullptr */) {
 
 #define KEG_CHECK \
@@ -62,13 +62,13 @@ bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePat
             }
 
             SpaceSystemAssemblages::createPlanet(soaState->spaceSystem, sysProps, &properties, body, soaState->threadPool);
-            body->type = SpaceBodyType::PLANET;
+            body->type = SpaceObjectGenerationType::PLANET;
         } else if (type == "star") {
             StarProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(StarProperties));
             KEG_CHECK;
             SpaceSystemAssemblages::createStar(soaState->spaceSystem, sysProps, &properties, body);
-            body->type = SpaceBodyType::STAR;
+            body->type = SpaceObjectGenerationType::STAR;
         } else if (type == "gasGiant") {
             GasGiantProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(GasGiantProperties));
@@ -95,7 +95,7 @@ bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePat
             }
             // Create the component
             SpaceSystemAssemblages::createGasGiant(soaState->spaceSystem, sysProps, &properties, body);
-            body->type = SpaceBodyType::GAS_GIANT;
+            body->type = SpaceObjectGenerationType::GAS_GIANT;
         }
 
         //Only parse the first

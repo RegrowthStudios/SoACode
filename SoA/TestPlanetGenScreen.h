@@ -51,7 +51,7 @@ private:
     const f64 PLANET_RADIUS = 6000.0;
     SphericalTerrainComponentRenderer m_terrainRenderer;
     AtmosphereComponentRenderer m_atmoRenderer;
-    SystemBody body;
+    SystemBodyProperties body;
     f64v3 m_eyePos;
     f64 m_eyeDist = PLANET_RADIUS;
     SpaceSystemUpdater m_updater;

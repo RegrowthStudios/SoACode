@@ -159,6 +159,7 @@ struct PlanetBlockInitInfo {
     nString surfaceBlockName = "";
 };
 
+// Data needed to generate and render a planet.
 struct PlanetGenData {
     vg::Texture terrainColorMap = 0;
     vg::Texture liquidColorMap = 0;

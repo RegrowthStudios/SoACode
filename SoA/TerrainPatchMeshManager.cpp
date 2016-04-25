@@ -284,7 +284,7 @@ void TerrainPatchMeshManager::drawFarMeshes(const f64v3& relativePos,
         glActiveTexture(GL_TEXTURE0);
         program.use();
         program.enableVertexAttribArrays();
-        glUniform1f(program.getUniform("unRadius"), radius); // TODO(Ben): Use real radius
+        glUniform1f(program.getUniform("unRadius"), radius);
         glUniform3fv(program.getUniform("unLightDirWorld"), 1, &lightDir[0]);
         glUniform1f(program.getUniform("unAlpha"), alpha);
         // For logarithmic Z buffer

@@ -203,7 +203,7 @@ f32 MainMenuScriptedUI::getBodyInclination(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getBodySemiMajor(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->orbit.getFromEntity(entity).a;
+    return (f32)state->spaceSystem->orbit.getFromEntity(entity).major;
 }
 
 f32 MainMenuScriptedUI::getGravityAccel(vecs::EntityID entity) {

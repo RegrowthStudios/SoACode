@@ -21,13 +21,13 @@ struct PlanetGenData;
 #include <Vorb/io/Keg.h>
 #include <Vorb/ecs/Entity.h>
 
-enum class SpaceBodyType {
+enum class SpaceObjectGenerationType {
     NONE,
     PLANET,
     STAR,
     GAS_GIANT
 };
-KEG_TYPE_DECL(SpaceBodyType);
+KEG_TYPE_DECL(SpaceObjectGenerationType);
 
 enum class SpaceObjectType {
     NONE,
@@ -74,13 +74,29 @@ struct CloudsProperties {
 };
 KEG_TYPE_DECL(CloudsProperties);
 
-struct SystemOrbitProperties {
-    SpaceObjectType type = SpaceObjectType::NONE;
-    TrojanType trojan = TrojanType::NONE;
-    Array<const char*> comps;
-    nString par = ""; ///< Parent name
-    nString path = ""; ///< Path to properties
+struct SystemBodyProperties {
+    nString name = ""; ///< Name of the body, doubles as parent name during parsing
+    nString path = ""; ///< Path to directory
     nString ref = ""; ///< Orbital period reference body
+
+    SystemBodyProperties* parent;
+    std::vector<SystemBodyProperties*> children;
+
+    vecs::EntityID entity = 0;
+
+    // TODO(Ben): Figure out a way to exclude these
+    bool isBaryCalculated = false; ///< Used by barycenters
+    bool hasComputedRef = false; ///< True when it has computed trojan and t with ref body
+
+    // Type information
+    SpaceObjectType type = SpaceObjectType::NONE; ///< Specific type of object
+    TrojanType trojan = TrojanType::NONE;
+    
+    SpaceObjectGenerationType genType = SpaceObjectGenerationType::NONE; ///< How its generated
+    void* genTypeProperties = nullptr; ///< genType specific data
+
+    // Orbit Properties
+    f64 mass = 0.0;
     f64 e = 0.0; ///< Shape of orbit, 0-1
     f64 t = 0.0; ///< Period of a full orbit in sec
     f64 a = 0.0; ///< Start mean anomaly in deg
@@ -92,31 +108,23 @@ struct SystemOrbitProperties {
     f64 dist = 0.0; ///< Distance from sol
     f64 td = 1.0; ///< Reference body period divisor
     f64 tf = 1.0; ///< Reference body period factor
-};
-KEG_TYPE_DECL(SystemOrbitProperties);
+    f64 minor = 0.0; ///< Semi-minor of the ellipse in KM
+    f64 major = 0.0; ///< Semi-minor of the ellipse in KM
 
-struct SystemBody {
-    nString name = "";
-    nString parentName = "";
-    SystemBody* parent = nullptr;
-    std::vector<SystemBody*> children;
-    vecs::EntityID entity = 0;
-    SpaceBodyType type = SpaceBodyType::NONE;
-    SystemOrbitProperties properties;
-    f64 mass = 0.0;
-    bool isBaryCalculated = false; ///< Used by barycenters
-    bool hasComputedRef = false; ///< True when it has computed trojan and t with ref body
-};
+    f32 aTilt = 0.0; ///< Axial Tilt
+    f32 lNorth = 0.0; ///< Longitude of the north
 
-struct PlanetProperties {
+    // General properties
     f64 diameter = 0.0;
     f64 density = 0.0;
-    f64 mass = 0.0;
-    f32 aTilt = 0.0;
-    f32 lNorth = 0.0;
     f64 rotationalPeriod = 0.0;
-    nString displayName = "";
-    nString generation = "";
+
+    // Barycenter binary components
+    Array<const char*> comps;
+};
+KEG_TYPE_DECL(SystemBodyProperties);
+
+struct PlanetProperties {
     PlanetGenData* planetGenData = nullptr;
     AtmosphereProperties atmosphere;
     CloudsProperties clouds;
@@ -125,26 +133,12 @@ KEG_TYPE_DECL(PlanetProperties);
 
 struct StarProperties {
     f64 surfaceTemperature = 0.0; ///< temperature in kelvin
-    f64 diameter = 0.0;
-    f64 density = 0.0;
-    f64 mass = 0.0;
-    f32 aTilt = 0.0;
-    f32 lNorth = 0.0;
-    f64 rotationalPeriod = 0.0;
-    nString displayName = "";
 };
 KEG_TYPE_DECL(StarProperties);
 
 struct GasGiantProperties {
-    f64 diameter = 0.0;
-    f64 density = 0.0;
-    f64 mass = 0.0;
-    f32 aTilt = 0.0;
-    f32 lNorth = 0.0;
-    f64 rotationalPeriod = 0.0;
     f32 oblateness = 0.0;
     nString colorMap = "";
-    nString displayName = "";
     AtmosphereProperties atmosphere;
     Array<PlanetRingProperties> rings;
 };
