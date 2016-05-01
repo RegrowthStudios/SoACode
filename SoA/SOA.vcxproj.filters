@@ -812,9 +812,6 @@
     <ClInclude Include="SSAORenderStage.h">
       <Filter>SOA Files\Rendering\RenderPipelines\RenderStages</Filter>
     </ClInclude>
-    <ClInclude Include="SystemBodyLoader.h">
-      <Filter>SOA Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="ECSTemplates.h">
       <Filter>SOA Files\ECS</Filter>
     </ClInclude>
@@ -880,6 +877,9 @@
     </ClInclude>
     <ClInclude Include="textureUtils.h">
       <Filter>SOA Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceSystemBodyLoader.h">
+      <Filter>SOA Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1393,9 +1393,6 @@
     <ClCompile Include="SSAORenderStage.cpp">
       <Filter>SOA Files\Rendering\RenderPipelines\RenderStages</Filter>
     </ClCompile>
-    <ClCompile Include="SystemBodyLoader.cpp">
-      <Filter>SOA Files\Game</Filter>
-    </ClCompile>
     <ClCompile Include="GameSystem.cpp">
       <Filter>SOA Files\ECS\Systems</Filter>
     </ClCompile>
@@ -1452,6 +1449,9 @@
     </ClCompile>
     <ClCompile Include="VoxelNodeSetterTask.cpp">
       <Filter>SOA Files\Game\Universe\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceSystemBodyLoader.cpp">
+      <Filter>SOA Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

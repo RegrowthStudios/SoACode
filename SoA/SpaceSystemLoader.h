@@ -18,7 +18,7 @@
 #include <Vorb/ecs/Entity.h>
 #include <Vorb/VorbPreDecl.inl>
 #include "VoxPool.h"
-#include "SystemBodyLoader.h"
+#include "SpaceSystemBodyLoader.h"
 
 struct GasGiantProperties;
 struct SystemBodyProperties;
@@ -29,12 +29,26 @@ class PlanetGenLoader;
 DECL_VIO(class IOManager)
 DECL_VCORE(class RPCManager)
 
+/************************************************************************/
+/* File Path Constants                                                  */
+/************************************************************************/
+
+const nString FILE_SS_TREES = "trees.yml";
+const nString FILE_SS_FLORA = "flora.yml";
+const nString FILE_SS_TERRAIN_GEN = "terrain_gen.yml";
+const nString FILE_SS_PATH_COLORS = "path_colors.yml";
+const nString FILE_SS_SYSTEM_PROPERTIES = "system_properties.yml";
+const nString FILE_SS_VERSION = "version.dat";
+
+/************************************************************************/
+
 class SpaceSystemLoader {
 public:
     void init(const SoaState* soaState);
     /// Loads and adds a star system to the SpaceSystem
     /// @param pr: params
-    void loadStarSystem(const nString& path);
+    void loadStarSystemProperties(const nString& path);
+
 private:
     /// Loads path color scheme
     /// @param pr: params
@@ -67,7 +81,7 @@ private:
                         f64 parentMass,
                         f64 binaryMassRatio = 0.0);
 
-    SystemBodyLoader m_bodyLoader;
+    SpaceSystemBodyLoader m_bodyLoader;
     
     const SoaState* m_soaState = nullptr;
     SpaceSystem* m_spaceSystem;

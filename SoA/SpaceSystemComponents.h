@@ -59,6 +59,10 @@ const f32 TERRAIN_ALPHA_STEP = 0.01f;
 
 const f32 START_FACE_TRANS = 1.0f;
 
+
+/************************************************************************/
+/* AtmosphereComponent                                                  */
+/************************************************************************/
 struct AtmosphereComponent {
     vecs::ComponentID namePositionComponent = 0;
     f32 planetRadius;
@@ -76,6 +80,10 @@ struct AtmosphereComponent {
 typedef vecs::ComponentTable<AtmosphereComponent> AtmosphereComponentTable;
 KEG_TYPE_DECL(AtmosphereComponent);
 
+
+/************************************************************************/
+/* CloudsComponent                                                      */
+/************************************************************************/
 struct CloudsComponent {
     vecs::ComponentID namePositionComponent = 0;
     f32 planetRadius;
@@ -88,6 +96,9 @@ typedef vecs::ComponentTable<CloudsComponent> CloudsComponentTable;
 KEG_TYPE_DECL(CloudsComponent);
 
 
+/************************************************************************/
+/* AxisRotationComponent                                                */
+/************************************************************************/
 struct AxisRotationComponent {
     f64q axisOrientation; ///< Axis of rotation
     f64q currentOrientation; ///< Current orientation with axis and rotation
@@ -99,6 +110,10 @@ struct AxisRotationComponent {
 typedef vecs::ComponentTable<AxisRotationComponent> AxisRotationComponentTable;
 KEG_TYPE_DECL(AxisRotationComponent);
 
+
+/************************************************************************/
+/* NamePositionComponent                                                */
+/************************************************************************/
 struct NamePositionComponent {
     f64v3 position = f64v3(0.0); ///< Position in space, in KM
     nString name; ///< Name of the entity
@@ -106,6 +121,10 @@ struct NamePositionComponent {
 typedef vecs::ComponentTable<NamePositionComponent> NamePositionComponentTable;
 KEG_TYPE_DECL(NamePositionComponent);
 
+
+/************************************************************************/
+/* SpaceLightComponent                                                  */
+/************************************************************************/
 struct SpaceLightComponent {
     vecs::ComponentID npID; ///< Component ID of parent NamePosition component
     color3 color; ///< Color of the light
@@ -114,6 +133,10 @@ struct SpaceLightComponent {
 typedef vecs::ComponentTable<SpaceLightComponent> SpaceLightComponentTable;
 KEG_TYPE_DECL(SpaceLightComponent);
 
+
+/************************************************************************/
+/* OrbitComponent                                                       */
+/************************************************************************/
 struct OrbitComponent {
     f64 major = 0.0; ///< Semi-major of the ellipse in KM
     f64 minor = 0.0; ///< Semi-minor of the ellipse in KM
@@ -143,6 +166,10 @@ struct OrbitComponent {
 };
 KEG_TYPE_DECL(OrbitComponent);
 
+
+/************************************************************************/
+/* PlanetRingsComponent                                                 */
+/************************************************************************/
 struct PlanetRing {
     f32 innerRadius;
     f32 outerRadius;
@@ -157,6 +184,10 @@ struct PlanetRingsComponent {
 typedef vecs::ComponentTable<PlanetRingsComponent> PlanetRingsComponentTable;
 KEG_TYPE_DECL(PlanetRingsComponent);
 
+
+/************************************************************************/
+/* SphericalGravityComponent                                            */
+/************************************************************************/
 struct SphericalGravityComponent {
     vecs::ComponentID namePositionComponent; ///< Component ID of parent NamePosition component
     f64 radius = 0.0; ///< Radius in KM
@@ -165,6 +196,10 @@ struct SphericalGravityComponent {
 typedef vecs::ComponentTable<SphericalGravityComponent> SphericalGravityComponentTable;
 KEG_TYPE_DECL(SphericalGravityComponent);
 
+
+/************************************************************************/
+/* SphericalVoxelComponent                                              */
+/************************************************************************/
 struct SphericalVoxelComponent {
     ChunkGrid* chunkGrids = nullptr; // should be size 6, one for each face
     ChunkIOManager* chunkIo = nullptr;
@@ -193,6 +228,10 @@ struct SphericalVoxelComponent {
 };
 KEG_TYPE_DECL(SphericalVoxelComponent);
 
+
+/************************************************************************/
+/* SphericalTerrainComponent                                            */
+/************************************************************************/
 struct SphericalTerrainComponent {
     vecs::ComponentID namePositionComponent = 0;
     vecs::ComponentID axisRotationComponent = 0;
@@ -219,6 +258,9 @@ struct SphericalTerrainComponent {
 KEG_TYPE_DECL(SphericalTerrainComponent);
 
 
+/************************************************************************/
+/* GasGiantComponent                                                    */
+/************************************************************************/
 struct GasGiantComponent {
     vecs::ComponentID namePositionComponent = 0;
     vecs::ComponentID axisRotationComponent = 0;
@@ -230,6 +272,10 @@ struct GasGiantComponent {
 typedef vecs::ComponentTable<GasGiantComponent> GasGiantComponentTable;
 KEG_TYPE_DECL(GasGiantComponent);
 
+
+/************************************************************************/
+/* StarComponent                                                        */
+/************************************************************************/
 struct StarComponent {
     vecs::ComponentID namePositionComponent = 0;
     vecs::ComponentID axisRotationComponent = 0;
@@ -242,6 +288,10 @@ struct StarComponent {
 typedef vecs::ComponentTable<StarComponent> StarComponentTable;
 KEG_TYPE_DECL(StarComponent);
 
+
+/************************************************************************/
+/* FarTerrainComponent                                                  */
+/************************************************************************/
 struct FarTerrainComponent {
     TerrainRpcDispatcher* rpcDispatcher = nullptr;
 

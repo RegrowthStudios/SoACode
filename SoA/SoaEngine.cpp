@@ -129,7 +129,7 @@ bool SoaEngine::loadSpaceSystem(SoaState* state, const nString& filePath) {
     // Load system
     SpaceSystemLoader spaceSystemLoader;
     spaceSystemLoader.init(state);
-    spaceSystemLoader.loadStarSystem(filePath);
+    spaceSystemLoader.loadStarSystemProperties(filePath);
 
     pool.dispose();
     return true;

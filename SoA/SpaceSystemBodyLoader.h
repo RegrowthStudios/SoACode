@@ -22,11 +22,11 @@
 struct SoaState;
 DECL_VIO(class IOManager);
 
-class SystemBodyLoader {
+class SpaceSystemBodyLoader {
 public:
     void init(vio::IOManager* iom);
 
-    bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
+    bool SpaceSystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
                                     const SystemOrbitKegProperties* sysProps, SystemBodyProperties* body,
                                     vcore::RPCManager* glrpc = nullptr);
 

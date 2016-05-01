@@ -41,24 +41,24 @@ void main() {
 )";
 }
 
-SystemARRenderer::SystemARRenderer() {
+SpaceSystemARRenderer::SpaceSystemARRenderer() {
     // Empty
 }
 
-SystemARRenderer::~SystemARRenderer() {
+SpaceSystemARRenderer::~SpaceSystemARRenderer() {
     dispose();
 }
 
-void SystemARRenderer::init(const ModPathResolver* textureResolver) {
+void SpaceSystemARRenderer::init(const ModPathResolver* textureResolver) {
     m_textureResolver = textureResolver;
 }
 
-void SystemARRenderer::initGL() {
+void SpaceSystemARRenderer::initGL() {
     if (!m_colorProgram.isCreated()) m_colorProgram = ShaderLoader::createProgram("SystemAR", VERT_SRC, FRAG_SRC);
     if (m_selectorTexture == 0) loadTextures();
 }
 
-void SystemARRenderer::draw(SpaceSystem* spaceSystem, const Camera* camera,
+void SpaceSystemARRenderer::draw(SpaceSystem* spaceSystem, const Camera* camera,
                             OPT const MainMenuSystemViewer* systemViewer,
                             const f32v2& viewport) {
     // Get handles so we don't have huge parameter lists
@@ -79,7 +79,7 @@ void SystemARRenderer::draw(SpaceSystem* spaceSystem, const Camera* camera,
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SystemARRenderer::dispose() {
+void SpaceSystemARRenderer::dispose() {
     if (m_colorProgram.isCreated()) {
         m_colorProgram.dispose();
     }
@@ -94,7 +94,7 @@ void SystemARRenderer::dispose() {
     }
 }
 
-void SystemARRenderer::loadTextures() {
+void SpaceSystemARRenderer::loadTextures() {
     { // Selector
         vio::Path path;
         m_textureResolver->resolvePath("GUI/selector.png", path);
@@ -117,7 +117,7 @@ void SystemARRenderer::loadTextures() {
     }
 }
 
-void SystemARRenderer::drawPaths() {
+void SpaceSystemARRenderer::drawPaths() {
 
     float blendFactor;
 
@@ -171,7 +171,7 @@ void SystemARRenderer::drawPaths() {
     m_colorProgram.unuse();
 }
 
-void SystemARRenderer::drawHUD() {
+void SpaceSystemARRenderer::drawHUD() {
     const f32 ROTATION_FACTOR = (f32)(M_PI + M_PI / 4.0);
     static f32 dt = 0.0;
     dt += 0.01f;

@@ -1,17 +1,29 @@
 #include "stdafx.h"
-#include "SystemBodyLoader.h"
+#include "SpaceSystemBodyLoader.h"
 
 #include "SpaceSystemAssemblages.h"
 #include "SoAState.h"
 
 #include <Vorb/io/IOManager.h>
 
-void SystemBodyLoader::init(vio::IOManager* iom) {
+/************************************************************************/
+/* File Strings                                                         */
+/************************************************************************/
+
+const nString FILE_SS_BODY_PROPERTIES = "properties.yml";
+const nString SS_BODYTYPE_PLANET = "planet";
+const nString SS_BODYTYPE_PLANET = "star";
+const nString SS_BODYTYPE_PLANET = "gasGiant";
+
+/************************************************************************/
+
+
+void SpaceSystemBodyLoader::init(vio::IOManager* iom) {
     m_iom = iom;
     m_planetLoader.init(iom);
 }
 
-bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
+bool SpaceSystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
                                 const SystemOrbitKegProperties* sysProps, SystemBodyProperties* body,
                                 vcore::RPCManager* glrpc /* = nullptr */) {
 
@@ -42,34 +54,29 @@ bool SystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePat
         if (foundOne) return;
 
         // Parse based on type
-        if (type == "planet") {
+        if (type == SS_BODYTYPE_PLANET) {
             PlanetProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(PlanetProperties));
             KEG_CHECK;
 
             // Use planet loader to load terrain and biomes
-            if (properties.generation.length()) {
-                properties.planetGenData = m_planetLoader.loadPlanetGenData(properties.generation);
-            } else {
-                properties.planetGenData = nullptr;
-                // properties.planetGenData = pr.planetLoader->getRandomGenData(properties.density, pr.glrpc);
-                properties.atmosphere = m_planetLoader.getRandomAtmosphere();
-            }
-
-            // Set the radius for use later
-            if (properties.planetGenData) {
-                properties.planetGenData->radius = properties.diameter / 2.0;
-            }
+            //if (properties.generation.length()) {
+            //    properties.planetGenData = m_planetLoader.loadPlanetGenData(properties.generation);
+            //} else {
+            //    properties.planetGenData = nullptr;
+            //    // properties.planetGenData = pr.planetLoader->getRandomGenData(properties.density, pr.glrpc);
+            //    properties.atmosphere = m_planetLoader.getRandomAtmosphere();
+            //}
 
             SpaceSystemAssemblages::createPlanet(soaState->spaceSystem, sysProps, &properties, body, soaState->threadPool);
             body->type = SpaceObjectGenerationType::PLANET;
-        } else if (type == "star") {
+        } else if (type == SS_BODYTYPE_PLANET) {
             StarProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(StarProperties));
             KEG_CHECK;
             SpaceSystemAssemblages::createStar(soaState->spaceSystem, sysProps, &properties, body);
             body->type = SpaceObjectGenerationType::STAR;
-        } else if (type == "gasGiant") {
+        } else if (type == SS_BODYTYPE_PLANET) {
             GasGiantProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(GasGiantProperties));
             KEG_CHECK;

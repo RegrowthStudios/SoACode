@@ -28,7 +28,7 @@ void SpaceSystemLoader::init(const SoaState* soaState) {
     m_bodyLoader.init(m_ioManager);
 }
 
-void SpaceSystemLoader::loadStarSystem(const nString& path) {
+void SpaceSystemLoader::loadStarSystemProperties(const nString& path) {
     m_ioManager->setSearchDirectory((path + "/").c_str());
 
     // Load the path color scheme
@@ -166,11 +166,6 @@ bool SpaceSystemLoader::loadSystemProperties() {
             if (body->type == SpaceObjectType::BARYCENTER) {
                 m_barycenters[name] = body;
             }
-
-            // Load type specific data
-            if (body->path.size()) {
-                loadSecondaryProperties(body);
-            }
         }
     });
 
@@ -183,14 +178,15 @@ bool SpaceSystemLoader::loadSystemProperties() {
 }
 
 bool SpaceSystemLoader::loadSecondaryProperties(SystemBodyProperties* body) {
+    // Helper error checking macro
 #define KEG_CHECK \
     if (error != keg::Error::NONE) { \
-        fprintf(stderr, "keg error %d for %s\n", (int)error, path); \
+        fprintf(stderr, "keg error %d for %s\n", (int)error, body->path); \
         goodParse = false; \
         return;  \
     }
 
-    const nString& path = body->path;
+    nString path = body->path + '/' + FILE_SS_BODY_PROPERTIES;
 
     keg::Error error;
     nString data;

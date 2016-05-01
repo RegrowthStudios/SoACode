@@ -38,7 +38,7 @@ SpaceSystem::~SpaceSystem() {
     }
 }
 
-vecs::ComponentID SpaceSystem::getComponent(nString name, vecs::EntityID eID) {
+vecs::ComponentID SpaceSystem::getComponent(const nString& name, vecs::EntityID eID) {
     auto& table = *getComponentTable(name);
     return table.getComponentID(eID);
 }

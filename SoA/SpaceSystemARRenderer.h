@@ -28,10 +28,10 @@ class ModPathResolver;
 DECL_VG(class SpriteBatch;
         class SpriteFont)
 
-class SystemARRenderer {
+class SpaceSystemARRenderer {
 public:
-    SystemARRenderer();
-    ~SystemARRenderer();
+    SpaceSystemARRenderer();
+    ~SpaceSystemARRenderer();
 
     void init(const ModPathResolver* textureResolver);
     void initGL();

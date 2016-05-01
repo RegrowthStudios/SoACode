@@ -7,7 +7,8 @@
 /// All Rights Reserved
 ///
 /// Summary:
-/// Implementation of a Star System with ECS
+/// Header for the Space System module.
+/// Implementation of a Star System with ECS.
 ///
 
 #pragma once
@@ -54,6 +55,8 @@ struct SystemOrbitKegProperties;
 
 DECL_VG(class TextureRecycler)
 
+enum class SystemState { NONE, PROPERTIES_LOADED, };
+
 class SpaceSystem : public vecs::ECS {
     friend class SpaceSystemRenderStage;
     friend class MainMenuSystemViewer;
@@ -61,6 +64,9 @@ public:
     SpaceSystem();
     ~SpaceSystem();
 
+    /************************************************************************/
+    /* Component Tables                                                     */
+    /************************************************************************/
     NamePositionComponentTable namePosition;
     AxisRotationComponentTable axisRotation;
     OrbitComponentTable orbit;
@@ -74,16 +80,14 @@ public:
     PlanetRingsComponentTable planetRings;
     CloudsComponentTable clouds;
     SphericalVoxelComponentTable sphericalVoxel;
-    
-    f32 age = 0.0f; ///< age of the system
-    nString systemDescription = "No description"; ///< textual description of the system
+    /************************************************************************/
 
-    // vVv   TODO(Cristian): Holy fuck, get rid of these from here   vVv
-    std::map<nString, std::pair<f32v4, f32v4> > pathColorMap; ///< Map of body type to path colors
-
-    vecs::ComponentID getComponent(nString name, vecs::EntityID eID);
+    vecs::ComponentID getComponent(const nString& name, vecs::EntityID eID);
 
 private:
+    f32 m_age = 0.0f; ///< age of the system
+    nString m_systemDescription = "No description"; ///< textual description of the system
+
     VORB_NON_COPYABLE(SpaceSystem);
 };
 

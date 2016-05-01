@@ -102,7 +102,7 @@ private:
     LenseFlareRenderer m_lensFlareRenderer;
     SphericalTerrainComponentRenderer m_sphericalTerrainComponentRenderer;
     StarComponentRenderer m_starRenderer;
-    SystemARRenderer m_systemARRenderer;
+    SpaceSystemARRenderer m_systemARRenderer;
   
     std::vector<std::pair<StarComponent, f64v3> > m_starGlowsToRender;
     bool m_showAR = true;
