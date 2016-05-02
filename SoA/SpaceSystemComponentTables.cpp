@@ -44,7 +44,7 @@ void FarTerrainComponentTable::disposeComponent(vecs::ComponentID cID, vecs::Ent
     }
 }
 
-void OrbitComponentTable::disposeComponent(vecs::ComponentID cID, vecs::EntityID eID) {
+void SpaceBodyComponentTable::disposeComponent(vecs::ComponentID cID, vecs::EntityID eID) {
     SpaceBodyComponent& cmp = _components[cID].second;
     if (cmp.vbo) {
         vg::GpuMemory::freeBuffer(cmp.vbo);

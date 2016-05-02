@@ -117,6 +117,7 @@ struct SpaceBodyComponent {
 
     nString name; ///< Name of the entity
     f64v3 position = f64v3(0.0); ///< Position in space, in KM
+    vecs::ComponentID parent = 0;
 
     // General properties
     f64 diameter = 0.0; ///< Radius in KM
@@ -126,7 +127,7 @@ struct SpaceBodyComponent {
     f64q axisOrientation; ///< Axis of rotation
     f64q currentOrientation; ///< Current orientation with axis and rotation
     f64q invCurrentOrientation; ///< Inverse of currentOrientation (Do we really need to cache this?)
-    f64 period = 0.0; ///< Period of rotation in seconds
+    f64 axisPeriod = 0.0; ///< Period of rotation in seconds
     f64 currentRotation = 0.0; ///< Current rotation about axis in radians
     f32 tilt = 0.0f; // I feel like this isn't needed?
 
@@ -142,15 +143,13 @@ struct SpaceBodyComponent {
     f64 i = 0.0; ///< Inclination in rad
     f64v3 velocity = f64v3(0.0); ///< Current velocity relative to space in KM/s
     f64v3 relativeVelocity = f64v3(0.0); ///< Current velocity relative to parent in KM/s
-    f32v4 pathColor[2]; ///< Color of the path
-    vecs::ComponentID npID = 0; ///< Component ID of NamePosition component
-    vecs::ComponentID parentOrbId = 0; ///< Component ID of parent OrbitComponent
- 
+    
     f32 currentMeanAnomaly; // f32???
     SpaceBodyType type; ///< Type of object
     bool isCalculated = false; ///< True when orbit has been calculated
 
     // TODO(Ben): Get the rendering out of here like jesus man...
+    f32v4 pathColor[2]; ///< Color of the path
     VGBuffer vbo = 0; ///< vbo for the ellipse mesh
     VGBuffer vao = 0; ///< vao for the ellipse mesh
     ui32 numVerts = 0; ///< Number of vertices in the ellipse
@@ -197,7 +196,7 @@ struct SphericalVoxelComponent {
 
     vecs::ComponentID sphericalTerrainComponent = 0;
     vecs::ComponentID farTerrainComponent = 0;
-    vecs::ComponentID spaceBodyComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
 
     /// The threadpool for generating chunks and meshes
     vcore::ThreadPool<WorkerData>* threadPool = nullptr;

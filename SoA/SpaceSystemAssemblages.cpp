@@ -5,7 +5,7 @@
 #include "ChunkIOManager.h"
 #include "ChunkAllocator.h"
 #include "FarTerrainPatch.h"
-#include "OrbitComponentUpdater.h"
+#include "SpaceBodyComponentUpdater.h"
 #include "SoaState.h"
 #include "SpaceSystem.h"
 #include "SphericalTerrainComponentUpdater.h"
@@ -439,8 +439,8 @@ vecs::ComponentID SpaceSystemAssemblages::addOrbitComponent(SpaceSystem* spaceSy
                                                             f64 eccentricity, f64 orbitalPeriod,
                                                             f64 ascendingLong, f64 periapsisLong,
                                                             f64 inclination, f64 trueAnomaly) {
-    vecs::ComponentID oCmpId = spaceSystem->addComponent(SPACE_SYSTEM_CT_ORBIT_NAME, entity);
-    auto& oCmp = spaceSystem->orbit.get(oCmpId);
+    vecs::ComponentID oCmpId = spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, entity);
+    auto& oCmp = spaceSystem->spaceBody.get(oCmpId);
     oCmp.e = eccentricity;
     oCmp.t = orbitalPeriod;
     oCmp.npID = npComp;
@@ -477,7 +477,7 @@ vecs::ComponentID SpaceSystemAssemblages::addOrbitComponent(SpaceSystem* spaceSy
 }
 
 void SpaceSystemAssemblages::removeOrbitComponent(SpaceSystem* spaceSystem, vecs::EntityID entity) {
-    spaceSystem->deleteComponent(SPACE_SYSTEM_CT_ORBIT_NAME, entity);
+    spaceSystem->deleteComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, entity);
 }
 
 vecs::ComponentID SpaceSystemAssemblages::addSpaceLightComponent(SpaceSystem* spaceSystem, vecs::EntityID entity, vecs::ComponentID npCmp, color3 color, f32 intensity) {

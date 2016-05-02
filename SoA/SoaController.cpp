@@ -9,7 +9,7 @@
 #include "SoaState.h"
 #include "SoaOptions.h"
 #include "SoaEngine.h"
-#include "OrbitComponentUpdater.h"
+#include "SpaceBodyComponentUpdater.h"
 
 SoaController::~SoaController() {
     // Empty

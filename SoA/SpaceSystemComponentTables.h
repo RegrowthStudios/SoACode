@@ -33,7 +33,7 @@ public:
     virtual void disposeComponent(vecs::ComponentID cID, vecs::EntityID eID) override;
 };
 
-class OrbitComponentTable : public vecs::ComponentTable < SpaceBodyComponent > {
+class SpaceBodyComponentTable : public vecs::ComponentTable < SpaceBodyComponent > {
 public:
     virtual void disposeComponent(vecs::ComponentID cID, vecs::EntityID eID) override;
 };

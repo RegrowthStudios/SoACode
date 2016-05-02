@@ -482,9 +482,6 @@
     <ClInclude Include="SpaceSystemAssemblages.h">
       <Filter>SOA Files\ECS\Assemblages</Filter>
     </ClInclude>
-    <ClInclude Include="AxisRotationComponentUpdater.h">
-      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionComponentUpdater.h">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
     </ClInclude>
@@ -493,9 +490,6 @@
     </ClInclude>
     <ClInclude Include="GameSystemUpdater.h">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="OrbitComponentUpdater.h">
-      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
     </ClInclude>
     <ClInclude Include="ParkourComponentUpdater.h">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
@@ -591,9 +585,6 @@
       <Filter>SOA Files\Rendering\Components</Filter>
     </ClInclude>
     <ClInclude Include="GasGiantComponentRenderer.h">
-      <Filter>SOA Files\Rendering\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="OrbitComponentRenderer.h">
       <Filter>SOA Files\Rendering\Components</Filter>
     </ClInclude>
     <ClInclude Include="SphericalTerrainComponentRenderer.h">
@@ -881,6 +872,12 @@
     <ClInclude Include="SpaceSystemARRenderer.h">
       <Filter>SOA Files\Rendering\Universe</Filter>
     </ClInclude>
+    <ClInclude Include="SpaceBodyComponentUpdater.h">
+      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="OrbitRenderer.h">
+      <Filter>SOA Files\Rendering\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1123,9 +1120,6 @@
     <ClCompile Include="SpaceSystemAssemblages.cpp">
       <Filter>SOA Files\ECS\Assemblages</Filter>
     </ClCompile>
-    <ClCompile Include="AxisRotationComponentUpdater.cpp">
-      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionComponentUpdater.cpp">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
     </ClCompile>
@@ -1137,9 +1131,6 @@
     </ClCompile>
     <ClCompile Include="GameSystemUpdater.cpp">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="OrbitComponentUpdater.cpp">
-      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
     </ClCompile>
     <ClCompile Include="ParkourComponentUpdater.cpp">
       <Filter>SOA Files\ECS\Updaters\GameSystem</Filter>
@@ -1214,9 +1205,6 @@
       <Filter>SOA Files\Rendering\Components</Filter>
     </ClCompile>
     <ClCompile Include="GasGiantComponentRenderer.cpp">
-      <Filter>SOA Files\Rendering\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="OrbitComponentRenderer.cpp">
       <Filter>SOA Files\Rendering\Components</Filter>
     </ClCompile>
     <ClCompile Include="SphericalTerrainComponentRenderer.cpp">
@@ -1452,6 +1440,12 @@
     </ClCompile>
     <ClCompile Include="SpaceSystemARRenderer.cpp">
       <Filter>SOA Files\Rendering\Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceBodyComponentUpdater.cpp">
+      <Filter>SOA Files\ECS\Updaters\SpaceSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="OrbitRenderer.cpp">
+      <Filter>SOA Files\Rendering\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

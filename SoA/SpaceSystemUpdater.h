@@ -15,9 +15,8 @@
 #ifndef SpaceSystemUpdater_h__
 #define SpaceSystemUpdater_h__
 
-#include "AxisRotationComponentUpdater.h"
 #include "FarTerrainComponentUpdater.h"
-#include "OrbitComponentUpdater.h"
+#include "SpaceBodyComponentUpdater.h"
 #include "SphericalTerrainComponentUpdater.h"
 #include "SphericalVoxelComponentUpdater.h"
 
@@ -35,14 +34,13 @@ public:
 
 private:
     /// Updaters
-    friend class OrbitComponentUpdater;
-    OrbitComponentUpdater m_orbitComponentUpdater;
+    friend class SpaceBodyComponentUpdater;
+    SpaceBodyComponentUpdater m_spaceBodyComponentUpdater;
     friend class SphericalVoxelComponentUpdater;
     SphericalVoxelComponentUpdater m_sphericalVoxelComponentUpdater;
     friend class SphericalTerrainComponentUpdater;
     SphericalTerrainComponentUpdater m_sphericalTerrainComponentUpdater;
     friend class AxisRotationComponentUpdater;
-    AxisRotationComponentUpdater m_axisRotationComponentUpdater;
     FarTerrainComponentUpdater m_farTerrainComponentUpdater;
 };
 

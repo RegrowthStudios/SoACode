@@ -130,7 +130,7 @@ void SpaceSystemARRenderer::drawPaths() {
     glLineWidth(3.0f);
 
     f32m4 wvp = m_camera->getProjectionMatrix() * m_camera->getViewMatrix();
-    for (auto& it : m_spaceSystem->orbit) {
+    for (auto& it : m_spaceSystem->spaceBody) {
         auto& cmp = it.second;
     
         bool isSelected = false;
@@ -156,7 +156,7 @@ void SpaceSystemARRenderer::drawPaths() {
         }
 
         if (cmp.parentOrbId) {
-            SpaceBodyComponent& pOrbCmp = m_spaceSystem->orbit.get(cmp.parentOrbId);
+            SpaceBodyComponent& pOrbCmp = m_spaceSystem->spaceBody.get(cmp.parentOrbId);
             m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
                                               m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
         } else {
@@ -186,7 +186,7 @@ void SpaceSystemARRenderer::drawHUD() {
     m_spriteBatch->begin();
 
     // Render all bodies
-    for (auto& it : m_spaceSystem->orbit) {
+    for (auto& it : m_spaceSystem->spaceBody) {
 
         auto& oCmp = it.second;
         auto& npCmp = m_spaceSystem->namePosition.get(oCmp.npID);

@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include "Errors.h"
 #include "SoaOptions.h"
-#include "OrbitComponentUpdater.h"
+#include "SpaceBodyComponentUpdater.h"
 #include "PlanetGenData.h"
 #include "PlanetGenLoader.h"
 #include "ProgramGenDelegate.h"
@@ -328,7 +328,7 @@ void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
         propsB->p = propsA->p + 180.0;
         propsB->a = propsA->a;
         // TODO(Ben): Components aren't set up yet.
-        auto& oCmp = m_spaceSystem->orbit.getFromEntity(propsB->entity);
+        auto& oCmp = m_spaceSystem->spaceBody.getFromEntity(propsB->entity);
         oCmp.e = propsB->e;
         oCmp.i = propsB->i * DEG_TO_RAD;
         oCmp.p = propsB->p * DEG_TO_RAD;
@@ -374,7 +374,7 @@ void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
     }
 }
 
-void recursiveInclinationCalc(OrbitComponentTable& ct, SystemBodyProperties* body, f64 inclination) {
+void recursiveInclinationCalc(SpaceBodyComponentTable& ct, SystemBodyProperties* body, f64 inclination) {
     for (auto& c : body->children) {
         SpaceBodyComponent& orbitC = ct.getFromEntity(c->entity);
         orbitC.i += inclination;
@@ -431,7 +431,7 @@ void SpaceSystemLoader::initComponents() {
 
 void SpaceSystemLoader::computeRef(SystemBodyProperties* body) {
     if (!body->ref.empty()) {
-        SpaceBodyComponent& orbitC = m_spaceSystem->orbit.getFromEntity(body->entity);
+        SpaceBodyComponent& orbitC = m_spaceSystem->spaceBody.getFromEntity(body->entity);
         // Find reference body
         auto it = m_systemBodies.find(body->ref);
         if (it != m_systemBodies.end()) {

@@ -133,15 +133,15 @@ nString MainMenuScriptedUI::getBodyName(vecs::EntityID entity) {
 
 nString MainMenuScriptedUI::getBodyParentName(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    auto parentOID = state->spaceSystem->orbit.getFromEntity(entity).parentOrbId;
+    auto parentOID = state->spaceSystem->spaceBody.getFromEntity(entity).parentOrbId;
     if (parentOID == 0) return "None";
-    auto parentNpID = state->spaceSystem->orbit.get(parentOID).npID;
+    auto parentNpID = state->spaceSystem->spaceBody.get(parentOID).npID;
     return state->spaceSystem->namePosition.get(parentNpID).name;
 }
 
 nString MainMenuScriptedUI::getBodyTypeName(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    auto t = state->spaceSystem->orbit.getFromEntity(entity).type;
+    auto t = state->spaceSystem->spaceBody.getFromEntity(entity).type;
     nString n;
     switch (t) {
         case SpaceBodyType::BARYCENTER:
@@ -183,7 +183,7 @@ f32 MainMenuScriptedUI::getBodyRotPeriod(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getBodyOrbPeriod(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->orbit.getFromEntity(entity).t;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).t;
 }
 
 f32 MainMenuScriptedUI::getBodyAxialTilt(vecs::EntityID entity) {
@@ -193,17 +193,17 @@ f32 MainMenuScriptedUI::getBodyAxialTilt(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getBodyEccentricity(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->orbit.getFromEntity(entity).e;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).e;
 }
 
 f32 MainMenuScriptedUI::getBodyInclination(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->orbit.getFromEntity(entity).i;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).i;
 }
 
 f32 MainMenuScriptedUI::getBodySemiMajor(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->orbit.getFromEntity(entity).major;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).major;
 }
 
 f32 MainMenuScriptedUI::getGravityAccel(vecs::EntityID entity) {

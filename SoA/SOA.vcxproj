@@ -546,7 +546,6 @@ EXIT 0</Command>
     <ClInclude Include="DLLAPI.h" />
     <ClInclude Include="ARProcessor.h" />
     <ClInclude Include="AtmosphereComponentRenderer.h" />
-    <ClInclude Include="AxisRotationComponentUpdater.h" />
     <ClInclude Include="Biome.h" />
     <ClInclude Include="BlockPack.h" />
     <ClInclude Include="BlockTexture.h" />
@@ -621,8 +620,8 @@ EXIT 0</Command>
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OpaqueVoxelRenderStage.h" />
     <ClInclude Include="OptionsController.h" />
-    <ClInclude Include="OrbitComponentRenderer.h" />
-    <ClInclude Include="OrbitComponentUpdater.h" />
+    <ClInclude Include="OrbitRenderer.h" />
+    <ClInclude Include="SpaceBodyComponentUpdater.h" />
     <ClInclude Include="ParkourComponentUpdater.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PauseMenuRenderStage.h" />
@@ -767,7 +766,6 @@ EXIT 0</Command>
     <ClCompile Include="AmbienceStream.cpp" />
     <ClCompile Include="ARProcessor.cpp" />
     <ClCompile Include="AtmosphereComponentRenderer.cpp" />
-    <ClCompile Include="AxisRotationComponentUpdater.cpp" />
     <ClCompile Include="Biome.cpp" />
     <ClCompile Include="BlockPack.cpp" />
     <ClCompile Include="BlockTexture.cpp" />
@@ -840,8 +838,8 @@ EXIT 0</Command>
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OpaqueVoxelRenderStage.cpp" />
     <ClCompile Include="OptionsController.cpp" />
-    <ClCompile Include="OrbitComponentRenderer.cpp" />
-    <ClCompile Include="OrbitComponentUpdater.cpp" />
+    <ClCompile Include="OrbitRenderer.cpp" />
+    <ClCompile Include="SpaceBodyComponentUpdater.cpp" />
     <ClCompile Include="ParkourComponentUpdater.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PauseMenuRenderStage.cpp" />

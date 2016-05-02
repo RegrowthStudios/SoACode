@@ -17,7 +17,7 @@
 
 #include <Vorb/graphics/gtypes.h>
 #include <Vorb/VorbPreDecl.inl>
-#include "OrbitComponentRenderer.h"
+#include "OrbitRenderer.h"
 #include <Vorb/graphics/GLProgram.h>
 
 class Camera;
@@ -63,7 +63,7 @@ private:
     f32v2 m_viewport;
     f32 m_zCoef;
 
-    OrbitComponentRenderer m_orbitComponentRenderer;
+    OrbitRenderer m_orbitComponentRenderer;
 };
 
 #endif // SystemARRenderer_h__

@@ -6,10 +6,8 @@
 #include <Vorb/Timing.h>
 
 void SpaceSystemUpdater::init(const SoaState* soaState) {
-    // Set planet rotation
-    m_axisRotationComponentUpdater.update(soaState->spaceSystem, soaState->time);
     // Set initial position
-    m_orbitComponentUpdater.update(soaState->spaceSystem, soaState->time);
+    m_spaceBodyComponentUpdater.update(soaState->spaceSystem, soaState->time);
 }
 
 void SpaceSystemUpdater::update(SoaState* soaState, const f64v3& spacePos, const f64v3& voxelPos) {
@@ -17,9 +15,6 @@ void SpaceSystemUpdater::update(SoaState* soaState, const f64v3& spacePos, const
     // Get handles
     SpaceSystem* spaceSystem = soaState->spaceSystem;
     const GameSystem* gameSystem = soaState->gameSystem;
-
-    // Update planet rotation
-    m_axisRotationComponentUpdater.update(spaceSystem, soaState->time);
 
     // Update far terrain
     // Update this BEFORE sphericalTerrain
@@ -31,8 +26,8 @@ void SpaceSystemUpdater::update(SoaState* soaState, const f64v3& spacePos, const
     // Update voxels
     m_sphericalVoxelComponentUpdater.update(soaState);
 
-    // Update Orbits ( Do this last)
-    m_orbitComponentUpdater.update(spaceSystem, soaState->time);
+    // Update Orbits ( Do this last) // TODO(Ben): Don't do this last lol
+    m_spaceBodyComponentUpdater.update(spaceSystem, soaState->time);
 }
 
 void SpaceSystemUpdater::glUpdate(const SoaState* soaState) {
