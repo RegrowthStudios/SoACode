@@ -17,16 +17,16 @@ void PlanetGenerator::dispose(vcore::RPCManager* glrpc) {
     // TODO(Ben): Implement
 }
 
-CALLER_DELETE PlanetGenData* PlanetGenerator::generateRandomPlanet(SpaceObjectType type, vcore::RPCManager* glrpc /* = nullptr */) {
+CALLER_DELETE PlanetGenData* PlanetGenerator::generateRandomPlanet(SpaceBodyType type, vcore::RPCManager* glrpc /* = nullptr */) {
     switch (type) {
-        case SpaceObjectType::PLANET:
-        case SpaceObjectType::DWARF_PLANET:
-        case SpaceObjectType::MOON:
-        case SpaceObjectType::DWARF_MOON:
+        case SpaceBodyType::PLANET:
+        case SpaceBodyType::DWARF_PLANET:
+        case SpaceBodyType::MOON:
+        case SpaceBodyType::DWARF_MOON:
             return generatePlanet(glrpc);
-        case SpaceObjectType::ASTEROID:
+        case SpaceBodyType::ASTEROID:
             return generateAsteroid(glrpc);
-        case SpaceObjectType::COMET:
+        case SpaceBodyType::COMET:
             return generateComet(glrpc);
         default:
             return nullptr;

@@ -40,7 +40,7 @@ DECL_VG(
 )
 DECL_VVOX(class VoxelMapData);
 
-enum class SpaceObjectType;
+enum class SpaceBodyType;
 
 namespace SpaceSystemAssemblages {
     /************************************************************************/
@@ -160,7 +160,7 @@ namespace SpaceSystemAssemblages {
 
     /// Orbit component
     extern vecs::ComponentID addOrbitComponent(SpaceSystem* spaceSystem, vecs::EntityID entity,
-                                               vecs::ComponentID npComp, SpaceObjectType oType,
+                                               vecs::ComponentID npComp, SpaceBodyType oType,
                                                f64 eccentricity, f64 orbitalPeriod,
                                                f64 ascendingLong, f64 periapsisLong,
                                                f64 inclination, f64 trueAnomaly);

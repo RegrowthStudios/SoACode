@@ -17,7 +17,7 @@
 
 class SpaceSystem;
 struct NamePositionComponent;
-struct OrbitComponent;
+struct SpaceBodyComponent;
 struct SphericalGravityComponent;
 
 class OrbitComponentUpdater {
@@ -29,8 +29,8 @@ public:
     /// @param time: Time in seconds
     /// @param npComponent: The positional component of this component
     /// @param parentNpComponent: The parents positional component
-    void updatePosition(OrbitComponent& cmp, f64 time, NamePositionComponent* npComponent,
-                           OrbitComponent* parentOrbComponent = nullptr,
+    void updatePosition(SpaceBodyComponent& cmp, f64 time, NamePositionComponent* npComponent,
+                           SpaceBodyComponent* parentOrbComponent = nullptr,
                            NamePositionComponent* parentNpComponent = nullptr);
 
     f64 calculateTrueAnomaly(f64 meanAnomaly, f64 e);

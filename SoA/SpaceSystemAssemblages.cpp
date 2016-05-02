@@ -435,7 +435,7 @@ void SpaceSystemAssemblages::removeNamePositionComponent(SpaceSystem* spaceSyste
 }
 
 vecs::ComponentID SpaceSystemAssemblages::addOrbitComponent(SpaceSystem* spaceSystem, vecs::EntityID entity,
-                                                            vecs::ComponentID npComp, SpaceObjectType oType,
+                                                            vecs::ComponentID npComp, SpaceBodyType oType,
                                                             f64 eccentricity, f64 orbitalPeriod,
                                                             f64 ascendingLong, f64 periapsisLong,
                                                             f64 inclination, f64 trueAnomaly) {
@@ -453,19 +453,19 @@ vecs::ComponentID SpaceSystemAssemblages::addOrbitComponent(SpaceSystem* spaceSy
     // Get the path color
     std::pair<f32v4, f32v4> pathColor(f32v4(0.0f), f32v4(0.0f));
     switch (oType) {
-        case SpaceObjectType::STAR:
+        case SpaceBodyType::STAR:
             pathColor = spaceSystem->pathColorMap["Star"]; break;
-        case SpaceObjectType::PLANET:
+        case SpaceBodyType::PLANET:
             pathColor = spaceSystem->pathColorMap["Planet"]; break;
-        case SpaceObjectType::DWARF_PLANET:
+        case SpaceBodyType::DWARF_PLANET:
             pathColor = spaceSystem->pathColorMap["DwarfPlanet"]; break;
-        case SpaceObjectType::MOON:
+        case SpaceBodyType::MOON:
             pathColor = spaceSystem->pathColorMap["Moon"]; break;
-        case SpaceObjectType::DWARF_MOON:
+        case SpaceBodyType::DWARF_MOON:
             pathColor = spaceSystem->pathColorMap["DwarfMoon"]; break;
-        case SpaceObjectType::ASTEROID:
+        case SpaceBodyType::ASTEROID:
             pathColor = spaceSystem->pathColorMap["Asteroid"]; break;
-        case SpaceObjectType::COMET:
+        case SpaceBodyType::COMET:
             pathColor = spaceSystem->pathColorMap["Comet"]; break;
         default:
             break;

@@ -58,6 +58,7 @@ DECL_VG(class TextureRecycler)
 enum class SystemState { NONE, PROPERTIES_LOADED, };
 
 class SpaceSystem : public vecs::ECS {
+    friend class SpaceSystemLoader;
     friend class SpaceSystemRenderStage;
     friend class MainMenuSystemViewer;
 public:

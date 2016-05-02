@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SystemARRenderer.h"
+#include "SpaceSystemARRenderer.h"
 
 #include "Camera.h"
 #include "MainMenuSystemViewer.h"
@@ -156,7 +156,7 @@ void SpaceSystemARRenderer::drawPaths() {
         }
 
         if (cmp.parentOrbId) {
-            OrbitComponent& pOrbCmp = m_spaceSystem->orbit.get(cmp.parentOrbId);
+            SpaceBodyComponent& pOrbCmp = m_spaceSystem->orbit.get(cmp.parentOrbId);
             m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
                                               m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
         } else {
@@ -240,12 +240,12 @@ void SpaceSystemARRenderer::drawHUD() {
                     f64 d = distance - (f64)low;
                     // Fade name based on distance
                     switch (oCmp.type) {
-                        case SpaceObjectType::STAR:
+                        case SpaceBodyType::STAR:
                             textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.00000000001));
                             break;
-                        case SpaceObjectType::BARYCENTER:
-                        case SpaceObjectType::PLANET:
-                        case SpaceObjectType::DWARF_PLANET:
+                        case SpaceBodyType::BARYCENTER:
+                        case SpaceBodyType::PLANET:
+                        case SpaceBodyType::DWARF_PLANET:
                             textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.000000001));
                             break;
                         default:
@@ -256,7 +256,7 @@ void SpaceSystemARRenderer::drawHUD() {
 
                 // Pick texture
                 VGTexture tx;
-                if (oCmp.type == SpaceObjectType::BARYCENTER) {
+                if (oCmp.type == SpaceBodyType::BARYCENTER) {
                     tx = m_baryTexture;
                     selectorSize = MainMenuSystemViewer::MIN_SELECTOR_SIZE * 2.5f - (f32)(distance * 0.00000000001);
                     if (selectorSize < 0.0) continue;        

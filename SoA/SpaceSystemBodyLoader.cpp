@@ -69,13 +69,13 @@ bool SpaceSystemBodyLoader::loadBody(const SoaState* soaState, const nString& fi
             //}
 
             SpaceSystemAssemblages::createPlanet(soaState->spaceSystem, sysProps, &properties, body, soaState->threadPool);
-            body->type = SpaceObjectGenerationType::PLANET;
+            body->type = SpaceBodyGenerationType::PLANET;
         } else if (type == SS_BODYTYPE_PLANET) {
             StarProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(StarProperties));
             KEG_CHECK;
             SpaceSystemAssemblages::createStar(soaState->spaceSystem, sysProps, &properties, body);
-            body->type = SpaceObjectGenerationType::STAR;
+            body->type = SpaceBodyGenerationType::STAR;
         } else if (type == SS_BODYTYPE_PLANET) {
             GasGiantProperties properties;
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(GasGiantProperties));
@@ -102,7 +102,7 @@ bool SpaceSystemBodyLoader::loadBody(const SoaState* soaState, const nString& fi
             }
             // Create the component
             SpaceSystemAssemblages::createGasGiant(soaState->spaceSystem, sysProps, &properties, body);
-            body->type = SpaceObjectGenerationType::GAS_GIANT;
+            body->type = SpaceBodyGenerationType::GAS_GIANT;
         }
 
         //Only parse the first

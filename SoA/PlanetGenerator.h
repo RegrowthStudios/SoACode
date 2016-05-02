@@ -35,7 +35,7 @@ public:
     PlanetGenerator();
     void dispose(vcore::RPCManager* glrpc);
 
-    CALLER_DELETE PlanetGenData* generateRandomPlanet(SpaceObjectType type, vcore::RPCManager* glrpc = nullptr);
+    CALLER_DELETE PlanetGenData* generateRandomPlanet(SpaceBodyType type, vcore::RPCManager* glrpc = nullptr);
 private:
     CALLER_DELETE PlanetGenData* generatePlanet(vcore::RPCManager* glrpc);
     CALLER_DELETE PlanetGenData* generateAsteroid(vcore::RPCManager* glrpc);

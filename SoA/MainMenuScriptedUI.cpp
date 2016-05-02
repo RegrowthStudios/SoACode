@@ -144,21 +144,21 @@ nString MainMenuScriptedUI::getBodyTypeName(vecs::EntityID entity) {
     auto t = state->spaceSystem->orbit.getFromEntity(entity).type;
     nString n;
     switch (t) {
-        case SpaceObjectType::BARYCENTER:
+        case SpaceBodyType::BARYCENTER:
             n = "Barycenter"; break;
-        case SpaceObjectType::STAR: // TODO(Ben): Spectral classes
+        case SpaceBodyType::STAR: // TODO(Ben): Spectral classes
             n = "Star"; break;
-        case SpaceObjectType::PLANET:
+        case SpaceBodyType::PLANET:
             n = "Planet"; break;
-        case SpaceObjectType::DWARF_PLANET:
+        case SpaceBodyType::DWARF_PLANET:
             n = "Dwarf Planet"; break;
-        case SpaceObjectType::MOON:
+        case SpaceBodyType::MOON:
             n = "Moon"; break;
-        case SpaceObjectType::DWARF_MOON:
+        case SpaceBodyType::DWARF_MOON:
             n = "Dwarf Moon"; break;
-        case SpaceObjectType::ASTEROID:
+        case SpaceBodyType::ASTEROID:
             n = "Asteroid"; break;
-        case SpaceObjectType::COMET:
+        case SpaceBodyType::COMET:
             n = "Comet"; break;
         default:
             n = "UNKNOWN"; break;

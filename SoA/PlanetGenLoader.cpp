@@ -149,7 +149,7 @@ CALLER_DELETE PlanetGenData* PlanetGenLoader::getRandomGenData(f32 radius, vcore
     // Lazily construct default data
 
     // Allocate data
-    PlanetGenData* genData = m_planetGenerator.generateRandomPlanet(SpaceObjectType::PLANET, glrpc);
+    PlanetGenData* genData = m_planetGenerator.generateRandomPlanet(SpaceBodyType::PLANET, glrpc);
     // TODO(Ben): Radius is temporary hacky fix for small planet darkness!
     if (radius < 15.0) {
         genData->baseTerrainFuncs.funcs.setData();

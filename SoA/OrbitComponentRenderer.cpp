@@ -10,7 +10,7 @@
 #include "SpaceSystemComponents.h"
 #include "OrbitComponentUpdater.h"
 
-void OrbitComponentRenderer::drawPath(OrbitComponent& cmp, vg::GLProgram& colorProgram, const f32m4& wvp, NamePositionComponent* npComponent, const f64v3& camPos, float blendFactor, NamePositionComponent* parentNpComponent /*= nullptr*/) {
+void OrbitComponentRenderer::drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& wvp, NamePositionComponent* npComponent, const f64v3& camPos, float blendFactor, NamePositionComponent* parentNpComponent /*= nullptr*/) {
 
     // Lazily generate mesh
     if (cmp.vbo == 0) generateOrbitEllipse(cmp, colorProgram);
@@ -42,7 +42,7 @@ void OrbitComponentRenderer::drawPath(OrbitComponent& cmp, vg::GLProgram& colorP
     glDepthMask(true);
 }
 
-void OrbitComponentRenderer::generateOrbitEllipse(OrbitComponent& cmp, vg::GLProgram& colorProgram) {
+void OrbitComponentRenderer::generateOrbitEllipse(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram) {
 
     if (cmp.verts.empty()) return;
 
@@ -56,13 +56,13 @@ void OrbitComponentRenderer::generateOrbitEllipse(OrbitComponent& cmp, vg::GLPro
     vg::GpuMemory::bindBuffer(cmp.vbo, vg::BufferTarget::ARRAY_BUFFER);
     vg::GpuMemory::uploadBufferData(cmp.vbo,
                                     vg::BufferTarget::ARRAY_BUFFER,
-                                    cmp.verts.size() * sizeof(OrbitComponent::Vertex),
+                                    cmp.verts.size() * sizeof(SpaceBodyComponent::Vertex),
                                     cmp.verts.data(),
                                     vg::BufferUsageHint::STATIC_DRAW);
     vg::GpuMemory::bindBuffer(0, vg::BufferTarget::ELEMENT_ARRAY_BUFFER);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(OrbitComponent::Vertex), 0);
-    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(OrbitComponent::Vertex), (const void*)offsetof(OrbitComponent::Vertex, angle));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SpaceBodyComponent::Vertex), 0);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(SpaceBodyComponent::Vertex), (const void*)offsetof(SpaceBodyComponent::Vertex, angle));
     glBindVertexArray(0);
     cmp.numVerts = cmp.verts.size();
-    std::vector<OrbitComponent::Vertex>().swap(cmp.verts);
+    std::vector<SpaceBodyComponent::Vertex>().swap(cmp.verts);
 }

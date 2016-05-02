@@ -29,19 +29,6 @@ class PlanetGenLoader;
 DECL_VIO(class IOManager)
 DECL_VCORE(class RPCManager)
 
-/************************************************************************/
-/* File Path Constants                                                  */
-/************************************************************************/
-
-const nString FILE_SS_TREES = "trees.yml";
-const nString FILE_SS_FLORA = "flora.yml";
-const nString FILE_SS_TERRAIN_GEN = "terrain_gen.yml";
-const nString FILE_SS_PATH_COLORS = "path_colors.yml";
-const nString FILE_SS_SYSTEM_PROPERTIES = "system_properties.yml";
-const nString FILE_SS_VERSION = "version.dat";
-
-/************************************************************************/
-
 class SpaceSystemLoader {
 public:
     void init(const SoaState* soaState);
@@ -53,7 +40,7 @@ private:
     /// Loads path color scheme
     /// @param pr: params
     /// @return true on success
-    bool loadPathColors();
+    //bool loadPathColors();
 
     /// Loads and adds system properties to the params
     /// @param pr: params

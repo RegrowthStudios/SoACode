@@ -9,7 +9,7 @@ void OrbitComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
     for (auto& it : spaceSystem->orbit) {
         auto& cmp = it.second;
         if (cmp.parentOrbId) {
-            OrbitComponent* pOrbC = &spaceSystem->orbit.get(cmp.parentOrbId);
+            SpaceBodyComponent* pOrbC = &spaceSystem->orbit.get(cmp.parentOrbId);
             updatePosition(cmp, time, &spaceSystem->namePosition.get(cmp.npID),
                               pOrbC,
                               &spaceSystem->namePosition.get(pOrbC->npID));
@@ -19,8 +19,8 @@ void OrbitComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
     }
 }
 
-void OrbitComponentUpdater::updatePosition(OrbitComponent& cmp, f64 time, NamePositionComponent* npComponent,
-                                              OrbitComponent* parentOrbComponent /* = nullptr */,
+void OrbitComponentUpdater::updatePosition(SpaceBodyComponent& cmp, f64 time, NamePositionComponent* npComponent,
+                                              SpaceBodyComponent* parentOrbComponent /* = nullptr */,
                                               NamePositionComponent* parentNpComponent /* = nullptr */) {
     if (cmp.major == 0.0) return;
     /// Calculates position as a function of time

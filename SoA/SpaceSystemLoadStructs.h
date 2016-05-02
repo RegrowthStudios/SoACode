@@ -21,15 +21,15 @@ struct PlanetGenData;
 #include <Vorb/io/Keg.h>
 #include <Vorb/ecs/Entity.h>
 
-enum class SpaceObjectGenerationType {
+enum class SpaceBodyGenerationType {
     NONE,
     PLANET,
     STAR,
     GAS_GIANT
 };
-KEG_TYPE_DECL(SpaceObjectGenerationType);
+KEG_TYPE_DECL(SpaceBodyGenerationType);
 
-enum class SpaceObjectType {
+enum class SpaceBodyType {
     NONE,
     BARYCENTER,
     STAR,
@@ -40,7 +40,7 @@ enum class SpaceObjectType {
     ASTEROID,
     COMET
 };
-KEG_TYPE_DECL(SpaceObjectType);
+KEG_TYPE_DECL(SpaceBodyType);
 
 enum class TrojanType {
     NONE,
@@ -89,10 +89,10 @@ struct SystemBodyProperties {
     bool hasComputedRef = false; ///< True when it has computed trojan and t with ref body
 
     // Type information
-    SpaceObjectType type = SpaceObjectType::NONE; ///< Specific type of object
+    SpaceBodyType type = SpaceBodyType::NONE; ///< Specific type of object
     TrojanType trojan = TrojanType::NONE;
     
-    SpaceObjectGenerationType genType = SpaceObjectGenerationType::NONE; ///< How its generated
+    SpaceBodyGenerationType genType = SpaceBodyGenerationType::NONE; ///< How its generated
     void* genTypeProperties = nullptr; ///< genType specific data
 
     // Orbit Properties

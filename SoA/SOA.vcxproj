@@ -664,7 +664,7 @@ EXIT 0</Command>
     <ClInclude Include="StarComponentRenderer.h" />
     <ClInclude Include="Startup.h" />
     <ClInclude Include="svd.h" />
-    <ClInclude Include="SystemARRenderer.h" />
+    <ClInclude Include="SpaceSystemARRenderer.h" />
     <ClInclude Include="SpaceSystemBodyLoader.h" />
     <ClInclude Include="TerrainPatchMeshManager.h" />
     <ClInclude Include="SpaceSystemComponentTables.h" />
@@ -879,7 +879,7 @@ EXIT 0</Command>
     <ClCompile Include="StarComponentRenderer.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="svd.cpp" />
-    <ClCompile Include="SystemARRenderer.cpp" />
+    <ClCompile Include="SpaceSystemARRenderer.cpp" />
     <ClCompile Include="SpaceSystemBodyLoader.cpp" />
     <ClCompile Include="TerrainPatchMeshManager.cpp" />
     <ClCompile Include="SpaceSystemComponentTables.cpp" />

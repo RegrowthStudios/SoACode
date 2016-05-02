@@ -110,18 +110,6 @@ struct AxisRotationComponent {
 typedef vecs::ComponentTable<AxisRotationComponent> AxisRotationComponentTable;
 KEG_TYPE_DECL(AxisRotationComponent);
 
-
-/************************************************************************/
-/* NamePositionComponent                                                */
-/************************************************************************/
-struct NamePositionComponent {
-    f64v3 position = f64v3(0.0); ///< Position in space, in KM
-    nString name; ///< Name of the entity
-};
-typedef vecs::ComponentTable<NamePositionComponent> NamePositionComponentTable;
-KEG_TYPE_DECL(NamePositionComponent);
-
-
 /************************************************************************/
 /* SpaceLightComponent                                                  */
 /************************************************************************/
@@ -135,13 +123,24 @@ KEG_TYPE_DECL(SpaceLightComponent);
 
 
 /************************************************************************/
-/* OrbitComponent                                                       */
+/* SpaceBodyComponent                                                   */
 /************************************************************************/
-struct OrbitComponent {
+struct SpaceBodyComponent {
+
+    // TODO(Ben): Trim this down to the bare necessities
+
+    nString name; ///< Name of the entity
+    f64v3 position = f64v3(0.0); ///< Position in space, in KM
+
+    // General properties
+    f64 diameter = 0.0; ///< Radius in KM
+    f64 mass = 0.0; ///< Mass in KG
+
+    // Orbit data
     f64 major = 0.0; ///< Semi-major of the ellipse in KM
     f64 minor = 0.0; ///< Semi-minor of the ellipse in KM
     f64 t = 0.0; ///< Period of a full orbit in sec
-    f64 parentMass = 0.0; ///< Mass of the parent in KG
+    f64 parentMass = 0.0; ///< Mass of the parent in KG (Do we really need this?)
     f64 startMeanAnomaly = 0.0; ///< Start mean anomaly in rad
     f64 e = 0.0; ///< Shape of orbit, 0-1
     f64 o = 0.0; ///< Longitude of the ascending node in rad
@@ -152,6 +151,12 @@ struct OrbitComponent {
     f32v4 pathColor[2]; ///< Color of the path
     vecs::ComponentID npID = 0; ///< Component ID of NamePosition component
     vecs::ComponentID parentOrbId = 0; ///< Component ID of parent OrbitComponent
+ 
+    f32 currentMeanAnomaly; // f32???
+    SpaceBodyType type; ///< Type of object
+    bool isCalculated = false; ///< True when orbit has been calculated
+
+    // TODO(Ben): Get the rendering out of here like jesus man...
     VGBuffer vbo = 0; ///< vbo for the ellipse mesh
     VGBuffer vao = 0; ///< vao for the ellipse mesh
     ui32 numVerts = 0; ///< Number of vertices in the ellipse
@@ -160,11 +165,7 @@ struct OrbitComponent {
         f32 angle;
     };
     std::vector<Vertex> verts; ///< Vertices for the ellipse
-    f32 currentMeanAnomaly;
-    SpaceObjectType type; ///< Type of object
-    bool isCalculated = false; ///< True when orbit has been calculated
 };
-KEG_TYPE_DECL(OrbitComponent);
 
 
 /************************************************************************/
@@ -183,18 +184,6 @@ struct PlanetRingsComponent {
 };
 typedef vecs::ComponentTable<PlanetRingsComponent> PlanetRingsComponentTable;
 KEG_TYPE_DECL(PlanetRingsComponent);
-
-
-/************************************************************************/
-/* SphericalGravityComponent                                            */
-/************************************************************************/
-struct SphericalGravityComponent {
-    vecs::ComponentID namePositionComponent; ///< Component ID of parent NamePosition component
-    f64 radius = 0.0; ///< Radius in KM
-    f64 mass = 0.0; ///< Mass in KG
-};
-typedef vecs::ComponentTable<SphericalGravityComponent> SphericalGravityComponentTable;
-KEG_TYPE_DECL(SphericalGravityComponent);
 
 
 /************************************************************************/

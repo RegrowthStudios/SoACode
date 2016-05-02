@@ -19,6 +19,21 @@
 #include <Vorb/io/keg.h>
 #include <Vorb/ui/GameWindow.h>
 
+
+/************************************************************************/
+/* File Path Constants                                                  */
+/************************************************************************/
+
+#define FILE_SS_TREES             "trees.yml";
+#define FILE_SS_FLORA             "flora.yml";
+#define FILE_SS_TERRAIN_GEN       "terrain_gen.yml";
+#define FILE_SS_PATH_COLORS       "path_colors.yml";
+#define FILE_SS_SYSTEM_PROPERTIES "system_properties.yml";
+#define FILE_SS_VERSION           "version.dat";
+#define FILE_SS_BODY_PROPERTIES   "properties.yml"
+
+/************************************************************************/
+
 void SpaceSystemLoader::init(const SoaState* soaState) {
     // TODO(Ben): Don't need all this
     m_soaState = soaState;
@@ -60,40 +75,40 @@ KEG_TYPE_DEF_SAME_NAME(PathColorKegProps, kt) {
     KEG_TYPE_INIT_ADD_MEMBER(kt, PathColorKegProps, hover, UI8_V4);
 }
 
-bool SpaceSystemLoader::loadPathColors() {
-    nString data;
-    if (!m_ioManager->readFileToString("PathColors.yml", data)) {
-        pError("Couldn't find " + m_ioManager->getSearchDirectory().getString() + "/PathColors.yml");
-    }
-
-    keg::ReadContext context;
-    context.env = keg::getGlobalEnvironment();
-    context.reader.init(data.c_str());
-    keg::Node node = context.reader.getFirst();
-    if (keg::getType(node) != keg::NodeType::MAP) {
-        fprintf(stderr, "Failed to load %s\n", (m_ioManager->getSearchDirectory().getString() + "/PathColors.yml").c_str());
-        context.reader.dispose();
-        return false;
-    }
-
-    bool goodParse = true;
-    auto f = makeFunctor([&](Sender, const nString& name, keg::Node value) {
-        PathColorKegProps props;
-        keg::Error err = keg::parse((ui8*)&props, value, context, &KEG_GLOBAL_TYPE(PathColorKegProps));
-        if (err != keg::Error::NONE) {
-            fprintf(stderr, "Failed to parse node %s in PathColors.yml\n", name.c_str());
-            goodParse = false;
-        }
-        f32v4 base = f32v4(props.base) / 255.0f;
-        f32v4 hover = f32v4(props.hover) / 255.0f;
-        m_spaceSystem->pathColorMap[name] = std::make_pair(base, hover);
-    });
-
-    context.reader.forAllInMap(node, f);
-    delete f;
-    context.reader.dispose();
-    return goodParse;
-}
+//bool SpaceSystemLoader::loadPathColors() {
+//    nString data;
+//    if (!m_ioManager->readFileToString("PathColors.yml", data)) {
+//        pError("Couldn't find " + m_ioManager->getSearchDirectory().getString() + "/PathColors.yml");
+//    }
+//
+//    keg::ReadContext context;
+//    context.env = keg::getGlobalEnvironment();
+//    context.reader.init(data.c_str());
+//    keg::Node node = context.reader.getFirst();
+//    if (keg::getType(node) != keg::NodeType::MAP) {
+//        fprintf(stderr, "Failed to load %s\n", (m_ioManager->getSearchDirectory().getString() + "/PathColors.yml").c_str());
+//        context.reader.dispose();
+//        return false;
+//    }
+//
+//    bool goodParse = true;
+//    auto f = makeFunctor([&](Sender, const nString& name, keg::Node value) {
+//        PathColorKegProps props;
+//        keg::Error err = keg::parse((ui8*)&props, value, context, &KEG_GLOBAL_TYPE(PathColorKegProps));
+//        if (err != keg::Error::NONE) {
+//            fprintf(stderr, "Failed to parse node %s in PathColors.yml\n", name.c_str());
+//            goodParse = false;
+//        }
+//        f32v4 base = f32v4(props.base) / 255.0f;
+//        f32v4 hover = f32v4(props.hover) / 255.0f;
+//        m_spaceSystem->pathColorMap[name] = std::make_pair(base, hover);
+//    });
+//
+//    context.reader.forAllInMap(node, f);
+//    delete f;
+//    context.reader.dispose();
+//    return goodParse;
+//}
 
 bool SpaceSystemLoader::loadSystemProperties() {
     // Read in system properties file
@@ -118,9 +133,9 @@ bool SpaceSystemLoader::loadSystemProperties() {
     auto f = makeFunctor([this, &goodParse, &context](Sender, const nString& name, keg::Node value) {
         // Parse based on the name
         if (name == "description") {
-            m_spaceSystem->systemDescription = keg::convert<nString>(value);
+            m_spaceSystem->m_systemDescription = keg::convert<nString>(value);
         } else if (name == "age") {
-            m_spaceSystem->age = keg::convert<f32>(value);
+            m_spaceSystem->m_age = keg::convert<f32>(value);
         } else {
       
             // Find or allocate body
@@ -163,7 +178,7 @@ bool SpaceSystemLoader::loadSystemProperties() {
             body->name = name;
            
             // Special case for barycenters
-            if (body->type == SpaceObjectType::BARYCENTER) {
+            if (body->type == SpaceBodyType::BARYCENTER) {
                 m_barycenters[name] = body;
             }
         }
@@ -211,7 +226,7 @@ bool SpaceSystemLoader::loadSecondaryProperties(SystemBodyProperties* body) {
         // Parse based on type
         if (type == "planet") {
             PlanetProperties* properties = new PlanetProperties;
-            body->genType = SpaceObjectGenerationType::PLANET;
+            body->genType = SpaceBodyGenerationType::PLANET;
             body->genTypeProperties = properties;
            
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(PlanetProperties));
@@ -233,14 +248,14 @@ bool SpaceSystemLoader::loadSecondaryProperties(SystemBodyProperties* body) {
           //  }
         } else if (type == "star") {
             StarProperties* properties = new StarProperties;
-            body->genType = SpaceObjectGenerationType::STAR;
+            body->genType = SpaceBodyGenerationType::STAR;
             body->genTypeProperties = properties;
 
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(StarProperties));
             KEG_CHECK;
         } else if (type == "gasGiant") {
             GasGiantProperties* properties = new GasGiantProperties;
-            body->genType = SpaceObjectGenerationType::GAS_GIANT;
+            body->genType = SpaceBodyGenerationType::GAS_GIANT;
             body->genTypeProperties = properties;
 
             error = keg::parse((ui8*)&properties, value, context, &KEG_GLOBAL_TYPE(GasGiantProperties));
@@ -361,7 +376,7 @@ void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
 
 void recursiveInclinationCalc(OrbitComponentTable& ct, SystemBodyProperties* body, f64 inclination) {
     for (auto& c : body->children) {
-        OrbitComponent& orbitC = ct.getFromEntity(c->entity);
+        SpaceBodyComponent& orbitC = ct.getFromEntity(c->entity);
         orbitC.i += inclination;
         recursiveInclinationCalc(ct, c, orbitC.i);
     }
@@ -402,11 +417,11 @@ void SpaceSystemLoader::initComponents() {
     //        SpaceSystemAssemblages::createOrbit(m_spaceSystem, &properties, body, 0.0);
         }
         switch (body->genType) {
-            case SpaceObjectGenerationType::PLANET:
+            case SpaceBodyGenerationType::PLANET:
                 break;
-            case SpaceObjectGenerationType::STAR:
+            case SpaceBodyGenerationType::STAR:
                 break;
-            case SpaceObjectGenerationType::GAS_GIANT:
+            case SpaceBodyGenerationType::GAS_GIANT:
                 break;
             default:
                 throw 33;
@@ -416,7 +431,7 @@ void SpaceSystemLoader::initComponents() {
 
 void SpaceSystemLoader::computeRef(SystemBodyProperties* body) {
     if (!body->ref.empty()) {
-        OrbitComponent& orbitC = m_spaceSystem->orbit.getFromEntity(body->entity);
+        SpaceBodyComponent& orbitC = m_spaceSystem->orbit.getFromEntity(body->entity);
         // Find reference body
         auto it = m_systemBodies.find(body->ref);
         if (it != m_systemBodies.end()) {

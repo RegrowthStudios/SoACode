@@ -29,7 +29,7 @@
 #include "SpaceSystemComponents.h"
 #include "SphericalTerrainComponentRenderer.h"
 #include "StarComponentRenderer.h"
-#include "SystemARRenderer.h"
+#include "SpaceSystemARRenderer.h"
 #include "IRenderStage.h"
 
 class App;

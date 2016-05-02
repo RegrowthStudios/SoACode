@@ -24,6 +24,7 @@ SpaceSystem::SpaceSystem() : vecs::ECS() {
 
 SpaceSystem::~SpaceSystem() {
 
+    // TODO: This sucks. Should be an ECS::dispose that does this automatically.
     for (auto& it : sphericalVoxel) {
         sphericalVoxel.disposeComponent(sphericalVoxel.getComponentID(it.first), it.first);
     }
