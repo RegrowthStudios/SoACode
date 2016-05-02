@@ -406,12 +406,12 @@ void SpaceSystemAssemblages::removeFarTerrainComponent(SpaceSystem* spaceSystem,
 }
 
 vecs::ComponentID SpaceSystemAssemblages::addSphericalGravityComponent(SpaceSystem* spaceSystem, vecs::EntityID entity,
-                                                                        vecs::ComponentID npComp, f64 radius, f64 mass) {
+                                                                        vecs::ComponentID bodyComponent, f64 radius, f64 mass) {
     vecs::ComponentID sgCmpId = spaceSystem->addComponent(SPACE_SYSTEM_CT_SPHERICALGRAVITY_NAME, entity);
-    auto& sgCmp = spaceSystem->sphericalGravity.get(sgCmpId);
-    sgCmp.namePositionComponent = npComp;
-    sgCmp.radius = radius;
-    sgCmp.mass = mass;
+    auto& cmp = spaceSystem->spaceBody.get(sgCmpId);
+    cmp.parentBodyComponent = bodyComponent;
+    cmp.diameter = radius * 2.0;
+    cmp.mass = mass;
     return sgCmpId;
 }
 

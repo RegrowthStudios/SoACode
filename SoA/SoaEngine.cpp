@@ -389,8 +389,7 @@ void SoaEngine::reloadSpaceBody(SoaState* state, vecs::EntityID eid, vcore::RPCM
     SpaceSystem* spaceSystem = state->spaceSystem;
     auto& stCmp = spaceSystem->sphericalTerrain.getFromEntity(eid);
     f64 radius = stCmp.radius;
-    auto npCmpID = stCmp.namePositionComponent;
-    auto arCmpID = stCmp.axisRotationComponent;
+    auto bodyCmpID = stCmp.bodyComponent;
     auto ftCmpID = stCmp.farTerrainComponent;
     WorldCubeFace face;
     PlanetGenData* genData = stCmp.planetGenData;

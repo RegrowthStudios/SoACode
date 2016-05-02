@@ -29,19 +29,19 @@ void CloudsComponentRenderer::draw(const CloudsComponent& cCmp,
                                    const f32v3& lightDir,
                                    const f32 zCoef,
                                    const SpaceLightComponent* spComponent,
-                                   const AxisRotationComponent& arComponent,
+                                   const SpaceBodyComponent& bodyComponent,
                                    const AtmosphereComponent& aCmp) {
     m_program.use();
 
-    f64q invOrientation = vmath::inverse(arComponent.currentOrientation);
+    f64q invOrientation = vmath::inverse(bodyComponent.currentOrientation);
     const f32v3 rotpos(invOrientation * f64v3(relCamPos));
     const f32v3 rotLightDir = f32v3(invOrientation * f64v3(lightDir));
     // Convert f64q to f32q
     f32q orientationF32;
-    orientationF32.x = (f32)arComponent.currentOrientation.x;
-    orientationF32.y = (f32)arComponent.currentOrientation.y;
-    orientationF32.z = (f32)arComponent.currentOrientation.z;
-    orientationF32.w = (f32)arComponent.currentOrientation.w;
+    orientationF32.x = (f32)bodyComponent.currentOrientation.x;
+    orientationF32.y = (f32)bodyComponent.currentOrientation.y;
+    orientationF32.z = (f32)bodyComponent.currentOrientation.z;
+    orientationF32.w = (f32)bodyComponent.currentOrientation.w;
     // Convert to matrix
     f32m4 rotationMatrix = vmath::toMat4(orientationF32);
 

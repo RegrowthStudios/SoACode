@@ -28,7 +28,7 @@ void FarTerrainComponentRenderer::draw(const FarTerrainComponent& cmp,
                                        const f64v3& lightDir,
                                        const f32 zCoef,
                                        const SpaceLightComponent* spComponent,
-                                       const AxisRotationComponent* arComponent,
+                                       const SpaceBodyComponent* bodyComponent,
                                        const AtmosphereComponent* aComponent) {
     // Get voxel position for quaternion calculation
     VoxelPosition3D pos;
@@ -38,7 +38,7 @@ void FarTerrainComponentRenderer::draw(const FarTerrainComponent& cmp,
     f64v3 relativeCameraPos = camera->getPosition() * KM_PER_VOXEL;
 
     // Calculate relative light position
-    f64v3 relLightDir = vmath::inverse(arComponent->currentOrientation) * lightDir;
+    f64v3 relLightDir = vmath::inverse(bodyComponent->currentOrientation) * lightDir;
     relLightDir = vmath::inverse(VoxelSpaceUtils::calculateVoxelToSpaceQuat(pos, cmp.sphericalTerrainData->radius * VOXELS_PER_KM)) * relLightDir;
     
     // Sort meshes

@@ -106,10 +106,10 @@ void TestPlanetGenScreen::draw(const vui::GameTime& gameTime) {
 
     PreciseTimer timer;
     auto& aCmp = m_state.spaceSystem->atmosphere.getFromEntity(body.entity);
-    auto& arCmp = m_state.spaceSystem->axisRotation.getFromEntity(body.entity);
+    auto& bodyCmp = m_state.spaceSystem->spaceBody.getFromEntity(body.entity);
     m_terrainRenderer.draw(m_state.spaceSystem->sphericalTerrain.getFromEntity(body.entity), &m_camera, lightPos,
                            f64v3(0.0f/*m_eyePos*/), computeZCoef(m_camera.getFarClip()), &m_slCmp,
-                           &arCmp, &aCmp);
+                           &bodyCmp, &aCmp);
 
     m_atmoRenderer.draw(m_state.spaceSystem->atmosphere.getFromEntity(body.entity), m_camera.getViewProjectionMatrix(), f32v3(m_eyePos), lightPos,
                         computeZCoef(m_camera.getFarClip()), &m_slCmp);

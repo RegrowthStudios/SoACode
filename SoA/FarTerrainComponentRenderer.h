@@ -20,7 +20,7 @@
 
 class Camera;
 struct AtmosphereComponent;
-struct AxisRotationComponent;
+struct SpaceBodyComponent;
 struct FarTerrainComponent;
 struct NamePositionComponent;
 struct SpaceLightComponent;
@@ -35,7 +35,7 @@ public:
               const f64v3& lightDir,
               const f32 zCoef,
               const SpaceLightComponent* spComponent,
-              const AxisRotationComponent* arComponent,
+              const SpaceBodyComponent* bodyComponent,
               const AtmosphereComponent* aComponent);
     void dispose();
 private:

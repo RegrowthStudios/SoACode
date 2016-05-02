@@ -7,7 +7,7 @@
 #include <Vorb/graphics/GLProgram.h>
 
 struct AtmosphereComponent;
-struct AxisRotationComponent;
+struct SpaceBodyComponent;
 struct CloudsComponent;
 struct SpaceLightComponent;
 
@@ -23,7 +23,7 @@ public:
               const f32v3& lightDir,
               const f32 zCoef,
               const SpaceLightComponent* spComponent,
-              const AxisRotationComponent& arComponent,
+              const SpaceBodyComponent& bodyComponent,
               const AtmosphereComponent& aCmp);
     void dispose();
 private:

@@ -116,7 +116,7 @@ typedef vecs::ComponentTable<FreeMoveInputComponent> FreeMoveInputComponentTable
 struct SpacePositionComponent {
     f64v3 position = f64v3(0.0);
     f64q orientation;
-    vecs::EntityID parentEntity = 0;
+    vecs::EntityID parentEntity = 0; ///< Parent entity in space system
     vecs::ComponentID parentGravity = 0; ///< Gravity component of parent system body
     vecs::ComponentID parentSphericalTerrain = 0; ///< ST component of parent system body
 };

@@ -166,10 +166,9 @@ void GameplayScreen::updateECS() {
     m_soaState->time += m_soaState->timeStep;
     // TODO(Ben): Don't hardcode for a single player
     auto& spCmp = gameSystem->spacePosition.getFromEntity(m_soaState->clientState.playerEntity);
-    auto parentNpCmpId = spaceSystem->sphericalGravity.get(spCmp.parentGravity).namePositionComponent;
-    auto& parentNpCmp = spaceSystem->namePosition.get(parentNpCmpId);
+    auto& parentCmp = spaceSystem->spaceBody.get(spCmp.parentEntity);
     // Calculate non-relative space position
-    f64v3 trueSpacePosition = spCmp.position + parentNpCmp.position;
+    f64v3 trueSpacePosition = spCmp.position + parentCmp.position;
 
     m_spaceSystemUpdater->update(m_soaState,
                                  trueSpacePosition,
@@ -184,7 +183,7 @@ void GameplayScreen::updateMTRenderState() {
     SpaceSystem* spaceSystem = m_soaState->spaceSystem;
     GameSystem* gameSystem = m_soaState->gameSystem;
     // Set all space positions
-    for (auto& it : spaceSystem->namePosition) {
+    for (auto& it : spaceSystem->spaceBody) {
         state->spaceBodyPositions[it.first] = it.second.position;
     }
     // Set camera position

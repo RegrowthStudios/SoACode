@@ -122,8 +122,7 @@ void SphericalTerrainComponentUpdater::updateVoxelComponentLogic(SoaState* state
             stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
                                                                                                spaceSystem->sphericalTerrain.getComponentID(eid),
                                                                                                stCmp.farTerrainComponent,
-                                                                                               stCmp.axisRotationComponent,
-                                                                                               stCmp.namePositionComponent,
+                                                                                               stCmp.bodyComponent,
                                                                                                stCmp.startVoxelPosition.face,
                                                                                                state);
         }
@@ -141,8 +140,7 @@ void SphericalTerrainComponentUpdater::updateVoxelComponentLogic(SoaState* state
                 stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
                                                                                                    spaceSystem->sphericalTerrain.getComponentID(eid),
                                                                                                    stCmp.farTerrainComponent,
-                                                                                                   stCmp.axisRotationComponent,
-                                                                                                   stCmp.namePositionComponent,
+                                                                                                   stCmp.bodyComponent,
                                                                                                    stCmp.transitionFace,
                                                                                                    state);
                 // Reload the terrain
