@@ -70,16 +70,8 @@ public:
     const f64v3& getClickPos() const { return m_clickPos; }
 
     /// Gets the position of the targeted entity
-    /// @return position
-    f64v3 getTargetPosition();
-
-    /// Gets the position of the targeted entity
-    /// @return radius
-    f64 getTargetRadius();
-
-    /// Gets the name of the targeted component
-    /// @return position
-    nString getTargetName();
+    /// Do not store the return value, it can become invalidated.
+    const SpaceBodyComponent& getTarget() const;
 
     static const f32 MIN_SELECTOR_SIZE;
     static const f32 MAX_SELECTOR_SIZE;

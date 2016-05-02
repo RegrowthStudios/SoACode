@@ -155,8 +155,8 @@ void SpaceSystemARRenderer::drawPaths() {
             blendFactor = 0.0;
         }
 
-        if (cmp.parentOrbId) {
-            SpaceBodyComponent& pOrbCmp = m_spaceSystem->spaceBody.get(cmp.parentOrbId);
+        if (cmp.parentBodyComponent) {
+            SpaceBodyComponent& pOrbCmp = m_spaceSystem->spaceBody.get(cmp.parentBodyComponent);
             m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
                                               m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
         } else {
@@ -188,8 +188,7 @@ void SpaceSystemARRenderer::drawHUD() {
     // Render all bodies
     for (auto& it : m_spaceSystem->spaceBody) {
 
-        auto& oCmp = it.second;
-        auto& npCmp = m_spaceSystem->namePosition.get(oCmp.npID);
+        auto& cmp = it.second;
 
         // Get the augmented reality data
         const MainMenuSystemViewer::BodyArData* bodyArData = m_systemViewer->finBodyAr(it.first);
@@ -197,7 +196,7 @@ void SpaceSystemARRenderer::drawHUD() {
 
         if (bodyArData->inFrustum) {
 
-            f64v3 position = npCmp.position;
+            f64v3 position = cmp.position;
             f64v3 relativePos = position - m_camera->getPosition();
             f64 distance = vmath::length(relativePos);
             color4 textColor;
@@ -219,7 +218,7 @@ void SpaceSystemARRenderer::drawHUD() {
                 isSelected = true;
                 ui8Color = ui8v3(m_spaceSystem->pathColorMap["Selected"].second * 255.0f);
             } else {
-                ui8Color = ui8v3(lerp(oCmp.pathColor[0], oCmp.pathColor[1], interpolator) * 255.0f);
+                ui8Color = ui8v3(lerp(cmp.pathColor[0], cmp.pathColor[1], interpolator) * 255.0f);
             }
             color4 oColor(ui8Color.r, ui8Color.g, ui8Color.b, 255u);
             textColor.lerp(color::LightGray, color::White, interpolator);
@@ -239,7 +238,7 @@ void SpaceSystemARRenderer::drawHUD() {
                 } else {
                     f64 d = distance - (f64)low;
                     // Fade name based on distance
-                    switch (oCmp.type) {
+                    switch (cmp.type) {
                         case SpaceBodyType::STAR:
                             textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.00000000001));
                             break;
@@ -256,7 +255,7 @@ void SpaceSystemARRenderer::drawHUD() {
 
                 // Pick texture
                 VGTexture tx;
-                if (oCmp.type == SpaceBodyType::BARYCENTER) {
+                if (cmp.type == SpaceBodyType::BARYCENTER) {
                     tx = m_baryTexture;
                     selectorSize = MainMenuSystemViewer::MIN_SELECTOR_SIZE * 2.5f - (f32)(distance * 0.00000000001);
                     if (selectorSize < 0.0) continue;        
@@ -281,7 +280,7 @@ void SpaceSystemARRenderer::drawHUD() {
                 // Draw Text
                 if (textColor.a > 0) {
                     m_spriteBatch->drawString(m_spriteFont,
-                                              npCmp.name.c_str(),
+                                              cmp.name.c_str(),
                                               xyScreenCoords + textOffset,
                                               textScale,
                                               textColor,
@@ -293,12 +292,9 @@ void SpaceSystemARRenderer::drawHUD() {
             // Land selector
             if (isSelected && bodyArData->isLandSelected) {
                 f32v3 selectedPos = bodyArData->selectedPos;
-                // Apply axis rotation if applicable
-                vecs::ComponentID componentID = m_spaceSystem->axisRotation.getComponentID(it.first);
-                if (componentID) {
-                    f64q rot = m_spaceSystem->axisRotation.get(componentID).currentOrientation;
-                    selectedPos = f32v3(rot * f64v3(selectedPos));
-                }
+   
+                f64q rot = cmp.currentOrientation;
+                selectedPos = f32v3(rot * f64v3(selectedPos));
 
                 relativePos = (position + f64v3(selectedPos)) - m_camera->getPosition();
                 // Bring it close to the camera so it doesn't get occluded by anything

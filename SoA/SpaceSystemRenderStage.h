@@ -72,20 +72,13 @@ public:
     bool needsFaceTransitionAnimation = false; ///< true when we need to fade out camera for transition between faces
 private:
     /// Renders the space bodies
-    /// @param camera: Camera for rendering
-    /// @param terrainProgram: Program for rendering terrain
-    /// @param waterProgram: Program for rendering water
     void drawBodies();
 
     /// Gets light source relative to a component
-    /// @param cmp: position component 
-    /// @param pos: Returned position of brightest light
-    /// @return brightest light source relative to cmp
-    SpaceLightComponent* getBrightestLight(NamePositionComponent& npCmp, OUT f64v3& pos);
+    SpaceLightComponent* getBrightestLight(const SpaceBodyComponent& bodyCmp, OUT f64v3& pos);
 
     /// Gets the position of a body using MTRenderState if needed
-    /// @return pointer to the position
-    const f64v3* getBodyPosition(NamePositionComponent& npCmp, vecs::EntityID eid);
+    const f64v3* getBodyPosition(const SpaceBodyComponent& bodyCmp, vecs::EntityID eid);
 
     f32v2 m_viewport;
     SpaceSystem* m_spaceSystem = nullptr;

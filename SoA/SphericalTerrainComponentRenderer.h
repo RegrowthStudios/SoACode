@@ -20,10 +20,9 @@
 
 class Camera;
 struct AtmosphereComponent;
-struct AxisRotationComponent;
-struct NamePositionComponent;
 struct SpaceLightComponent;
 struct SphericalTerrainComponent;
+struct SpaceBodyComponent;
 
 class SphericalTerrainComponentRenderer {
 public:
@@ -34,8 +33,8 @@ public:
               const f32v3& lightDir,
               const f64v3& position,
               const f32 zCoef,
-              const SpaceLightComponent* spComponent,
-              const AxisRotationComponent* arComponent,
+              const SpaceLightComponent* slComponent,
+              const SpaceBodyComponent* bodyComponent,
               const AtmosphereComponent* aComponent);
     void dispose();
 private:

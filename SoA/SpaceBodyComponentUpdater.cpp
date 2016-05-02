@@ -41,14 +41,14 @@ void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT Spac
     // http://www.stargazing.net/kepler/ellipse.html
     f64 r = cmp.major * (1.0 - cmp.e * cmp.e) / (1.0 + cmp.e * cos(v));
     
-    f64 w = cmp.p - cmp.o; ///< Argument of periapsis
+    f64 w = cmp.p - cmp.n; ///< Argument of periapsis
 
     // Calculate position
     f64v3 position;
-    f64 cosv = cos(v + cmp.p - cmp.o);
-    f64 sinv = sin(v + cmp.p - cmp.o);
-    f64 coso = cos(cmp.o);
-    f64 sino = sin(cmp.o);
+    f64 cosv = cos(v + cmp.p - cmp.n);
+    f64 sinv = sin(v + cmp.p - cmp.n);
+    f64 coso = cos(cmp.n);
+    f64 sino = sin(cmp.n);
     f64 cosi = cos(cmp.i);
     f64 sini = sin(cmp.i);
     position.x = r * (coso * cosv - sino * sinv * cosi);

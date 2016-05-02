@@ -64,7 +64,7 @@ const f32 START_FACE_TRANS = 1.0f;
 /* AtmosphereComponent                                                  */
 /************************************************************************/
 struct AtmosphereComponent {
-    vecs::ComponentID namePositionComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
     f32 planetRadius;
     f32 radius;
     f32 oblateness = 0.0f;
@@ -85,7 +85,7 @@ KEG_TYPE_DECL(AtmosphereComponent);
 /* CloudsComponent                                                      */
 /************************************************************************/
 struct CloudsComponent {
-    vecs::ComponentID namePositionComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
     f32 planetRadius;
     f32 height;
     f32v3 color;
@@ -100,7 +100,7 @@ KEG_TYPE_DECL(CloudsComponent);
 /* SpaceLightComponent                                                  */
 /************************************************************************/
 struct SpaceLightComponent {
-    vecs::ComponentID npID; ///< Component ID of parent NamePosition component
+    vecs::ComponentID bodyComponent; ///< Component ID of parent body
     color3 color; ///< Color of the light
     f32 intensity; ///< Intensity of the light
 };
@@ -117,7 +117,7 @@ struct SpaceBodyComponent {
 
     nString name; ///< Name of the entity
     f64v3 position = f64v3(0.0); ///< Position in space, in KM
-    vecs::ComponentID parent = 0;
+    vecs::ComponentID parentBodyComponent = 0;
 
     // General properties
     f64 diameter = 0.0; ///< Radius in KM
@@ -138,7 +138,7 @@ struct SpaceBodyComponent {
     f64 parentMass = 0.0; ///< Mass of the parent in KG (Do we really need this?)
     f64 startMeanAnomaly = 0.0; ///< Start mean anomaly in rad
     f64 e = 0.0; ///< Shape of orbit, 0-1
-    f64 o = 0.0; ///< Longitude of the ascending node in rad
+    f64 n = 0.0; ///< Longitude of the ascending node in rad
     f64 p = 0.0; ///< Longitude of the periapsis in rad
     f64 i = 0.0; ///< Inclination in rad
     f64v3 velocity = f64v3(0.0); ///< Current velocity relative to space in KM/s
@@ -172,7 +172,7 @@ struct PlanetRing {
 };
 
 struct PlanetRingsComponent {
-    vecs::ComponentID namePositionComponent;
+    vecs::ComponentID bodyComponent;
     std::vector<PlanetRing> rings;
 };
 typedef vecs::ComponentTable<PlanetRingsComponent> PlanetRingsComponentTable;

@@ -37,24 +37,12 @@ MainMenuScreen::MainMenuScreen(const App* app, CommonState* state) :
     // Empty
 }
 
-MainMenuScreen::~MainMenuScreen() {
-    // Empty
-}
-
 i32 MainMenuScreen::getNextScreen() const {
     return m_app->scrGameplayLoad->getIndex();
 }
 
 i32 MainMenuScreen::getPreviousScreen() const {
     return SCREEN_INDEX_NO_SCREEN;
-}
-
-void MainMenuScreen::build() {
-    // Empty
-}
-
-void MainMenuScreen::destroy(const vui::GameTime& gameTime) {
-    // Empty
 }
 
 void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
@@ -71,6 +59,7 @@ void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
                                                &m_soaState->clientState.spaceCamera, m_soaState->spaceSystem, m_inputMapper);
     m_mainMenuSystemViewer = m_soaState->clientState.systemViewer;
 
+    // TODO(Ben): Autodetect or read a file.
     m_ambLibrary = new AmbienceLibrary;
     m_ambLibrary->addTrack("Menu", "Andromeda Fallen", "Data/Sound/Music/Andromeda Fallen.ogg");
     m_ambLibrary->addTrack("Menu", "Brethren", "Data/Sound/Music/Brethren.mp3");
@@ -89,7 +78,7 @@ void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
     initUI();
 
     // Init rendering
-    initRenderPipeline();
+    initRenderer();
 
     // TODO(Ben): Do this or something
     // Run the update thread for updating the planet
@@ -191,7 +180,7 @@ void MainMenuScreen::initInput() {
     m_inputMapper->startInput();
 }
 
-void MainMenuScreen::initRenderPipeline() {
+void MainMenuScreen::initRenderer() {
     //m_renderer.init(m_window, m_commonState->loadContext, this);
 }
 
@@ -217,36 +206,36 @@ void MainMenuScreen::loadGame(const nString& fileName) {
 
 void MainMenuScreen::newGame(const nString& fileName) {
 
-    if (!m_mainMenuSystemViewer->getSelectedPlanet()) {
-        m_newGameClicked = false;
-        return;
-    }
+    //if (!m_mainMenuSystemViewer->getSelectedPlanet()) {
+    //    m_newGameClicked = false;
+    //    return;
+    //}
 
-    m_soaState->clientState.isNewGame = true;
-    m_soaState->clientState.startSpacePos = m_mainMenuSystemViewer->getClickPos();
-    f64v3 normal = vmath::normalize(m_soaState->clientState.startSpacePos);
-    // Don't spawn underwater
-    if (vmath::length(m_soaState->clientState.startSpacePos) < m_mainMenuSystemViewer->getTargetRadius()) {
-        m_soaState->clientState.startSpacePos = normal * m_mainMenuSystemViewer->getTargetRadius();
-    }
-    // Push out by 5 voxels
-    m_soaState->clientState.startSpacePos += vmath::normalize(m_soaState->clientState.startSpacePos) * 5.0 * KM_PER_VOXEL;
+    //m_soaState->clientState.isNewGame = true;
+    //m_soaState->clientState.startSpacePos = m_mainMenuSystemViewer->getClickPos();
+    //f64v3 normal = vmath::normalize(m_soaState->clientState.startSpacePos);
+    //// Don't spawn underwater
+    //if (vmath::length(m_soaState->clientState.startSpacePos) < m_mainMenuSystemViewer->getTargetRadius()) {
+    //    m_soaState->clientState.startSpacePos = normal * m_mainMenuSystemViewer->getTargetRadius();
+    //}
+    //// Push out by 5 voxels
+    //m_soaState->clientState.startSpacePos += vmath::normalize(m_soaState->clientState.startSpacePos) * 5.0 * KM_PER_VOXEL;
 
-    m_soaState->clientState.startingPlanet = m_mainMenuSystemViewer->getSelectedPlanet();
-    vecs::EntityID startingPlanet = m_soaState->clientState.startingPlanet;
+    //m_soaState->clientState.startingPlanet = m_mainMenuSystemViewer->getSelectedPlanet();
+    //vecs::EntityID startingPlanet = m_soaState->clientState.startingPlanet;
 
-    { // Compute start location
-        SpaceSystem* spaceSystem = m_soaState->spaceSystem;
-        auto& arcmp = spaceSystem->axisRotation.getFromEntity(startingPlanet);
+    //{ // Compute start location
+    //    SpaceSystem* spaceSystem = m_soaState->spaceSystem;
+    //    auto& arcmp = spaceSystem->axisRotation.getFromEntity(startingPlanet);
 
-        m_soaState->clientState.startSpacePos = arcmp.currentOrientation * m_soaState->clientState.startSpacePos;
-    }
+    //    m_soaState->clientState.startSpacePos = arcmp.currentOrientation * m_soaState->clientState.startSpacePos;
+    //}
 
-    std::cout << "Making new game: " << fileName << std::endl;
+    //std::cout << "Making new game: " << fileName << std::endl;
 
-    initSaveIomanager(fileName);  
+    //initSaveIomanager(fileName);  
 
-    m_state = vui::ScreenState::CHANGE_NEXT;
+    //m_state = vui::ScreenState::CHANGE_NEXT;
 }
 
 void MainMenuScreen::initSaveIomanager(const vio::Path& savePath) {
@@ -281,7 +270,7 @@ void MainMenuScreen::onReloadSystem(Sender s, ui32 a) {
                                    m_inputMapper);
     m_soaState->clientState.spaceCamera = tmp; // Restore old camera
     m_renderer.dispose(m_commonState->loadContext);
-    initRenderPipeline();
+    initRenderer();
 }
 
 void MainMenuScreen::onReloadShaders(Sender s, ui32 a) {

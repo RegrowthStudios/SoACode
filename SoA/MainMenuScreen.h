@@ -49,13 +49,13 @@ class MainMenuScreen : public vui::IAppScreen<App> {
     friend class GameplayLoadScreen; // So it can use our renderer
 public:
     MainMenuScreen(const App* app, CommonState* state);
-    ~MainMenuScreen();
+    ~MainMenuScreen() {};
 
     virtual i32 getNextScreen() const;
     virtual i32 getPreviousScreen() const;
 
-    virtual void build();
-    virtual void destroy(const vui::GameTime& gameTime);
+    virtual void build() {};
+    virtual void destroy(const vui::GameTime& gameTime) {};
 
     virtual void onEntry(const vui::GameTime& gameTime);
     virtual void onExit(const vui::GameTime& gameTime);
@@ -71,7 +71,7 @@ private:
     void initInput();
 
     /// Initializes the rendering
-    void initRenderPipeline();
+    void initRenderer();
 
     /// Initializes user interface
     void initUI();
@@ -107,6 +107,8 @@ private:
     CommonState* m_commonState = nullptr;
     SoaState* m_soaState = nullptr;
 
+    vui::GameWindow* m_window = nullptr;
+
     vio::IOManager m_ioManager; ///< Helper class for IO operations
 
     InputMapper* m_inputMapper = nullptr;
@@ -122,9 +124,9 @@ private:
 
     MainMenuSystemViewer* m_mainMenuSystemViewer = nullptr;
 
+    // TODO(Ben): Audio as singleton?
     AmbienceLibrary* m_ambLibrary = nullptr;
     AmbiencePlayer* m_ambPlayer = nullptr;
-    vui::GameWindow* m_window = nullptr;
     bool m_uiEnabled = true;
 
     bool m_isFullscreen = false;

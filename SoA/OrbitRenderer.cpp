@@ -10,15 +10,15 @@
 #include "SpaceSystemComponents.h"
 #include "SpaceBodyComponentUpdater.h"
 
-void OrbitRenderer::drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& wvp, NamePositionComponent* npComponent, const f64v3& camPos, float blendFactor, NamePositionComponent* parentNpComponent /*= nullptr*/) {
+void OrbitRenderer::drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& wvp, const f64v3& camPos, float blendFactor, SpaceBodyComponent* parentCmp /*= nullptr*/) {
 
     // Lazily generate mesh
     if (cmp.vbo == 0) generateOrbitEllipse(cmp, colorProgram);
     if (cmp.numVerts == 0) return;
     
     f32m4 w(1.0f);
-    if (parentNpComponent) {
-        setMatrixTranslation(w, parentNpComponent->position - camPos);
+    if (parentCmp) {
+        setMatrixTranslation(w, parentCmp->position - camPos);
     } else {
         setMatrixTranslation(w, -camPos);
     }

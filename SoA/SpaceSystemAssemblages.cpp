@@ -172,7 +172,7 @@ vecs::ComponentID SpaceSystemAssemblages::addAtmosphereComponent(SpaceSystem* sp
                                                                  f32v3 wavelength, f32 oblateness /*= 0.0f*/) {
     vecs::ComponentID aCmpId = spaceSystem->addComponent(SPACE_SYSTEM_CT_ATMOSPHERE_NAME, entity);
     auto& aCmp = spaceSystem->atmosphere.get(aCmpId);
-    aCmp.namePositionComponent = namePositionComponent;
+    aCmp.bodyComponent = namePositionComponent;
     aCmp.planetRadius = planetRadius;
     aCmp.radius = radius;
     aCmp.oblateness = oblateness;
@@ -197,7 +197,7 @@ vecs::ComponentID SpaceSystemAssemblages::addPlanetRingsComponent(SpaceSystem* s
         return 0;
     }
     auto& prCmp = spaceSystem->planetRings.get(prCmpId);
-    prCmp.namePositionComponent = namePositionComponent;
+    prCmp.bodyComponent = namePositionComponent;
     prCmp.rings.resize(rings.size());
     for (size_t i = 0; i < rings.size(); i++) {
         auto& r1 = prCmp.rings[i];
@@ -220,7 +220,7 @@ vecs::ComponentID SpaceSystemAssemblages::addCloudsComponent(SpaceSystem* spaceS
 
     vecs::ComponentID cCmpId = spaceSystem->addComponent(SPACE_SYSTEM_CT_CLOUDS_NAME, entity);
     auto& cCmp = spaceSystem->clouds.get(cCmpId);
-    cCmp.namePositionComponent = namePositionComponent;
+    cCmp.bodyComponent = namePositionComponent;
     cCmp.planetRadius = planetRadius;
     cCmp.height = height;
     cCmp.color = color;
@@ -236,8 +236,7 @@ void SpaceSystemAssemblages::removeCloudsComponent(SpaceSystem* spaceSystem, vec
 vecs::ComponentID SpaceSystemAssemblages::addSphericalVoxelComponent(SpaceSystem* spaceSystem, vecs::EntityID entity,
                                                                       vecs::ComponentID sphericalTerrainComponent,
                                                                       vecs::ComponentID farTerrainComponent,
-                                                                      vecs::ComponentID axisRotationComponent,
-                                                                      vecs::ComponentID namePositionComponent,
+                                                                      vecs::ComponentID spaceBodyComponent,
                                                                       WorldCubeFace worldFace,
                                                                       SoaState* soaState) {
 
@@ -251,8 +250,7 @@ vecs::ComponentID SpaceSystemAssemblages::addSphericalVoxelComponent(SpaceSystem
 
     // Get component handles
     svcmp.sphericalTerrainComponent = sphericalTerrainComponent;
-    svcmp.axisRotationComponent = axisRotationComponent;
-    svcmp.namePositionComponent = namePositionComponent;
+    svcmp.bodyComponent = spaceBodyComponent;
     svcmp.farTerrainComponent = farTerrainComponent;
 
     svcmp.voxelRadius = ftcmp.sphericalTerrainData->radius * VOXELS_PER_KM;
@@ -444,7 +442,7 @@ vecs::ComponentID SpaceSystemAssemblages::addOrbitComponent(SpaceSystem* spaceSy
     oCmp.e = eccentricity;
     oCmp.t = orbitalPeriod;
     oCmp.npID = npComp;
-    oCmp.o = ascendingLong * DEG_TO_RAD;
+    oCmp.n = ascendingLong * DEG_TO_RAD;
     oCmp.p = periapsisLong * DEG_TO_RAD;
     oCmp.i = inclination * DEG_TO_RAD;
     oCmp.startMeanAnomaly = trueAnomaly * DEG_TO_RAD;
@@ -485,7 +483,7 @@ vecs::ComponentID SpaceSystemAssemblages::addSpaceLightComponent(SpaceSystem* sp
     auto& slCmp = spaceSystem->spaceLight.get(slCmpId);
     slCmp.color = color;
     slCmp.intensity = intensity;
-    slCmp.npID = npCmp;
+    slCmp.bodyComponent = npCmp;
     return slCmpId;
 }
 

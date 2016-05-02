@@ -332,7 +332,7 @@ void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
         oCmp.e = propsB->e;
         oCmp.i = propsB->i * DEG_TO_RAD;
         oCmp.p = propsB->p * DEG_TO_RAD;
-        oCmp.o = propsB->n * DEG_TO_RAD;
+        oCmp.n = propsB->n * DEG_TO_RAD;
         oCmp.startMeanAnomaly = propsB->a * DEG_TO_RAD;
     }
 
@@ -349,20 +349,17 @@ void SpaceSystemLoader::initBarycenter(SystemBodyProperties* bary) {
     // Set the barycenter mass
     bary->mass = propsA->mass + propsB->mass;
 
-    auto& barySgCmp = m_spaceSystem->sphericalGravity.getFromEntity(bary->entity);
-    barySgCmp.mass = bary->mass;
-
     { // Calculate A orbit
         f64 massRatio = propsB->mass / (propsA->mass + propsB->mass);
         calculateOrbit(propsA,
-                       barySgCmp.mass,
+                       bary->mass,
                        massRatio);
     }
 
     { // Calculate B orbit
         f64 massRatio = propsA->mass / (propsA->mass + propsB->mass);
         calculateOrbit(propsB,
-                       barySgCmp.mass,
+                       bary->mass,
                        massRatio);
     }
 
@@ -400,7 +397,7 @@ void SpaceSystemLoader::initOrbits() {
         SystemBodyProperties* body = it.second;
         // Calculate the orbit using parent mass
         if (body->parent) {
-            calculateOrbit(body, body->mass);
+            calculateOrbit(body, body->parent->mass);
         }
     }
 }
@@ -409,23 +406,26 @@ void SpaceSystemLoader::initComponents() {
 
     for (auto& it : m_systemBodies) {
         SystemBodyProperties* body = it.second;
-        // Calculate the orbit using parent mass
-        if (body->path.size()) {
-     //       m_bodyLoader.loadBody(m_soaState, body->path, &properties, body);
-        } else {
-            // Default orbit component
-    //        SpaceSystemAssemblages::createOrbit(m_spaceSystem, &properties, body, 0.0);
-        }
-        switch (body->genType) {
-            case SpaceBodyGenerationType::PLANET:
-                break;
-            case SpaceBodyGenerationType::STAR:
-                break;
-            case SpaceBodyGenerationType::GAS_GIANT:
-                break;
-            default:
-                throw 33;
-        }
+
+        // Add the entity and component
+        vecs::EntityID e = m_spaceSystem->addEntity();
+        vecs::ComponentID cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, entity);
+       
+        // Fill out the body component
+        SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cmpID);
+        cmp.diameter = body->diameter;
+        cmp.mass = body->mass;
+
+        cmp.major = body->major;
+        cmp.minor = body->minor;
+        cmp.e = body->e;
+        cmp.t = body->t;
+        cmp.n = body->n * DEG_TO_RAD;
+        cmp.p = body->p * DEG_TO_RAD;
+        cmp.i = body->i * DEG_TO_RAD;
+        cmp.startMeanAnomaly = body->a * DEG_TO_RAD;
+        cmp.currentMeanAnomaly = cmp.startMeanAnomaly;
+        cmp.type = body->type;
     }
 }
 

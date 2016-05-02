@@ -22,6 +22,8 @@
 struct SoaState;
 DECL_VIO(class IOManager);
 
+struct SystemBodyProperties;
+
 class SpaceSystemBodyLoader {
 public:
     void init(vio::IOManager* iom);

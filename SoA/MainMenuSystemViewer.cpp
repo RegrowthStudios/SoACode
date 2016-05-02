@@ -31,8 +31,9 @@ void MainMenuSystemViewer::init(ui32v2 viewport, CinematicCamera* camera,
 
     targetBody("Aldrin");
     // Force target focal point
-    m_camera->setFocalPoint(getTargetPosition() -
-                            f64v3(vmath::normalize(m_camera->getDirection())) * getTargetRadius());
+    const SpaceBodyComponent& cmp = getTarget();
+    m_camera->setFocalPoint(cmp.position -
+                            f64v3(vmath::normalize(m_camera->getDirection())) * (cmp.diameter / 2.0));
 
     // Register events
     startInput();
@@ -49,15 +50,17 @@ void MainMenuSystemViewer::update() {
 
     m_camera->setClippingPlane((f32)(0.1 * KM_PER_M), m_camera->getFarClip());
     // Target closest point on sphere
-    m_camera->setTargetFocalPoint(getTargetPosition() -
-                                  f64v3(vmath::normalize(m_camera->getDirection())) * getTargetRadius());
+    const SpaceBodyComponent& cmp = getTarget();
+    m_camera->setTargetFocalPoint(cmp.position -
+                                  f64v3(vmath::normalize(m_camera->getDirection())) * (cmp.diameter / 2.0));
 
     m_camera->update();
 
-    for (auto& it : m_spaceSystem->namePosition) {
+    for (auto& it : m_spaceSystem->spaceBody) {
         vecs::ComponentID componentID;
+        SpaceBodyComponent& body = it.second;
 
-        f64v3 relativePos = it.second.position - m_camera->getPosition();
+        f64v3 relativePos = body.position - m_camera->getPosition();
         f64 distance = vmath::length(relativePos);
         f64 radiusPixels;
         f64 radius;
@@ -73,21 +76,12 @@ void MainMenuSystemViewer::update() {
 
             // Get a smooth interpolator with hermite
             f32 interpolator = hermite(hoverTime);
-
-            // See if it has a radius
-            componentID = m_spaceSystem->sphericalGravity.getComponentID(it.first);
-            if (componentID) {
-                // Get radius of projected sphere
-                radius = m_spaceSystem->sphericalGravity.get(componentID).radius;
-                radiusPixels = (radius /
-                                (tan((f64)m_camera->getFieldOfView() / 2.0) * distance)) *
-                                ((f64)m_viewport.y / 2.0);
-            } else {
-                radius = 1000.0;
-                radiusPixels = (radius /
-                                (tan((f64)m_camera->getFieldOfView() / 2.0) * distance)) *
-                                ((f64)m_viewport.y / 2.0);
-            }
+   
+            // Get radius of projected sphere
+            radius = body.diameter / 2.0f;
+            radiusPixels = (radius /
+                            (tan((f64)m_camera->getFieldOfView() / 2.0) * distance)) *
+                            ((f64)m_viewport.y / 2.0);  
 
             f32 selectorSize = (f32)(radiusPixels * 2.0 + 3.0);
             if (selectorSize < MIN_SELECTOR_SIZE) selectorSize = MIN_SELECTOR_SIZE;
@@ -129,7 +123,7 @@ void MainMenuSystemViewer::stopInput() {
 }
 
 void MainMenuSystemViewer::targetBody(const nString& name) {
-    for (auto& it : m_spaceSystem->namePosition) {
+    for (auto& it : m_spaceSystem->spaceBody) {
         if (it.second.name == name) {
             targetBody(it.first);
             return;
@@ -141,20 +135,12 @@ void MainMenuSystemViewer::targetBody(vecs::EntityID eid) {
     if (m_targetEntity != eid) {
         TargetChange(eid);
         m_targetEntity = eid;
-        m_targetComponent = m_spaceSystem->namePosition.getComponentID(m_targetEntity);
+        m_targetComponent = m_spaceSystem->spaceBody.getComponentID(m_targetEntity);
     }
 }
 
-f64v3 MainMenuSystemViewer::getTargetPosition() {
-    return m_spaceSystem->namePosition.get(m_targetComponent).position;
-}
-
-f64 MainMenuSystemViewer::getTargetRadius() {
-    return m_spaceSystem->sphericalGravity.getFromEntity(m_targetEntity).radius;
-}
-
-nString MainMenuSystemViewer::getTargetName() {
-    return m_spaceSystem->namePosition.get(m_targetComponent).name;
+const SpaceBodyComponent& MainMenuSystemViewer::getTarget() const {
+    return m_spaceSystem->spaceBody.get(m_targetComponent);
 }
 
 void MainMenuSystemViewer::onMouseButtonDown(Sender sender, const vui::MouseButtonEvent& e) {
@@ -169,7 +155,7 @@ void MainMenuSystemViewer::onMouseButtonDown(Sender sender, const vui::MouseButt
             if (it.second.isHovering) {
 
                 // Check distance so we pick only the closest one
-                f64v3 pos = m_spaceSystem->namePosition.getFromEntity(it.first).position;
+                f64v3 pos = m_spaceSystem->spaceBody.getFromEntity(it.first).position;
                 f64 dist = vmath::length(pos - m_camera->getPosition());
                 if (dist < closestDist) {
                     closestDist = dist;
@@ -231,25 +217,21 @@ void MainMenuSystemViewer::pickStartLocation(vecs::EntityID eid) {
         1.0f - (m_mouseCoords.y / m_viewport.y) * 2.0f);
     f64v3 pickRay(m_camera->getPickRay(ndc));
 
-    vecs::ComponentID cid = m_spaceSystem->namePosition.getComponentID(eid);
+    vecs::ComponentID cid = m_spaceSystem->spaceBody.getComponentID(eid);
     if (!cid) return;
-    f64v3 centerPos = m_spaceSystem->namePosition.get(cid).position;
+    SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cid);
+    f64v3 centerPos = cmp.position;
     f64v3 pos = f64v3(centerPos - m_camera->getPosition());
-
-    cid = m_spaceSystem->sphericalGravity.getComponentID(eid);
-    if (!cid) return;
-    f64 radius = m_spaceSystem->sphericalGravity.get(cid).radius;
+    f64 radius = cmp.diameter / 2.0;
 
     // Compute the intersection
     f64v3 normal, hitpoint;
     f64 distance;
     if (IntersectionUtils::sphereIntersect(pickRay, f64v3(0.0f), pos, radius, hitpoint, distance, normal)) {
         hitpoint -= pos;
-        cid = m_spaceSystem->axisRotation.getComponentID(eid);
-        if (cid) {
-            f64q rot = m_spaceSystem->axisRotation.get(cid).currentOrientation;
-            hitpoint = vmath::inverse(rot) * hitpoint;
-        }
+
+        f64q rot = cmp.currentOrientation;
+        hitpoint = vmath::inverse(rot) * hitpoint;
 
         // Compute face and grid position
         PlanetHeightData heightData;

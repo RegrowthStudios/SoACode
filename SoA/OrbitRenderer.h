@@ -19,15 +19,14 @@
 
 class SpaceSystem;
 struct SpaceBodyComponent;
-struct NamePositionComponent;
 
 DECL_VG(class GLProgram)
 
 class OrbitRenderer {
 public:
     /// Draws the ellipse
-    void drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& WVP, NamePositionComponent* npComponent,
-                  const f64v3& camPos, float blendFactor, NamePositionComponent* parentNpComponent = nullptr);
+    void drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& WVP,
+                  const f64v3& camPos, float blendFactor, SpaceBodyComponent* parentCmp = nullptr);
 private:
     void OrbitRenderer::generateOrbitEllipse(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram);
 };

@@ -41,8 +41,8 @@ void SphericalTerrainComponentRenderer::draw(SphericalTerrainComponent& cmp,
                                              const f32v3& lightDir,
                                              const f64v3& position,
                                              const f32 zCoef,
-                                             const SpaceLightComponent* spComponent,
-                                             const AxisRotationComponent* arComponent,
+                                             const SpaceLightComponent* slComponent,
+                                             const SpaceBodyComponent* bodyComponent,
                                              const AtmosphereComponent* aComponent) {
     if (cmp.patches) {
         
@@ -53,7 +53,7 @@ void SphericalTerrainComponentRenderer::draw(SphericalTerrainComponent& cmp,
         // Draw spherical patches
         if (cmp.alpha >= 1.0f) {
             cmp.meshManager->drawSphericalMeshes(relativeCameraPos, camera,
-                                                 arComponent->currentOrientation,
+                                                 bodyComponent->currentOrientation,
                                                  m_terrainProgram, m_waterProgram,
                                                  lightDir,
                                                  1.0f,

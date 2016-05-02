@@ -99,8 +99,7 @@ namespace SpaceSystemAssemblages {
     extern vecs::ComponentID addSphericalVoxelComponent(SpaceSystem* spaceSystem, vecs::EntityID entity,
                                                          vecs::ComponentID sphericalTerrainComponent,
                                                          vecs::ComponentID farTerrainComponent,
-                                                         vecs::ComponentID axisRotationComponent,
-                                                         vecs::ComponentID namePositionComponent,
+                                                         vecs::ComponentID spaceBodyComponent,
                                                          WorldCubeFace worldFace,
                                                          SoaState* soaState);
     extern void removeSphericalVoxelComponent(SpaceSystem* spaceSystem, vecs::EntityID entity);

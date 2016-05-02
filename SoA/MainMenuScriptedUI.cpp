@@ -128,15 +128,15 @@ vecs::EntityID MainMenuScriptedUI::getTargetBody() {
 
 nString MainMenuScriptedUI::getBodyName(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return state->spaceSystem->namePosition.getFromEntity(entity).name;
+    return state->spaceSystem->spaceBody.getFromEntity(entity).name;
 }
 
 nString MainMenuScriptedUI::getBodyParentName(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    auto parentOID = state->spaceSystem->spaceBody.getFromEntity(entity).parentOrbId;
-    if (parentOID == 0) return "None";
-    auto parentNpID = state->spaceSystem->spaceBody.get(parentOID).npID;
-    return state->spaceSystem->namePosition.get(parentNpID).name;
+    auto parentID = state->spaceSystem->spaceBody.getFromEntity(entity).parentBodyComponent;
+    if (parentID == 0) return "None";
+    auto cmpID = state->spaceSystem->spaceBody.get(parentID).parentBodyComponent;
+    return state->spaceSystem->spaceBody.get(cmpID).name;
 }
 
 nString MainMenuScriptedUI::getBodyTypeName(vecs::EntityID entity) {
@@ -168,17 +168,17 @@ nString MainMenuScriptedUI::getBodyTypeName(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getBodyMass(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->sphericalGravity.getFromEntity(entity).mass;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).mass;
 }
 
 f32 MainMenuScriptedUI::getBodyDiameter(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->sphericalGravity.getFromEntity(entity).radius * 2.0f;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).diameter;
 }
 
 f32 MainMenuScriptedUI::getBodyRotPeriod(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->axisRotation.getFromEntity(entity).period;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).axisPeriod;
 }
 
 f32 MainMenuScriptedUI::getBodyOrbPeriod(vecs::EntityID entity) {
@@ -188,7 +188,7 @@ f32 MainMenuScriptedUI::getBodyOrbPeriod(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getBodyAxialTilt(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->axisRotation.getFromEntity(entity).tilt;
+    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).tilt;
 }
 
 f32 MainMenuScriptedUI::getBodyEccentricity(vecs::EntityID entity) {
@@ -208,16 +208,16 @@ f32 MainMenuScriptedUI::getBodySemiMajor(vecs::EntityID entity) {
 
 f32 MainMenuScriptedUI::getGravityAccel(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    auto& sgCmp = state->spaceSystem->sphericalGravity.getFromEntity(entity);
-    f32 rad = (f32)(sgCmp.radius * M_PER_KM);
-    return (f32)(M_G * sgCmp.mass / (rad * rad));
+    auto& cmp = state->spaceSystem->spaceBody.getFromEntity(entity);
+    f32 rad = (f32)(cmp.diameter * M_PER_KM / 2.0);
+    return (f32)(M_G * cmp.mass / (rad * rad));
 }
 
 f32 MainMenuScriptedUI::getVolume(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
     // TODO(Ben): Handle oblateness
-    auto& sgCmp = state->spaceSystem->sphericalGravity.getFromEntity(entity);
-    f32 rad = (f32)(sgCmp.radius * M_PER_KM);
+    auto& cmp = state->spaceSystem->spaceBody.getFromEntity(entity);
+    f32 rad = (f32)(cmp.diameter * M_PER_KM / 2.0);
     return (f32)(4.0 / 3.0 * M_PI * rad * rad * rad);
 }
 
@@ -225,5 +225,5 @@ f32 MainMenuScriptedUI::getAverageDensity(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
     // TODO(Ben): This is a double lookup
     f32 volume = getVolume(entity);
-    return (f32)(state->spaceSystem->sphericalGravity.getFromEntity(entity).mass / volume);
+    return (f32)(state->spaceSystem->spaceBody.getFromEntity(entity).mass / volume);
 }
