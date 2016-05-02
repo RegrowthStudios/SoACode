@@ -97,20 +97,6 @@ KEG_TYPE_DECL(CloudsComponent);
 
 
 /************************************************************************/
-/* AxisRotationComponent                                                */
-/************************************************************************/
-struct AxisRotationComponent {
-    f64q axisOrientation; ///< Axis of rotation
-    f64q currentOrientation; ///< Current orientation with axis and rotation
-    f64q invCurrentOrientation; ///< Inverse of currentOrientation
-    f64 period = 0.0; ///< Period of rotation in seconds
-    f64 currentRotation = 0.0; ///< Current rotation about axis in radians
-    f32 tilt = 0.0f;
-};
-typedef vecs::ComponentTable<AxisRotationComponent> AxisRotationComponentTable;
-KEG_TYPE_DECL(AxisRotationComponent);
-
-/************************************************************************/
 /* SpaceLightComponent                                                  */
 /************************************************************************/
 struct SpaceLightComponent {
@@ -135,6 +121,14 @@ struct SpaceBodyComponent {
     // General properties
     f64 diameter = 0.0; ///< Radius in KM
     f64 mass = 0.0; ///< Mass in KG
+
+    // Axis rotation properties
+    f64q axisOrientation; ///< Axis of rotation
+    f64q currentOrientation; ///< Current orientation with axis and rotation
+    f64q invCurrentOrientation; ///< Inverse of currentOrientation (Do we really need to cache this?)
+    f64 period = 0.0; ///< Period of rotation in seconds
+    f64 currentRotation = 0.0; ///< Current rotation about axis in radians
+    f32 tilt = 0.0f; // I feel like this isn't needed?
 
     // Orbit data
     f64 major = 0.0; ///< Semi-major of the ellipse in KM
@@ -203,8 +197,7 @@ struct SphericalVoxelComponent {
 
     vecs::ComponentID sphericalTerrainComponent = 0;
     vecs::ComponentID farTerrainComponent = 0;
-    vecs::ComponentID namePositionComponent = 0;
-    vecs::ComponentID axisRotationComponent = 0;
+    vecs::ComponentID spaceBodyComponent = 0;
 
     /// The threadpool for generating chunks and meshes
     vcore::ThreadPool<WorkerData>* threadPool = nullptr;
@@ -222,9 +215,10 @@ KEG_TYPE_DECL(SphericalVoxelComponent);
 /* SphericalTerrainComponent                                            */
 /************************************************************************/
 struct SphericalTerrainComponent {
-    vecs::ComponentID namePositionComponent = 0;
-    vecs::ComponentID axisRotationComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
     vecs::ComponentID sphericalVoxelComponent = 0;
+
+    // TODO(Ben): Get rid of farterraincomponent?
     vecs::ComponentID farTerrainComponent = 0;
 
     TerrainPatch* patches = nullptr; ///< Buffer for top level patches
@@ -251,8 +245,7 @@ KEG_TYPE_DECL(SphericalTerrainComponent);
 /* GasGiantComponent                                                    */
 /************************************************************************/
 struct GasGiantComponent {
-    vecs::ComponentID namePositionComponent = 0;
-    vecs::ComponentID axisRotationComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
     f64 radius = 0.0;
     f32 oblateness = 1.0f;
     nString colorMapPath = "";
@@ -266,8 +259,7 @@ KEG_TYPE_DECL(GasGiantComponent);
 /* StarComponent                                                        */
 /************************************************************************/
 struct StarComponent {
-    vecs::ComponentID namePositionComponent = 0;
-    vecs::ComponentID axisRotationComponent = 0;
+    vecs::ComponentID bodyComponent = 0;
     f64 mass = 0.0; ///< In KG
     f64 radius = 0.0; ///< In KM
     f64 temperature = 0.0; ///< In kelvin
