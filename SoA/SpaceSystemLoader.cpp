@@ -177,9 +177,17 @@ bool SpaceSystemLoader::loadSystemProperties() {
             // Set actual name, overwriting parent name
             body->name = name;
            
-            // Special case for barycenters
-            if (body->bodyType == SpaceBodyType::BARYCENTER) {
-                m_barycenters[name] = body;
+            // Special cases
+            switch (body->bodyType) {
+                case SpaceBodyType::BARYCENTER:
+                    body->genType = SpaceBodyGenerationType::NONE;
+                    m_barycenters[name] = body;
+                    break;
+                case SpaceBodyType::STAR:
+                    body->genType = SpaceBodyGenerationType::STAR;
+                    break;
+                default:
+                    break;
             }
         }
     });

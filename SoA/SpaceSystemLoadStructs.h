@@ -21,6 +21,9 @@ struct PlanetGenData;
 #include <Vorb/io/Keg.h>
 #include <Vorb/ecs/Entity.h>
 
+/************************************************************************/
+/* SpaceBodyGenerationType                                              */
+/************************************************************************/
 enum class SpaceBodyGenerationType {
     NONE,
     PLANET,
@@ -29,6 +32,9 @@ enum class SpaceBodyGenerationType {
 };
 KEG_TYPE_DECL(SpaceBodyGenerationType);
 
+/************************************************************************/
+/* SpaceBodyType                                                        */
+/************************************************************************/
 enum class SpaceBodyType {
     NONE,
     BARYCENTER,
@@ -42,6 +48,9 @@ enum class SpaceBodyType {
 };
 KEG_TYPE_DECL(SpaceBodyType);
 
+/************************************************************************/
+/* TrojanType                                                          */
+/************************************************************************/
 enum class TrojanType {
     NONE,
     L4,
@@ -49,6 +58,9 @@ enum class TrojanType {
 };
 KEG_TYPE_DECL(TrojanType);
 
+/************************************************************************/
+/* AtmosphereProperties                                                 */
+/************************************************************************/
 struct AtmosphereProperties {
     f32 kr = 0.0025f;
     f32 km = 0.0020f;
@@ -58,6 +70,9 @@ struct AtmosphereProperties {
 };
 KEG_TYPE_DECL(AtmosphereProperties);
 
+/************************************************************************/
+/* PlanetRingProperties                                                 */
+/************************************************************************/
 struct PlanetRingProperties {
     f32 innerRadius = 0.0f;
     f32 outerRadius = 0.0f;
@@ -67,6 +82,9 @@ struct PlanetRingProperties {
 };
 KEG_TYPE_DECL(PlanetRingProperties);
 
+/************************************************************************/
+/* CloudsProperties                                                     */
+/************************************************************************/
 struct CloudsProperties {
     f32v3 color = f32v3(1.0f, 1.0f, 1.0f);
     f32v3 scale = f32v3(1.0f, 1.5f, 1.0f);
@@ -74,6 +92,9 @@ struct CloudsProperties {
 };
 KEG_TYPE_DECL(CloudsProperties);
 
+/************************************************************************/
+/* PlanetProperties                                                     */
+/************************************************************************/
 struct PlanetProperties {
     PlanetGenData* planetGenData = nullptr;
     AtmosphereProperties atmosphere;
@@ -81,11 +102,17 @@ struct PlanetProperties {
 };
 KEG_TYPE_DECL(PlanetProperties);
 
+/************************************************************************/
+/* StarProperties                                                       */
+/************************************************************************/
 struct StarProperties {
     f64 surfaceTemperature = 0.0; ///< temperature in kelvin
 };
 KEG_TYPE_DECL(StarProperties);
 
+/************************************************************************/
+/* GasGiantProperties                                                   */
+/************************************************************************/
 struct GasGiantProperties {
     f32 oblateness = 0.0;
     nString colorMap = "";
@@ -94,6 +121,9 @@ struct GasGiantProperties {
 };
 KEG_TYPE_DECL(GasGiantProperties);
 
+/************************************************************************/
+/* SystemBodyProperties                                                 */
+/************************************************************************/
 struct SystemBodyProperties {
 
     nString name = ""; ///< Name of the body, doubles as parent name during parsing
@@ -111,7 +141,7 @@ struct SystemBodyProperties {
 public: // Type information
 
     SpaceBodyType bodyType = SpaceBodyType::NONE; ///< Specific type of object
-    SpaceBodyGenerationType genType = SpaceBodyGenerationType::NONE; ///< How its generated
+    SpaceBodyGenerationType genType = SpaceBodyGenerationType::PLANET; //< How its generated
     void* genTypeProperties = nullptr; ///< genType specific data
 
     union { // Gentype specific properties
