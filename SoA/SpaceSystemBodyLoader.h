@@ -24,12 +24,13 @@ DECL_VIO(class IOManager);
 
 struct SystemBodyProperties;
 
+
 class SpaceSystemBodyLoader {
 public:
     void init(vio::IOManager* iom);
 
     bool SpaceSystemBodyLoader::loadBody(const SoaState* soaState, const nString& filePath,
-                                    const SystemOrbitKegProperties* sysProps, SystemBodyProperties* body,
+                                    SystemBodyProperties* body,
                                     vcore::RPCManager* glrpc = nullptr);
 
 private:

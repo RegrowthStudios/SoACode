@@ -178,7 +178,7 @@ bool SpaceSystemLoader::loadSystemProperties() {
             body->name = name;
            
             // Special case for barycenters
-            if (body->type == SpaceBodyType::BARYCENTER) {
+            if (body->bodyType == SpaceBodyType::BARYCENTER) {
                 m_barycenters[name] = body;
             }
         }
@@ -425,7 +425,7 @@ void SpaceSystemLoader::initComponents() {
         cmp.i = body->i * DEG_TO_RAD;
         cmp.startMeanAnomaly = body->a * DEG_TO_RAD;
         cmp.currentMeanAnomaly = cmp.startMeanAnomaly;
-        cmp.type = body->type;
+        cmp.type = body->bodyType;
     }
 }
 

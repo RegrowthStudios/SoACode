@@ -32,7 +32,6 @@ struct SphericalTerrainComponent;
 struct SphericalVoxelComponent;
 struct StarProperties;
 struct SystemBodyProperties;
-struct SystemOrbitKegProperties;
 
 DECL_VG(
     class GLProgram;
