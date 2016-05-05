@@ -27,8 +27,8 @@
 
 // TODO(Ben): Integers?
 #define SPACE_SYSTEM_CT_SPACEBODY_NAME "SpaceBody"
-#define SPACE_SYSTEM_CT_SPHERICALTERRAIN_NAME "SphericalTerrain"
-#define SPACE_SYSTEM_CT_FARTERRAIN_NAME "FarTerrain"
+
+
 #define SPACE_SYSTEM_CT_GASGIANT_NAME "GasGiant"
 #define SPACE_SYSTEM_CT_STAR_NAME "Star"
 #define SPACE_SYSTEM_CT_SPHERICALVOXEL_NAME "SphericalVoxel"
@@ -49,7 +49,6 @@ struct GasGiantProperties;
 struct PlanetProperties;
 struct StarProperties;
 struct SystemBodyProperties;
-struct SystemOrbitKegProperties;
 
 DECL_VG(class TextureRecycler)
 
@@ -67,10 +66,8 @@ public:
     /* Component Tables                                                     */
     /************************************************************************/
     SpaceBodyComponentTable spaceBody;
-    SphericalTerrainComponentTable sphericalTerrain;
     GasGiantComponentTable gasGiant;
     StarComponentTable star;
-    FarTerrainComponentTable farTerrain;
     SpaceLightComponentTable spaceLight;
     AtmosphereComponentTable atmosphere;
     PlanetRingsComponentTable planetRings;

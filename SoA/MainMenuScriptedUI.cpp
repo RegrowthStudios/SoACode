@@ -186,11 +186,6 @@ f32 MainMenuScriptedUI::getBodyOrbPeriod(vecs::EntityID entity) {
     return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).t;
 }
 
-f32 MainMenuScriptedUI::getBodyAxialTilt(vecs::EntityID entity) {
-    SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
-    return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).tilt;
-}
-
 f32 MainMenuScriptedUI::getBodyEccentricity(vecs::EntityID entity) {
     SoaState* state = ((MainMenuScreen*)m_ownerScreen)->m_soaState;
     return (f32)state->spaceSystem->spaceBody.getFromEntity(entity).e;

@@ -15,8 +15,8 @@ void SpaceBodyComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
         }
 
         // Update position
-        if (cmp.parent) {
-            SpaceBodyComponent* parentCmp = &spaceSystem->spaceBody.get(cmp.parent);
+        if (cmp.parentBodyComponent) {
+            SpaceBodyComponent* parentCmp = &spaceSystem->spaceBody.get(cmp.parentBodyComponent);
             updatePosition(cmp, parentCmp, time);
         } else {
             updatePosition(cmp, nullptr, time);
@@ -33,7 +33,7 @@ void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT Spac
 
     // 1. Calculate the mean anomaly
     f64 meanAnomaly = (M_2_PI / cmp.t) * time + cmp.startMeanAnomaly;
-    cmp.currentMeanAnomaly = (f32)meanAnomaly;
+    cmp.currentMeanAnomaly = meanAnomaly;
 
     f64 v = calculateTrueAnomaly(meanAnomaly, cmp.e);
   
@@ -59,16 +59,18 @@ void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT Spac
     // TODO(Ben): Cache g INSTEAD of parentMass
     f64 g = sqrt(M_G * KM_PER_M * cmp.parentMass * (2.0 / r - 1.0 / cmp.major)) * KM_PER_M;
     f64 sinwv = sin(w + v);
-    cmp.relativeVelocity.x = -g * sinwv * cosi;
-    cmp.relativeVelocity.y = g * sinwv * sini;
-    cmp.relativeVelocity.z = g * cos(w + v);
+    f64v3 relativeVelocity;
+    relativeVelocity.x = -g * sinwv * cosi;
+    relativeVelocity.y = g * sinwv * sini;
+    relativeVelocity.z = g * cos(w + v);
 
     // If this planet has a parent, make it parent relative
     if (parentCmp) {
-        cmp.velocity = parentCmp->velocity + cmp.relativeVelocity;
+        // TODO(Ben): If the parent updates last, the velocity isn't right.
+        cmp.velocity = parentCmp->velocity + relativeVelocity;
         cmp.position = position + parentCmp->position;
     } else {
-        cmp.velocity = cmp.relativeVelocity;
+        cmp.velocity = relativeVelocity;
         cmp.position = position;
     }
 }

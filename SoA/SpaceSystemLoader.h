@@ -22,7 +22,6 @@
 
 struct GasGiantProperties;
 struct SystemBodyProperties;
-struct SystemOrbitKegProperties;
 class SpaceSystem;
 class PlanetGenLoader;
 

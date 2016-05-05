@@ -8,10 +8,8 @@
 SpaceSystem::SpaceSystem() : vecs::ECS() {
 
     addComponentTable(SPACE_SYSTEM_CT_SPACEBODY_NAME, &spaceBody);
-    addComponentTable(SPACE_SYSTEM_CT_SPHERICALTERRAIN_NAME, &sphericalTerrain);
     addComponentTable(SPACE_SYSTEM_CT_GASGIANT_NAME, &gasGiant);
     addComponentTable(SPACE_SYSTEM_CT_STAR_NAME, &star);
-    addComponentTable(SPACE_SYSTEM_CT_FARTERRAIN_NAME, &farTerrain);
     addComponentTable(SPACE_SYSTEM_CT_SPHERICALVOXEL_NAME, &sphericalVoxel);
     addComponentTable(SPACE_SYSTEM_CT_SPACELIGHT_NAME, &spaceLight);
     addComponentTable(SPACE_SYSTEM_CT_ATMOSPHERE_NAME, &atmosphere);
@@ -21,7 +19,7 @@ SpaceSystem::SpaceSystem() : vecs::ECS() {
 
 SpaceSystem::~SpaceSystem() {
 
-    // TODO: This sucks. Should be an ECS::dispose that does this automatically.
+    // TODO: This sucks. There should be an ECS::dispose that does this automatically.
     for (auto& it : sphericalVoxel) {
         sphericalVoxel.disposeComponent(sphericalVoxel.getComponentID(it.first), it.first);
     }
@@ -30,9 +28,6 @@ SpaceSystem::~SpaceSystem() {
     }
     for (auto& it : sphericalVoxel) {
         sphericalVoxel.disposeComponent(sphericalVoxel.getComponentID(it.first), it.first);
-    }
-    for (auto& it : sphericalTerrain) {
-        sphericalTerrain.disposeComponent(sphericalTerrain.getComponentID(it.first), it.first);
     }
 }
 

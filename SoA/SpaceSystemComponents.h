@@ -129,22 +129,20 @@ struct SpaceBodyComponent {
     f64q invCurrentOrientation; ///< Inverse of currentOrientation (Do we really need to cache this?)
     f64 axisPeriod = 0.0; ///< Period of rotation in seconds
     f64 currentRotation = 0.0; ///< Current rotation about axis in radians
-    f32 tilt = 0.0f; // I feel like this isn't needed?
-
+   
     // Orbit data
-    f64 major = 0.0; ///< Semi-major of the ellipse in KM
+    f64 major = 0.0; ///< Semi-major of the ellipse in KM .
     f64 minor = 0.0; ///< Semi-minor of the ellipse in KM
-    f64 t = 0.0; ///< Period of a full orbit in sec
-    f64 parentMass = 0.0; ///< Mass of the parent in KG (Do we really need this?)
-    f64 startMeanAnomaly = 0.0; ///< Start mean anomaly in rad
-    f64 e = 0.0; ///< Shape of orbit, 0-1
-    f64 n = 0.0; ///< Longitude of the ascending node in rad
-    f64 p = 0.0; ///< Longitude of the periapsis in rad
-    f64 i = 0.0; ///< Inclination in rad
+    f64 t = 0.0; ///< Period of a full orbit in sec .
+    f64 parentMass = 0.0; ///< Mass of the parent in KG (Can cache g instead) .
+    f64 startMeanAnomaly = 0.0; ///< Start mean anomaly in rad .
+    f64 currentMeanAnomaly; // .
+    f64 e = 0.0; ///< Shape of orbit, 0-1 .
+    f64 n = 0.0; ///< Longitude of the ascending node in rad .
+    f64 p = 0.0; ///< Longitude of the periapsis in rad .
+    f64 i = 0.0; ///< Inclination in rad .
     f64v3 velocity = f64v3(0.0); ///< Current velocity relative to space in KM/s
-    f64v3 relativeVelocity = f64v3(0.0); ///< Current velocity relative to parent in KM/s
-    
-    f32 currentMeanAnomaly; // f32???
+   
     SpaceBodyType type; ///< Type of object
     bool isCalculated = false; ///< True when orbit has been calculated
 

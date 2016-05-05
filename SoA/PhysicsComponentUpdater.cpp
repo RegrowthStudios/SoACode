@@ -58,14 +58,12 @@ void PhysicsComponentUpdater::updateVoxelPhysics(GameSystem* gameSystem, SpaceSy
 
     auto& vpcmp = gameSystem->voxelPosition.get(pyCmp.voxelPosition);
     auto& svcmp = spaceSystem->sphericalVoxel.get(vpcmp.parentVoxel);
-    auto& npcmp = spaceSystem->namePosition.get(svcmp.namePositionComponent);
-    auto& arcmp = spaceSystem->axisRotation.get(svcmp.axisRotationComponent);
+    auto& bcmp = spaceSystem->spaceBody.get(svcmp.bodyComponent);
 
     // Apply gravity
     if (spCmp.parentGravity) {
-        auto& gravCmp = spaceSystem->sphericalGravity.get(spCmp.parentGravity);
         f64 height = (vpcmp.gridPosition.pos.y + svcmp.voxelRadius) * M_PER_VOXEL;
-        f64 fgrav = M_G * gravCmp.mass / (height * height);
+        f64 fgrav = M_G * bcmp.mass / (height * height);
         ChunkID id(VoxelSpaceConversions::voxelToChunk(vpcmp.gridPosition));
         ChunkHandle chunk = svcmp.chunkGrids[vpcmp.gridPosition.face].accessor.acquire(id);
         // Don't apply gravity in non generated chunks.
@@ -97,10 +95,10 @@ void PhysicsComponentUpdater::updateVoxelPhysics(GameSystem* gameSystem, SpaceSy
     }
 
     // Compute the relative space position and orientation from voxel position and orientation
-    spCmp.position = arcmp.currentOrientation * VoxelSpaceConversions::voxelToWorld(vpcmp.gridPosition, svcmp.voxelRadius) * KM_PER_VOXEL;
+    spCmp.position = bcmp.currentOrientation * VoxelSpaceConversions::voxelToWorld(vpcmp.gridPosition, svcmp.voxelRadius) * KM_PER_VOXEL;
 
     // TODO(Ben): This is expensive as fuck. Make sure you only do this for components that actually need it
-    spCmp.orientation = arcmp.currentOrientation * VoxelSpaceUtils::calculateVoxelToSpaceQuat(vpcmp.gridPosition, svcmp.voxelRadius) * vpcmp.orientation;
+    spCmp.orientation = bcmp.currentOrientation * VoxelSpaceUtils::calculateVoxelToSpaceQuat(vpcmp.gridPosition, svcmp.voxelRadius) * vpcmp.orientation;
 
     // Check transitions
     // TODO(Ben): This assumes a single player entity!
@@ -141,66 +139,66 @@ void PhysicsComponentUpdater::updateVoxelPhysics(GameSystem* gameSystem, SpaceSy
 void PhysicsComponentUpdater::updateSpacePhysics(GameSystem* gameSystem, SpaceSystem* spaceSystem,
                                                  PhysicsComponent& pyCmp, vecs::EntityID entity) {
 
-    // Get the position component
-    auto& spCmp = gameSystem->spacePosition.get(pyCmp.spacePosition);
+    //// Get the position component
+    //auto& spCmp = gameSystem->spacePosition.get(pyCmp.spacePosition);
 
-    // Apply gravity
-    // TODO(Ben): Optimize and fix with timestep
-    if (spCmp.parentGravity) {
-        auto& gravCmp = spaceSystem->sphericalGravity.get(spCmp.parentGravity);
-        pyCmp.velocity += calculateGravityAcceleration(-spCmp.position, gravCmp.mass);
-    } else {
-        // TODO(Ben): Check gravity on all planets? check transition to parent?
-    }
+    //// Apply gravity
+    //// TODO(Ben): Optimize and fix with timestep
+    //if (spCmp.parentGravity) {
+    //    auto& bodyCmp = spaceSystem->spaceBody.get(spCmp.parentGravity);
+    //    pyCmp.velocity += calculateGravityAcceleration(-spCmp.position, bodyCmp.mass);
+    //} else {
+    //    // TODO(Ben): Check gravity on all planets? check transition to parent?
+    //}
 
-    // Update position
-    spCmp.position += pyCmp.velocity; // * timestep
+    //// Update position
+    //spCmp.position += pyCmp.velocity; // * timestep
 
-    // Check transition to planet
-    // TODO(Ben): This assumes a single player entity!
-    if (spCmp.parentSphericalTerrain) {
-        auto& stCmp = spaceSystem->sphericalTerrain.get(spCmp.parentSphericalTerrain);
-        auto& npCmp = spaceSystem->namePosition.get(stCmp.namePositionComponent);
+    //// Check transition to planet
+    //// TODO(Ben): This assumes a single player entity!
+    //if (spCmp.parentSphericalTerrain) {
+    //    auto& stCmp = spaceSystem->sphericalTerrain.get(spCmp.parentSphericalTerrain);
+    //    auto& npCmp = spaceSystem->namePosition.get(stCmp.namePositionComponent);
 
-        f64 distance = vmath::length(spCmp.position);
-        if (distance <= stCmp.sphericalTerrainData->radius * ENTRY_RADIUS_MULT) {
-            // Mark the terrain component as needing voxels
-            if (!stCmp.needsVoxelComponent) {
-                auto& arCmp = spaceSystem->axisRotation.getFromEntity(stCmp.axisRotationComponent);
-                stCmp.startVoxelPosition = VoxelSpaceConversions::worldToVoxel(arCmp.invCurrentOrientation * spCmp.position * VOXELS_PER_KM,
-                                                                               stCmp.sphericalTerrainData->radius * VOXELS_PER_KM);
-                stCmp.needsVoxelComponent = true;
-                // Start the fade transition
-                stCmp.alpha = TERRAIN_DEC_START_ALPHA;
-            } else if (!pyCmp.voxelPosition && stCmp.sphericalVoxelComponent) { // Check if we need to create the voxelPosition component
+    //    f64 distance = vmath::length(spCmp.position);
+    //    if (distance <= stCmp.sphericalTerrainData->radius * ENTRY_RADIUS_MULT) {
+    //        // Mark the terrain component as needing voxels
+    //        if (!stCmp.needsVoxelComponent) {
+    //            auto& arCmp = spaceSystem->axisRotation.getFromEntity(stCmp.axisRotationComponent);
+    //            stCmp.startVoxelPosition = VoxelSpaceConversions::worldToVoxel(arCmp.invCurrentOrientation * spCmp.position * VOXELS_PER_KM,
+    //                                                                           stCmp.sphericalTerrainData->radius * VOXELS_PER_KM);
+    //            stCmp.needsVoxelComponent = true;
+    //            // Start the fade transition
+    //            stCmp.alpha = TERRAIN_DEC_START_ALPHA;
+    //        } else if (!pyCmp.voxelPosition && stCmp.sphericalVoxelComponent) { // Check if we need to create the voxelPosition component
 
-                auto& arCmp = spaceSystem->axisRotation.getFromEntity(stCmp.axisRotationComponent);
-                // Calculate voxel relative orientation
-                f64q voxOrientation = vmath::inverse(VoxelSpaceUtils::calculateVoxelToSpaceQuat(stCmp.startVoxelPosition,
-                    stCmp.sphericalTerrainData->radius * VOXELS_PER_KM)) * arCmp.invCurrentOrientation * spCmp.orientation;
+    //            auto& arCmp = spaceSystem->axisRotation.getFromEntity(stCmp.axisRotationComponent);
+    //            // Calculate voxel relative orientation
+    //            f64q voxOrientation = vmath::inverse(VoxelSpaceUtils::calculateVoxelToSpaceQuat(stCmp.startVoxelPosition,
+    //                stCmp.sphericalTerrainData->radius * VOXELS_PER_KM)) * arCmp.invCurrentOrientation * spCmp.orientation;
 
-                // Make the voxel position component
-                vecs::ComponentID vpid = GameSystemAssemblages::addVoxelPosition(gameSystem, entity,
-                                                                                  stCmp.sphericalVoxelComponent,
-                                                                                  voxOrientation,
-                                                                                  stCmp.startVoxelPosition);
-                
-                // Make the Chunk Sphere component
-                GameSystemAssemblages::addChunkSphere(gameSystem, entity, vpid, VoxelSpaceConversions::voxelToChunk(stCmp.startVoxelPosition), 7);
-                
-                auto& hcmp = gameSystem->head.getFromEntity(entity);
-                hcmp.voxelPosition = vpid;
-                pyCmp.voxelPosition = vpid;
+    //            // Make the voxel position component
+    //            vecs::ComponentID vpid = GameSystemAssemblages::addVoxelPosition(gameSystem, entity,
+    //                                                                              stCmp.sphericalVoxelComponent,
+    //                                                                              voxOrientation,
+    //                                                                              stCmp.startVoxelPosition);
+    //            
+    //            // Make the Chunk Sphere component
+    //            GameSystemAssemblages::addChunkSphere(gameSystem, entity, vpid, VoxelSpaceConversions::voxelToChunk(stCmp.startVoxelPosition), 7);
+    //            
+    //            auto& hcmp = gameSystem->head.getFromEntity(entity);
+    //            hcmp.voxelPosition = vpid;
+    //            pyCmp.voxelPosition = vpid;
 
-                // TODO(Ben): Calculate velocity change properly
-                //pyCmp.velocity = voxOrientation * pyCmp.velocity;
-                pyCmp.velocity = f64v3(0); // VOXELS_PER_KM;
+    //            // TODO(Ben): Calculate velocity change properly
+    //            //pyCmp.velocity = voxOrientation * pyCmp.velocity;
+    //            pyCmp.velocity = f64v3(0); // VOXELS_PER_KM;
 
-                // Update dependencies for frustum
-                gameSystem->frustum.getFromEntity(entity).voxelPosition = vpid;
-            }
-        }
-    }
+    //            // Update dependencies for frustum
+    //            gameSystem->frustum.getFromEntity(entity).voxelPosition = vpid;
+    //        }
+    //    }
+    //}
 }
 
 #define VOXEL_PUSH CHUNK_WIDTH
