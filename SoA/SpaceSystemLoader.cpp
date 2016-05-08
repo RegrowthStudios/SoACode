@@ -36,18 +36,12 @@
 
 void SpaceSystemLoader::init(const SoaState* soaState) {
     // TODO(Ben): Don't need all this
-    m_soaState = soaState;
     m_spaceSystem = soaState->spaceSystem;
     m_ioManager = soaState->systemIoManager;
-    m_threadpool = soaState->threadPool;
-    m_bodyLoader.init(m_ioManager);
 }
 
 void SpaceSystemLoader::loadStarSystemProperties(const nString& path) {
     m_ioManager->setSearchDirectory((path + "/").c_str());
-
-    // Load the path color scheme
-    //loadPathColors(); // This is rendering.
 
     // Load the system properties
     loadSystemProperties();

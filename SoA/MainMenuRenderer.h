@@ -62,7 +62,7 @@ public:
     void toggleWireframe() { m_wireframe = !m_wireframe; }
     void cycleColorFilter() { m_colorFilter++; if (m_colorFilter > 3) m_colorFilter = 0; }
    
-    const volatile bool& isLoaded() const { return m_isLoaded; }
+    const volatile bool& isLoaded() const { return m_isLoaded.load(); }
 
     /************************************************************************/
     /* Events                                                               */
@@ -84,7 +84,7 @@ private:
     MainMenuScriptedUI* m_mainMenuUI; ///< The main menu UI
 
     std::thread* m_loadThread = nullptr;
-    volatile bool m_isLoaded = false;
+    std::atomic_bool m_isLoaded;
 
     ui32v4 m_viewport; ///< Viewport to draw to
     bool m_showUI = true;

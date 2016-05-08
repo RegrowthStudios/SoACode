@@ -110,31 +110,11 @@ void SoaEngine::initClientState(SoaState* soaState, ClientState& state) {
 }
 
 bool SoaEngine::loadSpaceSystem(SoaState* state, const nString& filePath) {
-
-    AutoDelegatePool pool;
-    vpath path = "SoASpace.log";
-    vfile file;
-    path.asFile(&file);
-    vfstream fs = file.open(vio::FileOpenFlags::READ_WRITE_CREATE);
-    pool.addAutoHook(state->spaceSystem->onEntityAdded, [=] (Sender, vecs::EntityID eid) {
-        fs.write("Entity added: %d\n", eid);
-    });
-    for (auto namedTable : state->spaceSystem->getComponents()) {
-        auto table = state->spaceSystem->getComponentTable(namedTable.first);
-        pool.addAutoHook(table->onEntityAdded, [=] (Sender, vecs::ComponentID cid, vecs::EntityID eid) {
-            fs.write("Component \"%s\" added: %d -> Entity %d\n", namedTable.first.c_str(), cid, eid);
-        });
-    }
-
     // Load system
     SpaceSystemLoader spaceSystemLoader;
     spaceSystemLoader.init(state);
     spaceSystemLoader.loadStarSystemProperties(filePath);
 
-    pool.dispose();
-
-    // TODO(Ben): Getting random crashes in
-    // SpaceSystemLoader::~SpaceSystemLoader()	
     return true;
 }
 

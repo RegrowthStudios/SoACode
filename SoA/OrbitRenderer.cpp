@@ -15,9 +15,10 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
                              vg::GLProgram& colorProgram, const f32m4& WVP,
                              const f64v3& camPos,
                              const color4& color, const SpaceBodyComponent* parentCmp /*= nullptr*/) {
+   
+    if (color.a == 0) return;
 
     // Lazily generate mesh
-
     if (renderData.vbo == 0) generateOrbitEllipse(cmp, renderData, colorProgram);
 
     if (renderData.numVerts == 0) return;
@@ -33,13 +34,12 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
 
     f32v4 colorf(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
 
-    if (color.a == 0) return;
     glUniform4f(colorProgram.getUniform("unColor"), colorf.r, colorf.g, colorf.b, colorf.a);
 
     glUniformMatrix4fv(colorProgram.getUniform("unWVP"), 1, GL_FALSE, &pathMatrix[0][0]);
 
-    float currentAngle = cmp.currentMeanAnomaly - (f32)cmp.startMeanAnomaly;
-    glUniform1f(colorProgram.getUniform("currentAngle"), currentAngle / (float)M_2_PI);
+    f32 currentAngle = (f32)((cmp.currentMeanAnomaly - cmp.startMeanAnomaly) / M_2_PI);
+    glUniform1f(colorProgram.getUniform("currentAngle"), currentAngle);
 
     // Draw the ellipse
     glDepthMask(false);
@@ -48,13 +48,14 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
 
     glBindVertexArray(0);
     glDepthMask(true);
+
 }
 
 void OrbitRenderer::generateOrbitEllipse(const SpaceBodyComponent& cmp, OrbitPathRenderData& renderData, vg::GLProgram& colorProgram) {
 
     std::vector <OrbitPathRenderData::Vertex> verts;
     { // Generate the mesh
-        static const int NUM_VERTS = 2880;
+        static const int NUM_VERTS = 3000;
         verts.resize(NUM_VERTS + 1);
         f64 timePerDeg = cmp.t / (f64)NUM_VERTS;
 

@@ -67,12 +67,9 @@ private:
                         f64 parentMass,
                         f64 binaryMassRatio = 0.0);
 
-    SpaceSystemBodyLoader m_bodyLoader;
-    
-    const SoaState* m_soaState = nullptr;
+
     SpaceSystem* m_spaceSystem;
     vio::IOManager* m_ioManager = nullptr;
-    vcore::ThreadPool<WorkerData>* m_threadpool = nullptr;
     std::map<nString, SystemBodyProperties*> m_barycenters;
     std::map<nString, SystemBodyProperties*> m_systemBodies;
    // std::map<nString, vecs::EntityID> m_bodyLookupMap;

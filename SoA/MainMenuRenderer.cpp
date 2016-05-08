@@ -27,6 +27,7 @@ void MainMenuRenderer::init(vui::GameWindow* window, StaticLoadContext& context,
     m_commonState = commonState;
     m_state = m_commonState->state;
     m_stages = &m_commonState->stages;
+    m_isLoaded.store(false);
 
     vui::InputDispatcher::window.onResize += makeDelegate(*this, &MainMenuRenderer::onWindowResize);
 
@@ -83,8 +84,6 @@ void MainMenuRenderer::hook() {
 }
 
 void MainMenuRenderer::load(StaticLoadContext& context) {
-    m_isLoaded = false;
-
     // Spin of thread to handle setting up load so we don't wait at all
     m_loadThread = new std::thread([&]() {
         size_t i = 0;
@@ -141,7 +140,7 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
 
         context.blockUntilFinished();
 
-        m_isLoaded = true;
+        m_isLoaded.store(true);
     });
     m_loadThread->detach();
 }
