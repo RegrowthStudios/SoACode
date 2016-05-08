@@ -417,13 +417,21 @@ void SpaceSystemLoader::initComponents() {
 
     for (auto& it : m_systemBodies) {
         SystemBodyProperties* body = it.second;
+        vecs::ComponentID cmpID;
 
-        // Add the entity and component
-        vecs::EntityID e = m_spaceSystem->addEntity();
-        vecs::ComponentID cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, e);
-       
+        // Check if our entity already exists (Created by child)
+        if (body->entity) {
+            cmpID = m_spaceSystem->spaceBody.getComponentID(body->entity);
+        } else {
+            // Add the entity and component
+            vecs::EntityID e = m_spaceSystem->addEntity();
+            cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, e);
+            body->entity = e;
+        }
+
         // Fill out the body component
         SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cmpID);
+        cmp.name = body->name;
         cmp.diameter = body->diameter;
         cmp.mass = body->mass;
 
@@ -437,6 +445,24 @@ void SpaceSystemLoader::initComponents() {
         cmp.startMeanAnomaly = body->a * DEG_TO_RAD;
         cmp.currentMeanAnomaly = cmp.startMeanAnomaly;
         cmp.type = body->bodyType;
+
+        // Check if parent exists
+        if (body->parent) {
+            auto& pit = m_systemBodies.find(body->parent->name);
+            vorb_assert(pit != m_systemBodies.end(), "Body has parent that doesn't exist.");
+
+            SystemBodyProperties* parent = pit->second;
+            // Check if parent has an entity
+            if (parent->entity) {
+                cmp.parentBodyComponent = m_spaceSystem->spaceBody.getComponentID(parent->entity);
+            } else {
+                // Make the parent entity
+                vecs::EntityID pe = m_spaceSystem->addEntity();
+                vecs::ComponentID pcmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, pe);
+                parent->entity = pe;
+                cmp.parentBodyComponent = pcmpID;
+            }
+        }
     }
 }
 

@@ -18,7 +18,8 @@ void SpaceBodyComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
         if (cmp.parentBodyComponent) {
             SpaceBodyComponent* parentCmp = &spaceSystem->spaceBody.get(cmp.parentBodyComponent);
             updatePosition(cmp, parentCmp, time);
-        } else {
+        } else if (cmp.major) {
+            // If it has no parent, but it does have a major axis, then it has an orbit.
             updatePosition(cmp, nullptr, time);
         }
         
@@ -26,7 +27,7 @@ void SpaceBodyComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
 }
 
 void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT SpaceBodyComponent* parentCmp, f64 time) {
-    assert(cmp.major != 0.0);
+
     // TODO(Ben): There is potential for more cacheing in here
     /// Calculates position as a function of time
     /// http://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion#Position_as_a_function_of_time

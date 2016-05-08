@@ -190,7 +190,7 @@ void MainMenuScreen::initRenderer() {
 
 void MainMenuScreen::initUI() {
     const ui32v2& vdims = m_window->getViewportDims();
-    m_ui.init("Data/UI/Forms/main_menu.form.lua", this, &m_app->getWindow(), f32v4(0.0f, 0.0f, (f32)vdims.x, (f32)vdims.y), &m_formFont);
+  //  m_ui.init("Data/UI/Forms/main_menu.form.lua", this, &m_app->getWindow(), f32v4(0.0f, 0.0f, (f32)vdims.x, (f32)vdims.y), &m_formFont);
 }
 
 void MainMenuScreen::loadGame(const nString& fileName) {
@@ -258,7 +258,7 @@ void MainMenuScreen::initSaveIomanager(const vio::Path& savePath) {
 }
 
 void MainMenuScreen::reloadUI() {
-    m_ui.dispose();
+  //  m_ui.dispose();
     initUI();
 
     m_shouldReloadUI = false;
