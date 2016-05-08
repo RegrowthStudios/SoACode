@@ -26,6 +26,7 @@
 #include "PauseMenu.h"
 #include "SoaController.h"
 #include "DevConsoleView.h"
+#include "VoxelEditor.h" ///< TODO(Ben): Could improve compile times
 
 class App;
 class GameStartState;
@@ -139,6 +140,8 @@ private:
 
     MTRenderStateManager m_renderStateManager; ///< Manages the triple buffered render state
     const MTRenderState* m_prevRenderState = nullptr; ///< Render state use for previous draw
+
+    VoxelEditor m_voxelEditor; ///< TODO(Ben): Maybe go somewhere else?
 
     std::mutex m_reloadLock;
     bool m_shouldReloadTarget = false;

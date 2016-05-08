@@ -251,9 +251,6 @@
     <ClInclude Include="Frustum.h">
       <Filter>SOA Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>SOA Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="GeometrySorter.h">
       <Filter>SOA Files\Rendering</Filter>
     </ClInclude>
@@ -562,9 +559,6 @@
     </ClInclude>
     <ClInclude Include="TestGasGiantScreen.h">
       <Filter>SOA Files\Screens\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadTaskStarSystem.h">
-      <Filter>SOA Files\Screens\Load\Tasks</Filter>
     </ClInclude>
     <ClInclude Include="LoadTaskTextures.h">
       <Filter>SOA Files\Screens\Load\Tasks</Filter>
@@ -927,9 +921,6 @@
     </ClCompile>
     <ClCompile Include="Frustum.cpp">
       <Filter>SOA Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>SOA Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="GeometrySorter.cpp">
       <Filter>SOA Files\Rendering</Filter>

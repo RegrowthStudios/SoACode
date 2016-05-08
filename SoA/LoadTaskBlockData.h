@@ -4,7 +4,6 @@
 #include "BlockTextureLoader.h"
 #include "BlockTexturePack.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "LoadContext.h"
 #include "LoadMonitor.h"
 

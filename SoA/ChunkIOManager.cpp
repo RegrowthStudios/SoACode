@@ -15,7 +15,6 @@
 #include "BlockData.h"
 #include "Chunk.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "SoaOptions.h"
 
 ChunkIOManager::ChunkIOManager(const nString& saveDir) :

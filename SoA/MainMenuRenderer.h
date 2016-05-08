@@ -21,12 +21,6 @@
 #include <Vorb/Events.hpp>
 #include <Vorb/graphics/GBuffer.h>
 
-#include "ExposureCalcRenderStage.h"
-#include "SpaceSystemRenderStage.h"
-#include "ColorFilterRenderStage.h"
-#include "SkyboxRenderStage.h"
-#include "HdrRenderStage.h"
-#include "BloomRenderStage.h"
 #include "LoadContext.h"
 
 /// Forward declarations
@@ -36,26 +30,29 @@ class MainMenuScriptedUI;
 class MainMenuSystemViewer;
 class SpaceSystem;
 struct CommonState;
+struct CommonStateRenderStages;
+
 struct SoaState;
 DECL_VUI(struct WindowResizeEvent; class GameWindow);
 
 class MainMenuRenderer {
 public:
-    /// Initializes the pipeline and passes dependencies
+    /// Initializes the renderer and fills context with anticipated work
     void init(vui::GameWindow* window, StaticLoadContext& context,
               MainMenuScreen* mainMenuScreen, CommonState* commonState);
 
-    void hook();
-
-    // Is asynchronous. Check isLoaded
-    void load(StaticLoadContext& context);
-
     void dispose(StaticLoadContext& context);
 
-    /// Renders the pipeline
-    void render();
+    /// Hooks render stages in to any dependencies
+    void hook();
 
-    void onWindowResize(Sender s, const vui::WindowResizeEvent& e);
+    /// Asynchronously loads each render stage.
+    /// Will not be complete when load() returns.
+    /// Check isLoaded() to see when it is finished.
+    /// Context should be processed on an OpenGL thread.
+    void load(StaticLoadContext& context);
+
+    void render();
 
     void takeScreenshot() { m_shouldScreenshot = true; }
 
@@ -67,11 +64,10 @@ public:
    
     const volatile bool& isLoaded() const { return m_isLoaded; }
 
-    struct {    
-        ColorFilterRenderStage colorFilter;
-        ExposureCalcRenderStage exposureCalc;    
-        BloomRenderStage bloom;
-    } stages;
+    /************************************************************************/
+    /* Events                                                               */
+    /************************************************************************/
+    void onWindowResize(Sender s, const vui::WindowResizeEvent& e);
 
 private:
     void resize();
@@ -81,6 +77,7 @@ private:
     CommonState* m_commonState = nullptr;
     SoaState* m_state = nullptr;
     MainMenuScreen* m_mainMenuScreen = nullptr;
+    CommonStateRenderStages* m_stages = nullptr;
 
     vg::GBuffer m_hdrTarget; ///< Framebuffer needed for the HDR rendering
     vg::RTSwapChain<2> m_swapChain; ///< Swap chain of framebuffers used for post-processing

@@ -1,6 +1,5 @@
 #pragma once
 #include "LoadMonitor.h"
-#include "GameManager.h"
 #include "SoaOptions.h"
 #include "PlanetGenData.h"
 

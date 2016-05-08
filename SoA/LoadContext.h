@@ -103,12 +103,13 @@ public:
     }
 
     void blockUntilFinished() {
+        // Block on the last task
         if (m_freeTask) m_glRPCs[m_freeTask - 1].block();
     }
 
     // Call this when work is completed to free memory used by GLRPCs.
     void end() {
-        delete[] m_glRPCs;
+        delete[] m_glRPCs; ///< TODO(Ben): Crash here
         m_glRPCs = nullptr;
         m_numTasks = 0;
         m_freeTask = 0;

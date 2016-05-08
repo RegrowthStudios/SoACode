@@ -10,7 +10,6 @@
 #include "CommonState.h"
 #include "DebugRenderer.h"
 #include "DevScreen.h"
-#include "GameManager.h"
 #include "GameplayLoadScreen.h"
 #include "GameplayScreen.h"
 #include "InitScreen.h"

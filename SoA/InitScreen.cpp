@@ -9,7 +9,6 @@
 
 #include "App.h"
 #include "MainMenuLoadScreen.h"
-#include "GameManager.h"
 
 #define INIT_SCREEN_FONT "Fonts/orbitron_bold-webfont.ttf"
 #define INIT_SCREEN_FONT_SIZE 32

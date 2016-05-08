@@ -7,7 +7,6 @@
 #include "BlockPack.h"
 #include "Chunk.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "VoxelBits.h"
 
 #define BLOCK_MAPPING_PATH "BlockMapping.ini"

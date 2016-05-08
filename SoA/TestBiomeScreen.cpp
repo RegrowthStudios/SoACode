@@ -3,6 +3,7 @@
 
 #include <Vorb/ui/InputDispatcher.h>
 #include <Vorb/colors.h>
+#include <Vorb/Timing.h>
 
 #include "App.h"
 #include "ChunkRenderer.h"

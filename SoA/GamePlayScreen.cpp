@@ -18,7 +18,6 @@
 #include "DebugRenderer.h"
 #include "DevConsole.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "GameSystem.h"
 #include "GameSystemUpdater.h"
 #include "HeadComponentUpdater.h"
@@ -317,7 +316,7 @@ void GameplayScreen::initInput() {
     m_inputMapper->get(INPUT_RELOAD_TARGET).downEvent += makeDelegate(*this, &GameplayScreen::onReloadTarget);
 
     m_hooks.addAutoHook(vui::InputDispatcher::mouse.onButtonUp, [&](Sender s, const vui::MouseButtonEvent& e) {
-        if (GameManager::voxelEditor->isEditing()) {
+        if (m_voxelEditor.isEditing()) {
             //TODO(Ben): Edit voxels
         }
     });

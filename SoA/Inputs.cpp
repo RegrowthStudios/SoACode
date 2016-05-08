@@ -3,8 +3,6 @@
 
 #include <SDL/SDL_mouse.h>
 
-#include "GameManager.h"
-
 // Input Commands Sorted Alphabetically
 InputMapper::InputID INPUT_BACKWARD = -1;
 InputMapper::InputID INPUT_BLOCK_DRAG = -1;

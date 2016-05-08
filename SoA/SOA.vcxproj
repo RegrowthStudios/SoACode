@@ -595,7 +595,6 @@ EXIT 0</Command>
     <ClInclude Include="LiquidVoxelRenderStage.h" />
     <ClInclude Include="LoadContext.h" />
     <ClInclude Include="LoadTaskBlockData.h" />
-    <ClInclude Include="LoadTaskStarSystem.h" />
     <ClInclude Include="LoadTaskTextures.h" />
     <ClInclude Include="ExposureCalcRenderStage.h" />
     <ClInclude Include="MainMenuRenderer.h" />
@@ -746,7 +745,6 @@ EXIT 0</Command>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Errors.h" />
     <ClInclude Include="Frustum.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GenerateTask.h" />
     <ClInclude Include="RenderUtils.h" />
     <ClInclude Include="TerrainPatch.h" />
@@ -948,7 +946,6 @@ EXIT 0</Command>
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="Frustum.cpp" />
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="TerrainPatch.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SoaOptions.cpp" />

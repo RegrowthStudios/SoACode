@@ -11,7 +11,6 @@
 #include "DebugRenderer.h"
 #include "Errors.h"
 #include "Frustum.h"
-#include "GameManager.h"
 #include "GameplayScreen.h"
 #include "GameplayLoadScreen.h"
 #include "InputMapper.h"
@@ -88,8 +87,8 @@ void MainMenuScreen::onEntry(const vui::GameTime& gameTime) {
     // Run the update thread for updating the planet
     //m_updateThread = new std::thread(&MainMenuScreen::updateThreadFunc, this);
 
-    m_ambPlayer->setVolume(soaOptions.get(OPT_MUSIC_VOLUME).value.f);
-    m_ambPlayer->setToTrack("Menu", 3);
+   // m_ambPlayer->setVolume(soaOptions.get(OPT_MUSIC_VOLUME).value.f);
+   // m_ambPlayer->setToTrack("Menu", 3);
 
     m_isFullscreen = soaOptions.get(OPT_BORDERLESS).value.b;
     m_isBorderless = soaOptions.get(OPT_FULLSCREEN).value.b;

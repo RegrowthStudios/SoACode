@@ -7,7 +7,6 @@
 #include "BlockPack.h"
 #include "ChunkMeshManager.h"
 #include "ChunkMesher.h"
-#include "GameManager.h"
 #include "Chunk.h"
 #include "VoxelLightEngine.h"
 #include "VoxelUtils.h"

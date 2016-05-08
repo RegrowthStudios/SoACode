@@ -19,14 +19,28 @@
 #include <Vorb/VorbPreDecl.inl>
 #include <Vorb/graphics/FullQuadVBO.h>
 
-#include "SpaceSystemRenderStage.h"
-#include "SkyboxRenderStage.h"
+#include "BloomRenderStage.h"
+#include "ColorFilterRenderStage.h"
+#include "ExposureCalcRenderStage.h"
 #include "HdrRenderStage.h"
+#include "SkyboxRenderStage.h"
+#include "SpaceSystemRenderStage.h"
 
 struct SoaState;
 DECL_VSOUND(class Engine)
 DECL_VUI(class GameWindow)
 
+/// Render stages that are used throughout the game.
+struct CommonStateRenderStages{
+    SkyboxRenderStage skybox;
+    SpaceSystemRenderStage spaceSystem;
+    HdrRenderStage hdr;
+    ColorFilterRenderStage colorFilter;
+    ExposureCalcRenderStage exposureCalc;
+    BloomRenderStage bloom;
+};
+
+/// Client side state used throughout the game.
 struct CommonState {
 public:
     SoaState* state = nullptr;
@@ -34,11 +48,9 @@ public:
     vui::GameWindow* window = nullptr;
     StaticLoadContext loadContext;
 
-    struct {
-        SkyboxRenderStage skybox;
-        SpaceSystemRenderStage spaceSystem;
-        HdrRenderStage hdr;
-    } stages; // Shared render stages
+    // TODO(Ben): Client side
+    CommonStateRenderStages stages; // Shared render stages
+
     vg::FullQuadVBO quad; ///< Quad used for post-processing
 };
 

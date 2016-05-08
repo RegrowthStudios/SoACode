@@ -16,7 +16,6 @@
 #include "SpaceSystemLoadStructs.h"
 
 // TEMPORARY
-#include "GameManager.h"
 #include "PlanetGenData.h"
 
 #define SEC_PER_HOUR 3600.0

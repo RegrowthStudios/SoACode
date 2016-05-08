@@ -4,7 +4,6 @@
 #include <SDL/SDL.h>
 #include <Vorb/io/IOManager.h>
 
-#include "GameManager.h"
 #include "InputMapper.h"
 
 SoaOptions soaOptions;

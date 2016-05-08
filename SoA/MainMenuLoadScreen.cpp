@@ -10,19 +10,40 @@
 #include "BlockPack.h"
 #include "ChunkMeshManager.h"
 #include "DebugRenderer.h"
-#include "GameManager.h"
 #include "InputMapper.h"
 #include "Inputs.h"
-#include "LoadTaskGameManager.h"
-#include "LoadTaskStarSystem.h"
+#include "LoadMonitor.h"
 #include "MainMenuScreen.h"
 #include "MusicPlayer.h"
+#include "SoaEngine.h"
 #include "SoaFileSystem.h"
 #include "SoaState.h"
 
 const color4 LOAD_COLOR_TEXT(205, 205, 205, 255);
 const color4 LOAD_COLOR_BG_LOADING(105, 5, 5, 255);
 const color4 LOAD_COLOR_BG_FINISHED(25, 105, 5, 255);
+
+/************************************************************************/
+/* LoadTasks                                                            */
+/************************************************************************/
+
+class LoadTaskStarSystem : public ILoadTask {
+    friend class MainMenuLoadScreen;
+
+    LoadTaskStarSystem(const nString& filePath, SoaState* state) :
+        soaState(state),
+        filePath(filePath) {
+        // Empty
+    }
+    virtual void load() {
+        SoaEngine::loadSpaceSystem(soaState, filePath);
+    }
+
+    nString filePath;
+    SoaState* soaState;
+};
+
+/************************************************************************/
 
 MainMenuLoadScreen::MainMenuLoadScreen(const App* app, CommonState* state, MainMenuScreen* mainMenuScreen) :
 IAppScreen<App>(app),
@@ -116,10 +137,7 @@ void MainMenuLoadScreen::onEntry(const vui::GameTime& gameTime) {
     m_sf->init("Fonts/orbitron_bold-webfont.ttf", 32);
 
     // Add Tasks Here
-    addLoadTask("GameManager", "Core Systems", new LoadTaskGameManager);
-
     addLoadTask("SpaceSystem", "SpaceSystem", new LoadTaskStarSystem("StarSystems/Trinity", m_commonState->state));
-    m_monitor.setDep("SpaceSystem", "GameManager");
 
     m_mainMenuScreen->m_renderer.init(m_commonState->window, m_commonState->loadContext, m_mainMenuScreen, m_commonState);
     m_mainMenuScreen->m_renderer.hook();

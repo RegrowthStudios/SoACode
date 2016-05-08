@@ -4,7 +4,6 @@
 #include <Vorb/utils.h>
 
 #include "Camera.h"
-#include "GameManager.h"
 
 void GameRenderParams::calculateParams(const f64v3& worldCameraPos,
                                        const Camera* ChunkCamera,

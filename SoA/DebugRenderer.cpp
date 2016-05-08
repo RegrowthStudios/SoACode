@@ -8,7 +8,6 @@
 #include <Vorb/graphics/RasterizerState.h>
 #include <Vorb/graphics/ShaderManager.h>
 
-#include "GameManager.h"
 #include "RenderUtils.h"
 #include "ShaderLoader.h"
 

@@ -4,7 +4,6 @@
 #include "BlockPack.h"
 #include "CAEngine.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "VoxelLightEngine.h"
 #include "VoxelNavigation.inl"
 #include "VoxelUtils.h"

@@ -12,7 +12,6 @@
 
 #include "Chunk.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "VoxelSpaceConversions.h"
 
 // Section tags

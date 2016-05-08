@@ -6,7 +6,6 @@
 #include "BlockPack.h"
 #include "Chunk.h"
 #include "ChunkUpdater.h"
-#include "GameManager.h"
 #include "VoxelUtils.h"
 
 CaPhysicsTypeDict CaPhysicsType::typesCache;

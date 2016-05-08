@@ -3,7 +3,6 @@
 
 #include "BlockPack.h"
 #include "Errors.h"
-#include "GameManager.h"
 #include "SoaOptions.h"
 #include "ZipFile.h"
 
