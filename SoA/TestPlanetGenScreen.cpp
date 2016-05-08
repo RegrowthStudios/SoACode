@@ -58,21 +58,21 @@ void TestPlanetGenScreen::onEntry(const vui::GameTime& gameTime) {
     m_eyePos = f32v3(0, 0, m_eyeDist);
 
     { // Set up planet
-        SystemOrbitKegProperties props;
-        PlanetProperties pProps;
-        pProps.diameter = PLANET_RADIUS * 2.0;
-        pProps.mass = 10000.0;
-        PlanetGenLoader loader;
-        loader.init(&m_iom);
-        pProps.planetGenData = loader.loadPlanetGenData("StarSystems/Trinity/Planets/Aldrin/properties.yml");
-        TerrainFuncProperties tprops;
-        tprops.low = 9;
-        tprops.high = 10;
-        pProps.planetGenData->radius = PLANET_RADIUS;
-        pProps.planetGenData->baseTerrainFuncs.funcs.setData(&tprops, 1);
+        /*   SystemOrbitKegProperties props;
+           PlanetProperties pProps;
+           pProps.diameter = PLANET_RADIUS * 2.0;
+           pProps.mass = 10000.0;
+           PlanetGenLoader loader;
+           loader.init(&m_iom);
+           pProps.planetGenData = loader.loadPlanetGenData("StarSystems/Trinity/Planets/Aldrin/properties.yml");
+           TerrainFuncProperties tprops;
+           tprops.low = 9;
+           tprops.high = 10;
+           pProps.planetGenData->radius = PLANET_RADIUS;
+           pProps.planetGenData->baseTerrainFuncs.funcs.setData(&tprops, 1);
 
-        SpaceSystemAssemblages::createPlanet(m_state.spaceSystem, &props, &pProps, &body, m_state.threadPool);
-
+           SpaceSystemAssemblages::createPlanet(m_state.spaceSystem, &props, &pProps, &body, m_state.threadPool);
+           */
     }
     // Set camera properties
     m_camera.setFieldOfView(90.0f);
@@ -95,25 +95,25 @@ void TestPlanetGenScreen::update(const vui::GameTime& gameTime) {
 }
 
 void TestPlanetGenScreen::draw(const vui::GameTime& gameTime) {
+    vorb_assert(0, "TestPlanetGenScreen not implemented.");
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //m_camera.setClippingPlane((f32)(m_eyeDist / 2.0), (f32)(m_eyeDist + PLANET_RADIUS * 10.0));
+    //m_camera.setPosition(f64v3(m_eyePos));
+    //m_camera.update();
 
-    m_camera.setClippingPlane((f32)(m_eyeDist / 2.0), (f32)(m_eyeDist + PLANET_RADIUS * 10.0));
-    m_camera.setPosition(f64v3(m_eyePos));
-    m_camera.update();
+    //f32v3 lightPos = vmath::normalize(f32v3(0.0f, 0.0f, 1.0f));
 
-    f32v3 lightPos = vmath::normalize(f32v3(0.0f, 0.0f, 1.0f));
+    //PreciseTimer timer;
+    //auto& aCmp = m_state.spaceSystem->atmosphere.getFromEntity(body.entity);
+    //auto& bodyCmp = m_state.spaceSystem->spaceBody.getFromEntity(body.entity);
+    //m_terrainRenderer.draw(m_state.spaceSystem->sphericalTerrain.getFromEntity(body.entity), &m_camera, lightPos,
+    //                       f64v3(0.0f/*m_eyePos*/), computeZCoef(m_camera.getFarClip()), &m_slCmp,
+    //                       &bodyCmp, &aCmp);
 
-    PreciseTimer timer;
-    auto& aCmp = m_state.spaceSystem->atmosphere.getFromEntity(body.entity);
-    auto& bodyCmp = m_state.spaceSystem->spaceBody.getFromEntity(body.entity);
-    m_terrainRenderer.draw(m_state.spaceSystem->sphericalTerrain.getFromEntity(body.entity), &m_camera, lightPos,
-                           f64v3(0.0f/*m_eyePos*/), computeZCoef(m_camera.getFarClip()), &m_slCmp,
-                           &bodyCmp, &aCmp);
+    //m_atmoRenderer.draw(m_state.spaceSystem->atmosphere.getFromEntity(body.entity), m_camera.getViewProjectionMatrix(), f32v3(m_eyePos), lightPos,
+    //                    computeZCoef(m_camera.getFarClip()), &m_slCmp);
+    ////glFinish();
 
-    m_atmoRenderer.draw(m_state.spaceSystem->atmosphere.getFromEntity(body.entity), m_camera.getViewProjectionMatrix(), f32v3(m_eyePos), lightPos,
-                        computeZCoef(m_camera.getFarClip()), &m_slCmp);
-    //glFinish();
-
-    checkGlError("TestGasGiantScreen::draw");
+    //checkGlError("TestGasGiantScreen::draw");
 }

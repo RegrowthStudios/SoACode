@@ -145,7 +145,8 @@ void SpaceSystemARRenderer::drawPaths() {
             if (m_systemViewer->getTargetBody() == it.first) {
                 isSelected = true;
                 oldPathColor = cmp.pathColor[0];
-                cmp.pathColor[0] = m_spaceSystem->pathColorMap["Selected"].second;
+                //cmp.pathColor[0] = m_spaceSystem->pathColorMap["Selected"].second;
+                cmp.pathColor[0] = f32v4(1.0f); 
                 blendFactor = 0.0;
             } else {
                 // Hermite interpolated alpha
@@ -155,13 +156,15 @@ void SpaceSystemARRenderer::drawPaths() {
             blendFactor = 0.0;
         }
 
+
+        auto& cmp2 = m_spaceSystem->spaceBody.getFromEntity(it.first);
         if (cmp.parentBodyComponent) {
             SpaceBodyComponent& pOrbCmp = m_spaceSystem->spaceBody.get(cmp.parentBodyComponent);
-            m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
-                                              m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
+      //      m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &cmp,
+      //                                        m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
         } else {
-            m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
-                                              m_camera->getPosition(), blendFactor);
+      //      m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
+       //                                       m_camera->getPosition(), blendFactor);
         }
 
         // Restore path color
@@ -216,7 +219,7 @@ void SpaceSystemARRenderer::drawHUD() {
             bool isSelected = false;
             if (m_systemViewer->getTargetBody() == it.first) {
                 isSelected = true;
-                ui8Color = ui8v3(m_spaceSystem->pathColorMap["Selected"].second * 255.0f);
+             //   ui8Color = ui8v3(m_spaceSystem->pathColorMap["Selected"].second * 255.0f);
             } else {
                 ui8Color = ui8v3(lerp(cmp.pathColor[0], cmp.pathColor[1], interpolator) * 255.0f);
             }

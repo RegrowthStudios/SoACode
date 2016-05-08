@@ -37,6 +37,10 @@ MainMenuScreen::MainMenuScreen(const App* app, CommonState* state) :
     // Empty
 }
 
+MainMenuScreen::~MainMenuScreen() {
+    // Empty
+}
+
 i32 MainMenuScreen::getNextScreen() const {
     return m_app->scrGameplayLoad->getIndex();
 }

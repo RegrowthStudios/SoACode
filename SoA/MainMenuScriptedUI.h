@@ -53,7 +53,6 @@ protected:
     f32 getBodyDiameter(vecs::EntityID entity);
     f32 getBodyRotPeriod(vecs::EntityID entity);
     f32 getBodyOrbPeriod(vecs::EntityID entity);
-    f32 getBodyAxialTilt(vecs::EntityID entity);
     f32 getBodyEccentricity(vecs::EntityID entity);
     f32 getBodyInclination(vecs::EntityID entity);
     f32 getBodySemiMajor(vecs::EntityID entity);

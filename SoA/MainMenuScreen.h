@@ -49,7 +49,7 @@ class MainMenuScreen : public vui::IAppScreen<App> {
     friend class GameplayLoadScreen; // So it can use our renderer
 public:
     MainMenuScreen(const App* app, CommonState* state);
-    ~MainMenuScreen() {};
+    ~MainMenuScreen();
 
     virtual i32 getNextScreen() const;
     virtual i32 getPreviousScreen() const;

@@ -24,7 +24,7 @@ KEG_ENUM_DEF(TrojanType, TrojanType, kt) {
 }
 
 KEG_TYPE_DEF_SAME_NAME(SystemBodyProperties, kt) {
-    kt.addValue("type", keg::Value::custom(offsetof(SystemBodyProperties, type), "SpaceBodyType", true));
+    kt.addValue("type", keg::Value::custom(offsetof(SystemBodyProperties, bodyType), "SpaceBodyType", true));
     kt.addValue("trojan", keg::Value::custom(offsetof(SystemBodyProperties, trojan), "TrojanType", true));
     kt.addValue("comps", keg::Value::array(offsetof(SystemBodyProperties, comps), keg::BasicType::C_STRING));
     kt.addValue("par", keg::Value::basic(offsetof(SystemBodyProperties, name), keg::BasicType::STRING));

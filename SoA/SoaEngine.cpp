@@ -386,46 +386,46 @@ void SoaEngine::initVoxelGen(PlanetGenData* genData, const BlockPack& blocks) {
 #undef SET_RANGE
 
 void SoaEngine::reloadSpaceBody(SoaState* state, vecs::EntityID eid, vcore::RPCManager* glRPC) {
-    SpaceSystem* spaceSystem = state->spaceSystem;
-    auto& stCmp = spaceSystem->sphericalTerrain.getFromEntity(eid);
-    f64 radius = stCmp.radius;
-    auto bodyCmpID = stCmp.bodyComponent;
-    auto ftCmpID = stCmp.farTerrainComponent;
-    WorldCubeFace face;
-    PlanetGenData* genData = stCmp.planetGenData;
-    nString filePath = genData->terrainFilePath;
+   // SpaceSystem* spaceSystem = state->spaceSystem;
+   // auto& stCmp = spaceSystem->sphericalTerrain.getFromEntity(eid);
+   // f64 radius = stCmp.radius;
+   // auto bodyCmpID = stCmp.bodyComponent;
+   // auto ftCmpID = stCmp.farTerrainComponent;
+   // WorldCubeFace face;
+   // PlanetGenData* genData = stCmp.planetGenData;
+   // nString filePath = genData->terrainFilePath;
 
-    if (ftCmpID) {
-        face = spaceSystem->farTerrain.getFromEntity(eid).face;
-        SpaceSystemAssemblages::removeFarTerrainComponent(spaceSystem, eid);
-    }
-    if (stCmp.sphericalVoxelComponent) {
-        SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
-    }
+   // if (ftCmpID) {
+   //     face = spaceSystem->farTerrain.getFromEntity(eid).face;
+   //     SpaceSystemAssemblages::removeFarTerrainComponent(spaceSystem, eid);
+   // }
+   // if (stCmp.sphericalVoxelComponent) {
+   //     SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
+   // }
 
-    SpaceSystemAssemblages::removeSphericalTerrainComponent(spaceSystem, eid);
-    //state->planetLoader->textureCache.freeTexture(genData->liquidColorMap);
-   // state->planetLoader->textureCache.freeTexture(genData->terrainColorMap);
-    PlanetGenLoader loader;
-    loader.init(state->systemIoManager);
-    genData = loader.loadPlanetGenData(filePath);
-    genData->radius = radius;
+   // SpaceSystemAssemblages::removeSphericalTerrainComponent(spaceSystem, eid);
+   // //state->planetLoader->textureCache.freeTexture(genData->liquidColorMap);
+   //// state->planetLoader->textureCache.freeTexture(genData->terrainColorMap);
+   // PlanetGenLoader loader;
+   // loader.init(state->systemIoManager);
+   // genData = loader.loadPlanetGenData(filePath);
+   // genData->radius = radius;
 
-    auto stCmpID = SpaceSystemAssemblages::addSphericalTerrainComponent(spaceSystem, eid, npCmpID, arCmpID,
-                                                         radius,
-                                                         genData,
-                                                         state->threadPool);
-    if (ftCmpID) {
-        auto ftCmpID = SpaceSystemAssemblages::addFarTerrainComponent(spaceSystem, eid, stCmp, face);
-        stCmp.farTerrainComponent = ftCmpID;
-       
-    }
+   // auto stCmpID = SpaceSystemAssemblages::addSphericalTerrainComponent(spaceSystem, eid, npCmpID, arCmpID,
+   //                                                      radius,
+   //                                                      genData,
+   //                                                      state->threadPool);
+   // if (ftCmpID) {
+   //     auto ftCmpID = SpaceSystemAssemblages::addFarTerrainComponent(spaceSystem, eid, stCmp, face);
+   //     stCmp.farTerrainComponent = ftCmpID;
+   //    
+   // }
 
-    // TODO(Ben): this doesn't work too well.
-    auto& pCmp = state->gameSystem->spacePosition.getFromEntity(state->clientState.playerEntity);
-    pCmp.parentSphericalTerrain = stCmpID;
-    pCmp.parentGravity = spaceSystem->sphericalGravity.getComponentID(eid);
-    pCmp.parentEntity = eid;
+   // // TODO(Ben): this doesn't work too well.
+   // auto& pCmp = state->gameSystem->spacePosition.getFromEntity(state->clientState.playerEntity);
+   // pCmp.parentSphericalTerrain = stCmpID;
+   // pCmp.parentGravity = spaceSystem->sphericalGravity.getComponentID(eid);
+   // pCmp.parentEntity = eid;
 }
 
 void SoaEngine::destroyAll(SoaState* state) {

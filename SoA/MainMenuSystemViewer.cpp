@@ -208,40 +208,40 @@ void MainMenuSystemViewer::onMouseMotion(Sender sender, const vui::MouseMotionEv
 }
 
 void MainMenuSystemViewer::pickStartLocation(vecs::EntityID eid) {
-    // Check to see if it even has terrain by checking if it has a generator
-    if (!m_spaceSystem->sphericalTerrain.getFromEntity(m_targetEntity).cpuGenerator) return;
-    // Select the planet
-    m_selectedPlanet = eid;
+    //// Check to see if it even has terrain by checking if it has a generator
+    //if (!m_spaceSystem->sphericalTerrain.getFromEntity(m_targetEntity).cpuGenerator) return;
+    //// Select the planet
+    //m_selectedPlanet = eid;
 
-    f32v2 ndc = f32v2((m_mouseCoords.x / m_viewport.x) * 2.0f - 1.0f,
-        1.0f - (m_mouseCoords.y / m_viewport.y) * 2.0f);
-    f64v3 pickRay(m_camera->getPickRay(ndc));
+    //f32v2 ndc = f32v2((m_mouseCoords.x / m_viewport.x) * 2.0f - 1.0f,
+    //    1.0f - (m_mouseCoords.y / m_viewport.y) * 2.0f);
+    //f64v3 pickRay(m_camera->getPickRay(ndc));
 
-    vecs::ComponentID cid = m_spaceSystem->spaceBody.getComponentID(eid);
-    if (!cid) return;
-    SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cid);
-    f64v3 centerPos = cmp.position;
-    f64v3 pos = f64v3(centerPos - m_camera->getPosition());
-    f64 radius = cmp.diameter / 2.0;
+    //vecs::ComponentID cid = m_spaceSystem->spaceBody.getComponentID(eid);
+    //if (!cid) return;
+    //SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cid);
+    //f64v3 centerPos = cmp.position;
+    //f64v3 pos = f64v3(centerPos - m_camera->getPosition());
+    //f64 radius = cmp.diameter / 2.0;
 
-    // Compute the intersection
-    f64v3 normal, hitpoint;
-    f64 distance;
-    if (IntersectionUtils::sphereIntersect(pickRay, f64v3(0.0f), pos, radius, hitpoint, distance, normal)) {
-        hitpoint -= pos;
+    //// Compute the intersection
+    //f64v3 normal, hitpoint;
+    //f64 distance;
+    //if (IntersectionUtils::sphereIntersect(pickRay, f64v3(0.0f), pos, radius, hitpoint, distance, normal)) {
+    //    hitpoint -= pos;
 
-        f64q rot = cmp.currentOrientation;
-        hitpoint = vmath::inverse(rot) * hitpoint;
+    //    f64q rot = cmp.currentOrientation;
+    //    hitpoint = vmath::inverse(rot) * hitpoint;
 
-        // Compute face and grid position
-        PlanetHeightData heightData;
-        m_spaceSystem->sphericalTerrain.getFromEntity(m_targetEntity).cpuGenerator->generateHeightData(heightData, vmath::normalize(hitpoint));
-        f64 height = heightData.height * KM_PER_VOXEL;
+    //    // Compute face and grid position
+    //    PlanetHeightData heightData;
+    //    m_spaceSystem->sphericalTerrain.getFromEntity(m_targetEntity).cpuGenerator->generateHeightData(heightData, vmath::normalize(hitpoint));
+    //    f64 height = heightData.height * KM_PER_VOXEL;
 
-        m_clickPos = f64v3(hitpoint + vmath::normalize(hitpoint) * height);
+    //    m_clickPos = f64v3(hitpoint + vmath::normalize(hitpoint) * height);
 
-        auto& data = bodyArData[eid];
-        data.selectedPos = hitpoint;
-        data.isLandSelected = true;
-    }
+    //    auto& data = bodyArData[eid];
+    //    data.selectedPos = hitpoint;
+    //    data.isLandSelected = true;
+    //}
 }

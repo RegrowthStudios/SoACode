@@ -143,11 +143,14 @@ bool SpaceSystemLoader::loadSystemProperties() {
             auto& it = m_systemBodies.find(name);
             if (it == m_systemBodies.end()) {
                 // Allocate the body
-                SystemBodyProperties* body = new SystemBodyProperties;
+                body = new SystemBodyProperties();
                 m_systemBodies[name] = body;
+                body->name = name;
             } else {
                 body = it->second;
             }
+
+            std::cout << name << std::endl;
 
             // Parse orbit
             keg::Error err = keg::parse((ui8*)body, value, context, &KEG_GLOBAL_TYPE(SystemBodyProperties));
@@ -417,7 +420,7 @@ void SpaceSystemLoader::initComponents() {
 
         // Add the entity and component
         vecs::EntityID e = m_spaceSystem->addEntity();
-        vecs::ComponentID cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, entity);
+        vecs::ComponentID cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, e);
        
         // Fill out the body component
         SpaceBodyComponent& cmp = m_spaceSystem->spaceBody.get(cmpID);
@@ -490,11 +493,14 @@ void SpaceSystemLoader::calculateOrbit(SystemBodyProperties* body,
     body->minor = body->major * sqrt(1.0 - body->e * body->e);
 
     // TODO(Ben): Doesn't work right for binaries due to parentMass
-    { // Check tidal lock
-        f64 ns = log10(0.003 * pow(body->a, 6.0) * pow(diameter + 500.0, 3.0) / (body->mass * body->parentMass) * (1.0 + (f64)1e20 / (body->mass + body->parentMass)));
-        if (ns < 0) {
-            // It is tidally locked so lock the rotational period
-            body->rotationalPeriod = t;
+    if (body->parent) { // Check tidal lock
+        f64 parentMass = body->parent->mass;
+        if (parentMass) {
+            f64 ns = log10(0.003 * pow(body->a, 6.0) * pow(diameter + 500.0, 3.0) / (body->mass * parentMass) * (1.0 + (f64)1e20 / (body->mass + parentMass)));
+            if (ns < 0) {
+                // It is tidally locked so lock the rotational period
+                body->rotationalPeriod = t;
+            }
         }
     }
 

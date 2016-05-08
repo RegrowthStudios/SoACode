@@ -129,7 +129,7 @@ struct SystemBodyProperties {
     nString name = ""; ///< Name of the body, doubles as parent name during parsing
     nString path = ""; ///< Path to directory
 
-    SystemBodyProperties* parent;
+    SystemBodyProperties* parent = nullptr;
     std::vector<SystemBodyProperties*> children;
 
     vecs::EntityID entity = 0;

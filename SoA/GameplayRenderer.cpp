@@ -393,14 +393,13 @@ void GameplayRenderer::updateCameras() {
     // TODO(Ben): Shouldn't be touching ECS here.
     auto& phycmp = gs->physics.getFromEntity(m_state->clientState.playerEntity);
     auto& spcmp = gs->spacePosition.get(phycmp.spacePosition);
-    if (spcmp.parentGravity) {
+    if (spcmp.parentBody) {
         auto& it = m_renderState->spaceBodyPositions.find(spcmp.parentEntity);
         if (it != m_renderState->spaceBodyPositions.end()) {
             spaceCamera.setPosition(m_renderState->spaceCameraPos + it->second);
         } else {
-            auto& gcmp = ss->sphericalGravity.get(spcmp.parentGravity);
-            auto& npcmp = ss->namePosition.get(gcmp.namePositionComponent);
-            spaceCamera.setPosition(m_renderState->spaceCameraPos + npcmp.position);
+            auto& pBody = ss->spaceBody.get(spcmp.parentBody);
+            spaceCamera.setPosition(m_renderState->spaceCameraPos + pBody.position);
         }
     } else {
         spaceCamera.setPosition(m_renderState->spaceCameraPos);

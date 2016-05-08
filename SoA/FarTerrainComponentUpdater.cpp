@@ -12,58 +12,58 @@
 
 void FarTerrainComponentUpdater::update(SpaceSystem* spaceSystem, const f64v3& cameraPos) {
 
-    for (auto& it : spaceSystem->farTerrain) {
+    //for (auto& it : spaceSystem->farTerrain) {
 
-        FarTerrainComponent& cmp = it.second;
+    //    FarTerrainComponent& cmp = it.second;
 
-        /// Calculate camera distance
-        f64 distance = vmath::length(cameraPos);
+    //    /// Calculate camera distance
+    //    f64 distance = vmath::length(cameraPos);
 
-        // Update fading in and out animation
-        if (cmp.shouldFade) {
-            cmp.alpha -= TERRAIN_ALPHA_STEP;
-            if (cmp.alpha <= 0.0f) {
-                continue;
-            }
-        } else {
-            cmp.alpha += TERRAIN_ALPHA_STEP;
-            if (cmp.alpha > 1.0f) cmp.alpha = 1.0f;
-        }
+    //    // Update fading in and out animation
+    //    if (cmp.shouldFade) {
+    //        cmp.alpha -= TERRAIN_ALPHA_STEP;
+    //        if (cmp.alpha <= 0.0f) {
+    //            continue;
+    //        }
+    //    } else {
+    //        cmp.alpha += TERRAIN_ALPHA_STEP;
+    //        if (cmp.alpha > 1.0f) cmp.alpha = 1.0f;
+    //    }
 
-        // Check for transitioning to a new grid face
-        if (cmp.transitionFace != FACE_NONE) {
-            cmp.face = cmp.transitionFace;
-            cmp.transitionFace = FACE_NONE;
-            if (cmp.patches) {
-                delete[] cmp.patches;
-                cmp.patches = nullptr;
-            }
-        }
+    //    // Check for transitioning to a new grid face
+    //    if (cmp.transitionFace != FACE_NONE) {
+    //        cmp.face = cmp.transitionFace;
+    //        cmp.transitionFace = FACE_NONE;
+    //        if (cmp.patches) {
+    //            delete[] cmp.patches;
+    //            cmp.patches = nullptr;
+    //        }
+    //    }
 
-        if (distance <= LOAD_DIST) {
-            // In range, allocate if needed
-            if (!cmp.patches) {
-                initPatches(cmp, cameraPos);
-            } else {
-                // Check to see if the grid should shift
-                const f64& patchWidth = (cmp.sphericalTerrainData->radius * 2.000) / FT_PATCH_ROW;
-                i32v2 newCenter(fastFloor(cameraPos.x / patchWidth), fastFloor(cameraPos.z / patchWidth));
-                checkGridShift(cmp, newCenter);
-            }
+    //    if (distance <= LOAD_DIST) {
+    //        // In range, allocate if needed
+    //        if (!cmp.patches) {
+    //            initPatches(cmp, cameraPos);
+    //        } else {
+    //            // Check to see if the grid should shift
+    //            const f64& patchWidth = (cmp.sphericalTerrainData->radius * 2.000) / FT_PATCH_ROW;
+    //            i32v2 newCenter(fastFloor(cameraPos.x / patchWidth), fastFloor(cameraPos.z / patchWidth));
+    //            checkGridShift(cmp, newCenter);
+    //        }
 
-            // Update patches
-            for (int i = 0; i < FT_TOTAL_PATCHES; i++) {
-                cmp.patches[i].update(cameraPos);
-            }      
-            
-        } else {
-            // Out of range, delete everything
-            if (cmp.patches) {
-                delete[] cmp.patches;
-                cmp.patches = nullptr;
-            }
-        }
-    }
+    //        // Update patches
+    //        for (int i = 0; i < FT_TOTAL_PATCHES; i++) {
+    //            cmp.patches[i].update(cameraPos);
+    //        }      
+    //        
+    //    } else {
+    //        // Out of range, delete everything
+    //        if (cmp.patches) {
+    //            delete[] cmp.patches;
+    //            cmp.patches = nullptr;
+    //        }
+    //    }
+    //}
 }
 
 void FarTerrainComponentUpdater::initPatches(FarTerrainComponent& cmp, const f64v3& cameraPos) {
@@ -95,9 +95,9 @@ void FarTerrainComponentUpdater::initPatches(FarTerrainComponent& cmp, const f64
 }
 
 void FarTerrainComponentUpdater::glUpdate(SpaceSystem* spaceSystem) {
-    for (auto& it : spaceSystem->farTerrain) {
-        if (it.second.meshManager) it.second.meshManager->update();
-    }
+    /* for (auto& it : spaceSystem->farTerrain) {
+         if (it.second.meshManager) it.second.meshManager->update();
+         }*/
 }
 
 void FarTerrainComponentUpdater::checkGridShift(FarTerrainComponent& cmp, const i32v2& newCenter) {

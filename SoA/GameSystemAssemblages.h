@@ -41,8 +41,7 @@ namespace GameSystemAssemblages {
     vecs::ComponentID addSpacePosition(GameSystem* gameSystem, vecs::EntityID entity,
                                                const f64v3& position, const f64q& orientation,
                                                vecs::EntityID parentEntity,
-                                               vecs::ComponentID parentGravComponent = 0,
-                                               vecs::ComponentID parentSphericalTerrainComponent = 0);
+                                               vecs::ComponentID parentGravComponent = 0);
     void removeSpacePosition(GameSystem* gameSystem, vecs::EntityID entity);
     /// AABB Collision component
     vecs::ComponentID addAabbCollidable(GameSystem* gameSystem, vecs::EntityID entity,

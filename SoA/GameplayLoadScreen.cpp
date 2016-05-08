@@ -63,26 +63,26 @@ void GameplayLoadScreen::onExit(const vui::GameTime& gameTime) {
 
 void GameplayLoadScreen::update(const vui::GameTime& gameTime) {
 
-    // Perform OpenGL calls
-    m_glrpc.processRequests(1);
-    m_commonState->loadContext.processRequests(1);
-    m_gameplayScreen->m_renderer.updateGL();
+    //// Perform OpenGL calls
+    //m_glrpc.processRequests(1);
+    //m_commonState->loadContext.processRequests(1);
+    //m_gameplayScreen->m_renderer.updateGL();
 
-    // Defer texture loading
-    static bool loadedTextures = false;
-    // End condition
-    if (!loadedTextures && m_gameplayScreen->m_renderer.isLoaded() && m_monitor.isTaskFinished("BlockData")) {
-        // Post process the planets
-        for (auto& it : m_commonState->state->spaceSystem->sphericalTerrain) {
-            auto& cmp = it.second;
-            SoaEngine::initVoxelGen(it.second.planetGenData, m_commonState->state->blocks);
-        }
-        m_commonState->state->clientState.blockTextures->update();
-        m_commonState->state->clientState.blockTextures->writeDebugAtlases();
-        //m_commonState->state->blockTextures->save(&m_commonState->state->blocks);
-        m_state = vui::ScreenState::CHANGE_NEXT;
-        loadedTextures = true;
-    }
+    //// Defer texture loading
+    //static bool loadedTextures = false;
+    //// End condition
+    //if (!loadedTextures && m_gameplayScreen->m_renderer.isLoaded() && m_monitor.isTaskFinished("BlockData")) {
+    //    // Post process the planets
+    //    for (auto& it : m_commonState->state->spaceSystem->sphericalTerrain) {
+    //        auto& cmp = it.second;
+    //        SoaEngine::initVoxelGen(it.second.planetGenData, m_commonState->state->blocks);
+    //    }
+    //    m_commonState->state->clientState.blockTextures->update();
+    //    m_commonState->state->clientState.blockTextures->writeDebugAtlases();
+    //    //m_commonState->state->blockTextures->save(&m_commonState->state->blocks);
+    //    m_state = vui::ScreenState::CHANGE_NEXT;
+    //    loadedTextures = true;
+    //}
 }
 
 void GameplayLoadScreen::draw(const vui::GameTime& gameTime) {

@@ -54,8 +54,7 @@ void SpacePositionComponentBuilder::load(keg::ReadContext& context, keg::Node no
     component.position = f64v3(0.0f);
     component.orientation = f64q(0.0, 0.0, 0.0, 1.0);
     component.parentEntity = 0;
-    component.parentGravity = 0;
-    component.parentSphericalTerrain = 0;
+    component.parentBody = 0;
     
     // Simple read
     keg::parse((ui8*)&component, node, context, &KEG_GLOBAL_TYPE(SpacePositionComponent));

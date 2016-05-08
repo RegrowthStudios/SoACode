@@ -13,75 +13,75 @@
 
 void SphericalTerrainComponentUpdater::update(SoaState* state, const f64v3& cameraPos) {
 
-    SpaceSystem* spaceSystem = state->spaceSystem;
-    for (auto& it : spaceSystem->sphericalTerrain) {
-        SphericalTerrainComponent& stCmp = it.second;
-    
-        const SpaceBodyComponent& bodyCmp = spaceSystem->spaceBody.get(stCmp.bodyComponent);
-        /// Calculate camera distance
-        f64v3 relativeCameraPos = bodyCmp.invCurrentOrientation * (cameraPos - bodyCmp.position);
-        stCmp.distance = vmath::length(relativeCameraPos);
+    //SpaceSystem* spaceSystem = state->spaceSystem;
+    //for (auto& it : spaceSystem->sphericalTerrain) {
+    //    SphericalTerrainComponent& stCmp = it.second;
+    //
+    //    const SpaceBodyComponent& bodyCmp = spaceSystem->spaceBody.get(stCmp.bodyComponent);
+    //    /// Calculate camera distance
+    //    f64v3 relativeCameraPos = bodyCmp.invCurrentOrientation * (cameraPos - bodyCmp.position);
+    //    stCmp.distance = vmath::length(relativeCameraPos);
 
-        // Lazy random planet loading
-        if (stCmp.distance <= LOAD_DIST && !stCmp.planetGenData) {
-            PlanetGenLoader loader;
-            loader.init(state->systemIoManager);
-            PlanetGenData* data = loader.getRandomGenData((f32)stCmp.radius);
-            stCmp.meshManager = new TerrainPatchMeshManager(data);
-            stCmp.cpuGenerator = new SphericalHeightmapGenerator;
-            stCmp.cpuGenerator->init(data);
-            // Do this last to prevent race condition with regular update
-            data->radius = stCmp.radius;
-            stCmp.planetGenData = data;
-            stCmp.sphericalTerrainData->generator = stCmp.cpuGenerator;
-            stCmp.sphericalTerrainData->meshManager = stCmp.meshManager;
-        }
+    //    // Lazy random planet loading
+    //    if (stCmp.distance <= LOAD_DIST && !stCmp.planetGenData) {
+    //        PlanetGenLoader loader;
+    //        loader.init(state->systemIoManager);
+    //        PlanetGenData* data = loader.getRandomGenData((f32)stCmp.radius);
+    //        stCmp.meshManager = new TerrainPatchMeshManager(data);
+    //        stCmp.cpuGenerator = new SphericalHeightmapGenerator;
+    //        stCmp.cpuGenerator->init(data);
+    //        // Do this last to prevent race condition with regular update
+    //        data->radius = stCmp.radius;
+    //        stCmp.planetGenData = data;
+    //        stCmp.sphericalTerrainData->generator = stCmp.cpuGenerator;
+    //        stCmp.sphericalTerrainData->meshManager = stCmp.meshManager;
+    //    }
 
-        // Animation for fade
-        if (stCmp.needsVoxelComponent) {
-            stCmp.alpha -= TERRAIN_ALPHA_STEP;
-            if (stCmp.alpha < 0.0f) {
-                stCmp.alpha = 0.0f;
-                // Force it to unload
-                stCmp.distance = LOAD_DIST * 10.0;
-            }
-        } else {
-            stCmp.alpha += TERRAIN_ALPHA_STEP;
-            if (stCmp.alpha > 1.0f) stCmp.alpha = 1.0f;
-        }
+    //    // Animation for fade
+    //    if (stCmp.needsVoxelComponent) {
+    //        stCmp.alpha -= TERRAIN_ALPHA_STEP;
+    //        if (stCmp.alpha < 0.0f) {
+    //            stCmp.alpha = 0.0f;
+    //            // Force it to unload
+    //            stCmp.distance = LOAD_DIST * 10.0;
+    //        }
+    //    } else {
+    //        stCmp.alpha += TERRAIN_ALPHA_STEP;
+    //        if (stCmp.alpha > 1.0f) stCmp.alpha = 1.0f;
+    //    }
 
-        if (stCmp.distance <= LOAD_DIST) {
-           
-            if (stCmp.planetGenData && !stCmp.needsVoxelComponent) {
-                // Allocate if needed
-                if (!stCmp.patches) {
-                    initPatches(stCmp);
-                }
+    //    if (stCmp.distance <= LOAD_DIST) {
+    //       
+    //        if (stCmp.planetGenData && !stCmp.needsVoxelComponent) {
+    //            // Allocate if needed
+    //            if (!stCmp.patches) {
+    //                initPatches(stCmp);
+    //            }
 
-                // Update patches
-                for (int i = 0; i < ST_TOTAL_PATCHES; i++) {
-                    stCmp.patches[i].update(relativeCameraPos);
-                }
-            }
-        } else {
-            // Out of range, delete everything
-            if (stCmp.patches) {
-                delete[] stCmp.patches;
-                stCmp.patches = nullptr;
-            }
-        }
+    //            // Update patches
+    //            for (int i = 0; i < ST_TOTAL_PATCHES; i++) {
+    //                stCmp.patches[i].update(relativeCameraPos);
+    //            }
+    //        }
+    //    } else {
+    //        // Out of range, delete everything
+    //        if (stCmp.patches) {
+    //            delete[] stCmp.patches;
+    //            stCmp.patches = nullptr;
+    //        }
+    //    }
 
-        updateVoxelComponentLogic(state, it.first, stCmp);
-    }
+    //    updateVoxelComponentLogic(state, it.first, stCmp);
+    //}
 }
 
 void SphericalTerrainComponentUpdater::glUpdate(const SoaState* soaState) {
-    auto& spaceSystem = soaState->spaceSystem;
-    for (auto& it : spaceSystem->sphericalTerrain) {
-        SphericalTerrainComponent& stCmp = it.second;
-        
-        if (stCmp.meshManager && it.second.alpha > 0.0f) stCmp.meshManager->update();
-    }
+    /*  auto& spaceSystem = soaState->spaceSystem;
+      for (auto& it : spaceSystem->sphericalTerrain) {
+      SphericalTerrainComponent& stCmp = it.second;
+
+      if (stCmp.meshManager && it.second.alpha > 0.0f) stCmp.meshManager->update();
+      }*/
 }
 
 void SphericalTerrainComponentUpdater::initPatches(SphericalTerrainComponent& cmp) {
@@ -109,68 +109,67 @@ void SphericalTerrainComponentUpdater::initPatches(SphericalTerrainComponent& cm
 }
 
 void SphericalTerrainComponentUpdater::updateVoxelComponentLogic(SoaState* state, vecs::EntityID eid, SphericalTerrainComponent& stCmp) {
-    SpaceSystem* spaceSystem = state->spaceSystem;
-    // Handle voxel component
-    if (stCmp.needsVoxelComponent) {
-        // Check for creating a new component
-        if (!stCmp.sphericalVoxelComponent) {
-            // TODO(Ben): FarTerrain should be clientSide only
-            // Add far terrain component (CLIENT SIDE)
-            stCmp.farTerrainComponent = SpaceSystemAssemblages::addFarTerrainComponent(spaceSystem, eid, stCmp,
-                                                                                       stCmp.startVoxelPosition.face);
-            // Add spherical voxel component (SERVER SIDE)
-            stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
-                                                                                               spaceSystem->sphericalTerrain.getComponentID(eid),
-                                                                                               stCmp.farTerrainComponent,
-                                                                                               stCmp.bodyComponent,
-                                                                                               stCmp.startVoxelPosition.face,
-                                                                                               state);
-        }
+    //SpaceSystem* spaceSystem = state->spaceSystem;
+    //// Handle voxel component
+    //if (stCmp.needsVoxelComponent) {
+    //    // Check for creating a new component
+    //    if (!stCmp.sphericalVoxelComponent) {
+    //        // TODO(Ben): FarTerrain should be clientSide only
+    //        // Add far terrain component (CLIENT SIDE)
+    //        stCmp.farTerrainComponent = SpaceSystemAssemblages::addFarTerrainComponent(spaceSystem, eid, stCmp,
+    //                                                                                   stCmp.startVoxelPosition.face);
+    //        // Add spherical voxel component (SERVER SIDE)
+    //        stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
+    //                                                                                           spaceSystem->sphericalTerrain.getComponentID(eid),
+    //                                                                                           stCmp.farTerrainComponent,
+    //                                                                                           stCmp.bodyComponent,
+    //                                                                                           stCmp.startVoxelPosition.face,
+    //                                                                                           state);
+    //    }
 
-        // Far terrain face transition
-        if (stCmp.transitionFace != FACE_NONE) {
-            static const f32 FACE_TRANS_DEC = 0.02f;
-            if (stCmp.faceTransTime == START_FACE_TRANS) stCmp.needsFaceTransitionAnimation = true;
-            stCmp.faceTransTime -= FACE_TRANS_DEC;
-            if (stCmp.faceTransTime <= 0.0f) {
-                // TODO(Ben): maybe tell voxels to switch to new face rather than just deleting
-                //spaceSystem->m_sphericalVoxelCT.get(stCmp.sphericalVoxelComponent).transitionFace = stCmp.transitionFace;
-                SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
-                // Add spherical voxel component (SERVER SIDE)
-                stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
-                                                                                                   spaceSystem->sphericalTerrain.getComponentID(eid),
-                                                                                                   stCmp.farTerrainComponent,
-                                                                                                   stCmp.bodyComponent,
-                                                                                                   stCmp.transitionFace,
-                                                                                                   state);
-                // Reload the terrain
-                auto& ftCmp = spaceSystem->farTerrain.get(stCmp.farTerrainComponent);
-                ftCmp.transitionFace = stCmp.transitionFace;
-                stCmp.transitionFace = FACE_NONE;
-                stCmp.faceTransTime = 0.0f;
-                std::cout << " RE-INIT Voxels\n";
-            }
-        } else if (!stCmp.needsFaceTransitionAnimation) {
-            stCmp.faceTransTime = 1.0f;
-        }
-    } else {
-        // Check for deleting components
-        // TODO(Ben): We need to do refcounting for MP!
-        if (stCmp.sphericalVoxelComponent) {
-            // Mark far terrain for fadeout
-            auto& ftCmp = spaceSystem->farTerrain.get(stCmp.farTerrainComponent);
+    //    // Far terrain face transition
+    //    if (stCmp.transitionFace != FACE_NONE) {
+    //        static const f32 FACE_TRANS_DEC = 0.02f;
+    //        if (stCmp.faceTransTime == START_FACE_TRANS) stCmp.needsFaceTransitionAnimation = true;
+    //        stCmp.faceTransTime -= FACE_TRANS_DEC;
+    //        if (stCmp.faceTransTime <= 0.0f) {
+    //            // TODO(Ben): maybe tell voxels to switch to new face rather than just deleting
+    //            //spaceSystem->m_sphericalVoxelCT.get(stCmp.sphericalVoxelComponent).transitionFace = stCmp.transitionFace;
+    //            SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
+    //            // Add spherical voxel component (SERVER SIDE)
+    //            stCmp.sphericalVoxelComponent = SpaceSystemAssemblages::addSphericalVoxelComponent(spaceSystem, eid,
+    //                                                                                               spaceSystem->sphericalTerrain.getComponentID(eid),
+    //                                                                                               stCmp.farTerrainComponent,
+    //                                                                                               stCmp.bodyComponent,
+    //                                                                                               stCmp.transitionFace,
+    //                                                                                               state);
+    //            // Reload the terrain
+    //            auto& ftCmp = spaceSystem->farTerrain.get(stCmp.farTerrainComponent);
+    //            ftCmp.transitionFace = stCmp.transitionFace;
+    //            stCmp.transitionFace = FACE_NONE;
+    //            stCmp.faceTransTime = 0.0f;
+    //            std::cout << " RE-INIT Voxels\n";
+    //        }
+    //    } else if (!stCmp.needsFaceTransitionAnimation) {
+    //        stCmp.faceTransTime = 1.0f;
+    //    }
+    //} else {
+    //    // Check for deleting components
+    //    // TODO(Ben): We need to do refcounting for MP!
+    //    if (stCmp.sphericalVoxelComponent) {
+    //        // Mark far terrain for fadeout
+    //        auto& ftCmp = spaceSystem->farTerrain.get(stCmp.farTerrainComponent);
 
-            if (!ftCmp.shouldFade) {
-                ftCmp.shouldFade = true;
-                ftCmp.alpha = TERRAIN_DEC_START_ALPHA;
-            } else if (ftCmp.alpha < 0.0f) {
-                // We are faded out, so deallocate
-                SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
-                SpaceSystemAssemblages::removeFarTerrainComponent(spaceSystem, eid);
-                stCmp.sphericalVoxelComponent = 0;
-                stCmp.farTerrainComponent = 0;
-            }
-        }
-    }
+    //        if (!ftCmp.shouldFade) {
+    //            ftCmp.shouldFade = true;
+    //            ftCmp.alpha = TERRAIN_DEC_START_ALPHA;
+    //        } else if (ftCmp.alpha < 0.0f) {
+    //            // We are faded out, so deallocate
+    //            SpaceSystemAssemblages::removeSphericalVoxelComponent(spaceSystem, eid);
+    //            stCmp.sphericalVoxelComponent = 0;
+    //            stCmp.farTerrainComponent = 0;
+    //        }
+    //    }
+    //}
 }
 

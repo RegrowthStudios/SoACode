@@ -23,6 +23,7 @@
 
 #include "VoxelCoordinateSpaces.h"
 
+struct SpaceBodyComponent;
 class CinematicCamera;
 class InputMapper;
 class SpaceSystem;

@@ -80,6 +80,7 @@ vecs::ComponentID SpaceSystemAssemblages::addSpaceBodyComponent(SpaceSystem* spa
     SpaceBodyComponent& cmp = spaceSystem->spaceBody.get(cmpID);
 
     // TODO(Ben): Initialize component
+    return cmpID;
 }
 
 void SpaceSystemAssemblages::removeSpaceBodyComponent(SpaceSystem* spaceSystem, vecs::EntityID entity) {
@@ -195,6 +196,7 @@ vecs::ComponentID SpaceSystemAssemblages::addSphericalVoxelComponent(SpaceSystem
 
     //onAddSphericalVoxelComponent(svcmp, entity);
     //return svCmpId;
+    return 0;
 }
 
 void SpaceSystemAssemblages::removeSphericalVoxelComponent(SpaceSystem* spaceSystem, vecs::EntityID entity) {
