@@ -145,17 +145,6 @@ struct SpaceBodyComponent {
    
     SpaceBodyType type; ///< Type of object
     bool isCalculated = false; ///< True when orbit has been calculated
-
-    // TODO(Ben): Get the rendering out of here like jesus man...
-    f32v4 pathColor[2]; ///< Color of the path (Why is this f32v4 lol)
-    VGBuffer vbo = 0; ///< vbo for the ellipse mesh
-    VGBuffer vao = 0; ///< vao for the ellipse mesh
-    ui32 numVerts = 0; ///< Number of vertices in the ellipse
-    struct Vertex {
-        f32v3 position;
-        f32 angle;
-    };
-    std::vector<Vertex> verts; ///< Vertices for the ellipse
 };
 
 

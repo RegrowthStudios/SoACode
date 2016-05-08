@@ -5,7 +5,9 @@
 #include "MainMenuSystemViewer.h"
 #include "ModPathResolver.h"
 #include "ShaderLoader.h"
+#include "SpaceBodyComponentUpdater.h"
 #include "SpaceSystem.h"
+#include "Errors.h"
 #include "soaUtils.h"
 
 #include <Vorb/colors.h>
@@ -14,6 +16,7 @@
 #include <Vorb/graphics/SamplerState.h>
 #include <Vorb/graphics/SpriteBatch.h>
 #include <Vorb/graphics/SpriteFont.h>
+#include <Vorb/io/IOManager.h>
 #include <Vorb/utils.h>
 
 namespace {
@@ -41,6 +44,17 @@ void main() {
 )";
 }
 
+#define PATH_ORBITPATH_COLORS "StarSystems/path_colors.yml"
+
+struct PathColorKegProps {
+    color4 base = color4(0, 0, 0, 0);
+    color4 hover = color4(0, 0, 0, 0);
+};
+KEG_TYPE_DEF_SAME_NAME(PathColorKegProps, kt) {
+    KEG_TYPE_INIT_ADD_MEMBER(kt, PathColorKegProps, base, UI8_V4);
+    KEG_TYPE_INIT_ADD_MEMBER(kt, PathColorKegProps, hover, UI8_V4);
+}
+
 SpaceSystemARRenderer::SpaceSystemARRenderer() {
     // Empty
 }
@@ -51,6 +65,60 @@ SpaceSystemARRenderer::~SpaceSystemARRenderer() {
 
 void SpaceSystemARRenderer::init(const ModPathResolver* textureResolver) {
     m_textureResolver = textureResolver;
+
+    // Set up lookup table
+    std::map<nString, SpaceBodyType> m_bodyTypeLookup;
+    for (int i = 1; i < (int)SpaceBodyType::SIZE; i++) {
+        m_bodyTypeLookup[SpaceBodyTypeStrings[i]] = (SpaceBodyType)i;
+    }
+
+    { // Load Path Colors
+        nString data;
+        if (!vio::IOManager().readFileToString(PATH_ORBITPATH_COLORS, data)) {
+            fprintf(stderr, "Failed to load %s\n", PATH_ORBITPATH_COLORS);
+            return;
+        }
+
+        // TODO(Ben): Keg helper function for maps with functor iteration
+
+        keg::ReadContext context;
+        context.env = keg::getGlobalEnvironment();
+        context.reader.init(data.c_str());
+        keg::Node node = context.reader.getFirst();
+        if (keg::getType(node) != keg::NodeType::MAP) {
+            fprintf(stderr, "Failed to load %s\n", PATH_ORBITPATH_COLORS);
+            context.reader.dispose();
+            return;
+        }
+
+        bool goodParse = true;
+        auto f = makeFunctor([&](Sender, const nString& name, keg::Node value) {
+            PathColorKegProps props;
+            keg::Error err = keg::parse((ui8*)&props, value, context, &KEG_GLOBAL_TYPE(PathColorKegProps));
+            if (err != keg::Error::NONE) {
+                fprintf(stderr, "Failed to parse node %s in PathColors.yml\n", name.c_str());
+                goodParse = false;
+                return;
+            }
+
+            auto& it = m_bodyTypeLookup.find(name);
+            if (it == m_bodyTypeLookup.end()) {
+                fprintf(stderr, "Failed to parse node %s in PathColors.yml\n", name.c_str());
+                goodParse = false;
+                return;
+            }
+            m_pathColorMap[(int)it->second] = std::make_pair(props.base, props.hover);
+        });
+
+        context.reader.forAllInMap(node, f);
+        delete f;
+        context.reader.dispose();
+        if (!goodParse) {
+            fprintf(stderr, "Parse failure for %s\n", PATH_ORBITPATH_COLORS);
+            return;
+        }
+    }
+
 }
 
 void SpaceSystemARRenderer::initGL() {
@@ -103,7 +171,7 @@ void SpaceSystemARRenderer::loadTextures() {
             fprintf(stderr, "ERROR: Failed to load GUI/selector.png\n");
         }
         m_selectorTexture = vg::GpuMemory::uploadTexture(&res, vg::TexturePixelType::UNSIGNED_BYTE,
-                                                     vg::TextureTarget::TEXTURE_2D, &vg::SamplerState::LINEAR_CLAMP_MIPMAP);
+                                                         vg::TextureTarget::TEXTURE_2D, &vg::SamplerState::LINEAR_CLAMP_MIPMAP);
     }
     { // Barycenter
         vio::Path path;
@@ -119,9 +187,6 @@ void SpaceSystemARRenderer::loadTextures() {
 
 void SpaceSystemARRenderer::drawPaths() {
 
-    float blendFactor;
-
-    // Draw paths
     m_colorProgram.use();
     m_colorProgram.enableVertexAttribArrays();
 
@@ -129,46 +194,45 @@ void SpaceSystemARRenderer::drawPaths() {
     glUniform1f(m_colorProgram.getUniform("unZCoef"), m_zCoef);
     glLineWidth(3.0f);
 
-    f32m4 wvp = m_camera->getProjectionMatrix() * m_camera->getViewMatrix();
+    color4 color;
+
+    f32m4 wvp = m_camera->getViewProjectionMatrix();
     for (auto& it : m_spaceSystem->spaceBody) {
-        auto& cmp = it.second;
-    
-        bool isSelected = false;
-        f32v4 oldPathColor; // To cache path color since we force it to a different one
+        SpaceBodyComponent& cmp = it.second;
+
         if (m_systemViewer) {
             // Get the augmented reality data
-            const MainMenuSystemViewer::BodyArData* bodyArData = m_systemViewer->finBodyAr(it.first);
+            const MainMenuSystemViewer::BodyArData* bodyArData = m_systemViewer->findBodyAr(it.first);
             if (bodyArData == nullptr) continue;
 
-            ui8v3 ui8Color;
             // If its selected we force a different color
             if (m_systemViewer->getTargetBody() == it.first) {
-                isSelected = true;
-                oldPathColor = cmp.pathColor[0];
-                //cmp.pathColor[0] = m_spaceSystem->pathColorMap["Selected"].second;
-                cmp.pathColor[0] = f32v4(1.0f); 
-                blendFactor = 0.0;
+                color = m_selectedColor;
             } else {
-                // Hermite interpolated alpha
-                blendFactor = hermite(bodyArData->hoverTime);
+                // Hermite interpolated color
+                const std::pair<color4, color4>& pathColorRange = getPathColorRange(cmp.type);
+                color.lerp(pathColorRange.first, pathColorRange.second, hermite(bodyArData->hoverTime));
             }
-        } else {
-            blendFactor = 0.0;
         }
 
-
-        auto& cmp2 = m_spaceSystem->spaceBody.getFromEntity(it.first);
         if (cmp.parentBodyComponent) {
-            SpaceBodyComponent& pOrbCmp = m_spaceSystem->spaceBody.get(cmp.parentBodyComponent);
-      //      m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &cmp,
-      //                                        m_camera->getPosition(), blendFactor, &m_spaceSystem->namePosition.get(pOrbCmp.npID));
+            // TODO(Ben): We can do this without parent by using the base component position,
+            // as it already accounts parent position.
+
+            const SpaceBodyComponent& pBodyCmp = m_spaceSystem->spaceBody.get(cmp.parentBodyComponent);
+            m_orbitComponentRenderer.drawPath(cmp, getOrbitPathPathRenderData(cmp, it.first),
+                                              m_colorProgram, wvp, m_camera->getPosition(), color,
+                                              &pBodyCmp);
+
+
         } else {
-      //      m_orbitComponentRenderer.drawPath(cmp, m_colorProgram, wvp, &m_spaceSystem->namePosition.getFromEntity(it.first),
-       //                                       m_camera->getPosition(), blendFactor);
+
+            m_orbitComponentRenderer.drawPath(cmp, getOrbitPathPathRenderData(cmp, it.first),
+                                              m_colorProgram, wvp, m_camera->getPosition(), color,
+                                              nullptr);
+
         }
 
-        // Restore path color
-        if (isSelected) cmp.pathColor[0] = oldPathColor;
     }
     m_colorProgram.disableVertexAttribArrays();
     m_colorProgram.unuse();
@@ -194,7 +258,7 @@ void SpaceSystemARRenderer::drawHUD() {
         auto& cmp = it.second;
 
         // Get the augmented reality data
-        const MainMenuSystemViewer::BodyArData* bodyArData = m_systemViewer->finBodyAr(it.first);
+        const MainMenuSystemViewer::BodyArData* bodyArData = m_systemViewer->findBodyAr(it.first);
         if (bodyArData == nullptr) continue;
 
         if (bodyArData->inFrustum) {
@@ -214,16 +278,17 @@ void SpaceSystemARRenderer::drawHUD() {
             f32 interpolator = hermite(hoverTime);
 
             // Calculate colors
-            ui8v3 ui8Color;
+            color4 color;
             // If its selected we use a different color
             bool isSelected = false;
             if (m_systemViewer->getTargetBody() == it.first) {
                 isSelected = true;
              //   ui8Color = ui8v3(m_spaceSystem->pathColorMap["Selected"].second * 255.0f);
             } else {
-                ui8Color = ui8v3(lerp(cmp.pathColor[0], cmp.pathColor[1], interpolator) * 255.0f);
+                // Hermite interpolated color
+                const std::pair<color4, color4>& pathColorRange = getPathColorRange(cmp.type);
+                color.lerp(pathColorRange.first, pathColorRange.second, interpolator);
             }
-            color4 oColor(ui8Color.r, ui8Color.g, ui8Color.b, 255u);
             textColor.lerp(color::LightGray, color::White, interpolator);
 
             f32 selectorSize = bodyArData->selectorSize;
@@ -235,23 +300,23 @@ void SpaceSystemARRenderer::drawHUD() {
                 f32 low = MainMenuSystemViewer::MAX_SELECTOR_SIZE * 0.7f;
                 if (selectorSize > low) {
                     // Fade out when close
-                    oColor.a = (ui8)((1.0f - (selectorSize - low) /
+                    color.a = (ui8)((1.0f - (selectorSize - low) /
                         (MainMenuSystemViewer::MAX_SELECTOR_SIZE - low)) * 255);
-                    textColor.a = oColor.a;
+                    textColor.a = color.a;
                 } else {
                     f64 d = distance - (f64)low;
                     // Fade name based on distance
                     switch (cmp.type) {
                         case SpaceBodyType::STAR:
-                            textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.00000000001));
+                            textColor.a = color.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.00000000001));
                             break;
                         case SpaceBodyType::BARYCENTER:
                         case SpaceBodyType::PLANET:
                         case SpaceBodyType::DWARF_PLANET:
-                            textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.000000001));
+                            textColor.a = color.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.000000001));
                             break;
                         default:
-                            textColor.a = oColor.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.000001));
+                            textColor.a = color.a = (ui8)(vmath::max(0.0, (f64)textColor.a - d * 0.000001));
                             break;
                     }
                 }
@@ -273,7 +338,7 @@ void SpaceSystemARRenderer::drawHUD() {
                                     f32v2(0.5f, 0.5f),
                                     f32v2(selectorSize),
                                     interpolator * ROTATION_FACTOR,
-                                    oColor, screenCoords.z);
+                                    color, screenCoords.z);
 
                 // Text offset and scaling
                 const f32v2 textOffset(selectorSize / 2.0f, -selectorSize / 2.0f);
@@ -319,4 +384,22 @@ void SpaceSystemARRenderer::drawHUD() {
 
     m_spriteBatch->end();
     m_spriteBatch->render(m_viewport, nullptr, &vg::DepthState::READ, nullptr);
+}
+
+const std::pair<color4, color4>& SpaceSystemARRenderer::getPathColorRange(SpaceBodyType type) {
+    auto& it = m_pathColorMap.find((int)type);
+    if (it != m_pathColorMap.end()) {
+        return it->second;
+    } else {
+        return m_defaultPathColor;
+    }
+}
+
+OrbitPathRenderData& SpaceSystemARRenderer::getOrbitPathPathRenderData(SpaceBodyComponent& cmp, vecs::ComponentID cmpID) {
+    auto& it = m_renderDatas.find(cmpID);
+    if (it != m_renderDatas.end()) {
+        return it->second;
+    } else {
+        return m_renderDatas.insert(std::make_pair(cmpID, OrbitPathRenderData())).first->second;
+    }
 }

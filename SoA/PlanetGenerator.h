@@ -39,7 +39,6 @@ public:
 private:
     CALLER_DELETE PlanetGenData* generatePlanet(vcore::RPCManager* glrpc);
     CALLER_DELETE PlanetGenData* generateAsteroid(vcore::RPCManager* glrpc);
-    CALLER_DELETE PlanetGenData* generateComet(vcore::RPCManager* glrpc);
     VGTexture getRandomColorMap(vcore::RPCManager* glrpc, bool shouldBlur);
     void getRandomTerrainFuncs(OUT std::vector<TerrainFuncProperties>& funcs,
                                TerrainStage func,

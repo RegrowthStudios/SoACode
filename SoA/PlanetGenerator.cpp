@@ -26,8 +26,6 @@ CALLER_DELETE PlanetGenData* PlanetGenerator::generateRandomPlanet(SpaceBodyType
             return generatePlanet(glrpc);
         case SpaceBodyType::ASTEROID:
             return generateAsteroid(glrpc);
-        case SpaceBodyType::COMET:
-            return generateComet(glrpc);
         default:
             return nullptr;
     }
@@ -93,11 +91,6 @@ CALLER_DELETE PlanetGenData* PlanetGenerator::generatePlanet(vcore::RPCManager* 
 }
 
 CALLER_DELETE PlanetGenData* PlanetGenerator::generateAsteroid(vcore::RPCManager* glrpc) {
-    PlanetGenData* data = new PlanetGenData;
-    return data;
-}
-
-CALLER_DELETE PlanetGenData* PlanetGenerator::generateComet(vcore::RPCManager* glrpc) {
     PlanetGenData* data = new PlanetGenData;
     return data;
 }

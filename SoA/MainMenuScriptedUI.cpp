@@ -157,8 +157,6 @@ nString MainMenuScriptedUI::getBodyTypeName(vecs::EntityID entity) {
             n = "Dwarf Moon"; break;
         case SpaceBodyType::ASTEROID:
             n = "Asteroid"; break;
-        case SpaceBodyType::COMET:
-            n = "Comet"; break;
         default:
             n = "UNKNOWN"; break;
     }

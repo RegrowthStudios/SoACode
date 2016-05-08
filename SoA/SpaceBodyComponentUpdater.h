@@ -30,6 +30,9 @@ public:
     void updatePosition(SpaceBodyComponent& cmp, OPT SpaceBodyComponent* parentCmp, f64 time);
     void updateAxisRotation(SpaceBodyComponent& cmp, f64 time);
 
+    void getPositionAndVelocity(const SpaceBodyComponent& cmp, OPT const SpaceBodyComponent* parentCmp, f64 time,
+                                OUT f64v3& outPosition, OUT f64v3& outVelocity, OUT f64& outMeanAnomaly);
+
     f64 calculateTrueAnomaly(f64 meanAnomaly, f64 e);
 };
 

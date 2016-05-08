@@ -28,6 +28,14 @@
 #include <string> 
 
 /************************************************************************/
+/* Array size calculation                                               */
+/************************************************************************/
+
+template <typename T, unsigned N>
+char(&ComputeArraySize(T(&)[N]))[N];
+#define ARRAY_SIZE(Array) sizeof(ComputeArraySize(Array))
+
+/************************************************************************/
 /* Debugging Utilities                                                  */
 /************************************************************************/
 #define PRINT_VEC_TYPE(TYPE, SYM) \

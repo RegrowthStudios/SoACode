@@ -35,7 +35,6 @@ public:
 
 class SpaceBodyComponentTable : public vecs::ComponentTable < SpaceBodyComponent > {
 public:
-    virtual void disposeComponent(vecs::ComponentID cID, vecs::EntityID eID) override;
 };
 
 #endif // SpaceSystemComponentTables_h__

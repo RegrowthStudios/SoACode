@@ -65,51 +65,6 @@ void SpaceSystemLoader::loadStarSystemProperties(const nString& path) {
     std::set<SystemBodyProperties*>().swap(m_calculatedOrbits);
 }
 
-// Only used in SoaEngine::loadPathColors
-struct PathColorKegProps {
-    ui8v4 base = ui8v4(0);
-    ui8v4 hover = ui8v4(0);
-};
-KEG_TYPE_DEF_SAME_NAME(PathColorKegProps, kt) {
-    KEG_TYPE_INIT_ADD_MEMBER(kt, PathColorKegProps, base, UI8_V4);
-    KEG_TYPE_INIT_ADD_MEMBER(kt, PathColorKegProps, hover, UI8_V4);
-}
-
-//bool SpaceSystemLoader::loadPathColors() {
-//    nString data;
-//    if (!m_ioManager->readFileToString("PathColors.yml", data)) {
-//        pError("Couldn't find " + m_ioManager->getSearchDirectory().getString() + "/PathColors.yml");
-//    }
-//
-//    keg::ReadContext context;
-//    context.env = keg::getGlobalEnvironment();
-//    context.reader.init(data.c_str());
-//    keg::Node node = context.reader.getFirst();
-//    if (keg::getType(node) != keg::NodeType::MAP) {
-//        fprintf(stderr, "Failed to load %s\n", (m_ioManager->getSearchDirectory().getString() + "/PathColors.yml").c_str());
-//        context.reader.dispose();
-//        return false;
-//    }
-//
-//    bool goodParse = true;
-//    auto f = makeFunctor([&](Sender, const nString& name, keg::Node value) {
-//        PathColorKegProps props;
-//        keg::Error err = keg::parse((ui8*)&props, value, context, &KEG_GLOBAL_TYPE(PathColorKegProps));
-//        if (err != keg::Error::NONE) {
-//            fprintf(stderr, "Failed to parse node %s in PathColors.yml\n", name.c_str());
-//            goodParse = false;
-//        }
-//        f32v4 base = f32v4(props.base) / 255.0f;
-//        f32v4 hover = f32v4(props.hover) / 255.0f;
-//        m_spaceSystem->pathColorMap[name] = std::make_pair(base, hover);
-//    });
-//
-//    context.reader.forAllInMap(node, f);
-//    delete f;
-//    context.reader.dispose();
-//    return goodParse;
-//}
-
 bool SpaceSystemLoader::loadSystemProperties() {
     // Read in system properties file
     nString data;
@@ -424,6 +379,7 @@ void SpaceSystemLoader::initComponents() {
             cmpID = m_spaceSystem->spaceBody.getComponentID(body->entity);
         } else {
             // Add the entity and component
+            // TODO(Ben): Race condition in load task?
             vecs::EntityID e = m_spaceSystem->addEntity();
             cmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, e);
             body->entity = e;
@@ -528,33 +484,5 @@ void SpaceSystemLoader::calculateOrbit(SystemBodyProperties* body,
                 body->rotationalPeriod = t;
             }
         }
-    }
-
-    { // Make the ellipse mesh with stepwise simulation
-        // TODO(Ben): This is rendering
-        /*    OrbitComponentUpdater updater;
-            static const int NUM_VERTS = 2880;
-            orbitC.verts.resize(NUM_VERTS + 1);
-            f64 timePerDeg = orbitC.t / (f64)NUM_VERTS;
-            NamePositionComponent& npCmp = m_spaceSystem->namePosition.get(orbitC.npID);
-            f64v3 startPos = npCmp.position;
-            for (int i = 0; i < NUM_VERTS; i++) {
-
-            if (orbitC.parentOrbId) {
-            OrbitComponent* pOrbC = &m_spaceSystem->orbit.get(orbitC.parentOrbId);
-            updater.updatePosition(orbitC, i * timePerDeg, &npCmp,
-            pOrbC,
-            &m_spaceSystem->namePosition.get(pOrbC->npID));
-            } else {
-            updater.updatePosition(orbitC, i * timePerDeg, &npCmp);
-            }
-
-            OrbitComponent::Vertex vert;
-            vert.position = npCmp.position;
-            vert.angle = 1.0f - (f32)i / (f32)NUM_VERTS;
-            orbitC.verts[i] = vert;
-            }
-            orbitC.verts.back() = orbitC.verts.front();
-            npCmp.position = startPos;*/
     }
 }

@@ -15,10 +15,13 @@
 #ifndef SystemARRenderer_h__
 #define SystemARRenderer_h__
 
-#include <Vorb/graphics/gtypes.h>
-#include <Vorb/VorbPreDecl.inl>
 #include "OrbitRenderer.h"
+#include "SpaceSystemLoadStructs.h"
+
+#include <Vorb/VorbPreDecl.inl>
+#include <Vorb/ecs/Entity.h>
 #include <Vorb/graphics/GLProgram.h>
+#include <Vorb/graphics/gtypes.h>
 
 class Camera;
 class MainMenuSystemViewer;
@@ -43,11 +46,18 @@ public:
     void dispose();
 
 private:
+
     void loadTextures();
     // Renders space paths
     void drawPaths();
     // Renders heads up display
     void drawHUD();
+
+    const std::pair<color4, color4>& getPathColorRange(SpaceBodyType type);
+
+    OrbitPathRenderData& getOrbitPathPathRenderData(SpaceBodyComponent& cmp, vecs::ComponentID cmpID);
+
+    std::map<vecs::ComponentID, OrbitPathRenderData> m_renderDatas;
 
     vg::GLProgram m_colorProgram;
     vg::SpriteBatch* m_spriteBatch = nullptr;
@@ -62,6 +72,10 @@ private:
     VGTexture m_baryTexture = 0;
     f32v2 m_viewport;
     f32 m_zCoef;
+
+    std::map<int, std::pair<color4, color4> > m_pathColorMap;
+    std::pair<color4, color4> m_defaultPathColor = std::pair<color4, color4>(color4(0,0,0,0), color4(0,0,0,0));
+    color4 m_selectedColor;
 
     OrbitRenderer m_orbitComponentRenderer;
 };

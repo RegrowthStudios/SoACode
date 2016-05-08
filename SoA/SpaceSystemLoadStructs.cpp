@@ -8,14 +8,14 @@ KEG_ENUM_DEF(SpaceBodyGenerationType, SpaceBodyGenerationType, kt) {
 }
 
 KEG_ENUM_DEF(SpaceBodyType, SpaceBodyType, kt) {
-    kt.addValue("Barycenter", SpaceBodyType::BARYCENTER);
-    kt.addValue("Star", SpaceBodyType::STAR);
-    kt.addValue("Planet", SpaceBodyType::PLANET);
-    kt.addValue("DwarfPlanet", SpaceBodyType::DWARF_PLANET);
-    kt.addValue("Moon", SpaceBodyType::MOON);
-    kt.addValue("DwarfMoon", SpaceBodyType::DWARF_MOON);
-    kt.addValue("Asteroid", SpaceBodyType::ASTEROID);
-    kt.addValue("Comet", SpaceBodyType::COMET);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::BARYCENTER], SpaceBodyType::BARYCENTER);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::STAR], SpaceBodyType::STAR);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::PLANET], SpaceBodyType::PLANET);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::DWARF_PLANET], SpaceBodyType::DWARF_PLANET);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::MOON], SpaceBodyType::MOON);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::DWARF_MOON], SpaceBodyType::DWARF_MOON);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::IRREGULAR_DWARF_MOON], SpaceBodyType::IRREGULAR_DWARF_MOON);
+    kt.addValue(SpaceBodyTypeStrings[(int)SpaceBodyType::ASTEROID], SpaceBodyType::ASTEROID);
 }
 
 KEG_ENUM_DEF(TrojanType, TrojanType, kt) {

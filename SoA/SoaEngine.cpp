@@ -132,6 +132,10 @@ bool SoaEngine::loadSpaceSystem(SoaState* state, const nString& filePath) {
     spaceSystemLoader.loadStarSystemProperties(filePath);
 
     pool.dispose();
+
+    // TODO(Ben): Getting random crashes in
+    // SpaceSystemLoader::~SpaceSystemLoader()	
+
     return true;
 }
 

@@ -157,8 +157,8 @@ void MainMenuRenderer::render() {
     // Check fore wireframe mode
 //    if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-//    m_stages->spaceSystem.setShowAR(m_showAR);
-//    m_stages->spaceSystem.render(&m_state->clientState.spaceCamera);
+    m_stages->spaceSystem.setShowAR(m_showAR);
+    m_stages->spaceSystem.render(&m_state->clientState.spaceCamera);
 
     // Restore fill
     if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -217,7 +217,7 @@ void MainMenuRenderer::render() {
     if (m_shouldScreenshot) dumpScreenshot();
 
     // Check for errors, just in case
-    checkGlError("MainMenuRenderPipeline::render()");
+    checkGlError("MainMenuRenderer::render()");
 }
 
 void MainMenuRenderer::onWindowResize(Sender s, const vui::WindowResizeEvent& e) {

@@ -21,6 +21,8 @@ struct PlanetGenData;
 #include <Vorb/io/Keg.h>
 #include <Vorb/ecs/Entity.h>
 
+#include "soaUtils.h"
+
 /************************************************************************/
 /* SpaceBodyGenerationType                                              */
 /************************************************************************/
@@ -36,17 +38,34 @@ KEG_TYPE_DECL(SpaceBodyGenerationType);
 /* SpaceBodyType                                                        */
 /************************************************************************/
 enum class SpaceBodyType {
-    NONE,
+    NONE = 0,
     BARYCENTER,
     STAR,
     PLANET,
     DWARF_PLANET,
     MOON,
     DWARF_MOON,
+    IRREGULAR_DWARF_MOON,
     ASTEROID,
-    COMET
+    SIZE //< Should always be the last
 };
 KEG_TYPE_DECL(SpaceBodyType);
+
+/// Order should match SpaceBodyType enum
+const char* const SpaceBodyTypeStrings[] = {
+    "None",
+    "Barycenter",
+    "Star",
+    "Planet",
+    "DwarfPlanet",
+    "Moon",
+    "DwarfMoon",
+    "IrregularDwarfMoon",
+    "Asteroid"
+};
+
+static_assert((int)SpaceBodyType::SIZE == ARRAY_SIZE(SpaceBodyTypeStrings),
+              "SpaceBodyTypeStrings is the wrong size");
 
 /************************************************************************/
 /* TrojanType                                                          */

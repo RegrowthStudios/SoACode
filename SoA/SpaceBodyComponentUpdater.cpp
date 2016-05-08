@@ -27,21 +27,38 @@ void SpaceBodyComponentUpdater::update(SpaceSystem* spaceSystem, f64 time) {
 }
 
 void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT SpaceBodyComponent* parentCmp, f64 time) {
+    getPositionAndVelocity(cmp, parentCmp, time, cmp.position, cmp.velocity, cmp.currentMeanAnomaly);
+}
 
+void SpaceBodyComponentUpdater::updateAxisRotation(SpaceBodyComponent& cmp, f64 time) {
+    // Calculate rotation  
+    cmp.currentRotation = (time / cmp.axisPeriod) * 2.0 * M_PI;
+
+    // Calculate the axis rotation quat
+    f64v3 eulerAngles(0, -cmp.currentRotation, 0);
+    f64q rotationQuat = f64q(eulerAngles);
+
+    // Calculate total orientation
+    cmp.currentOrientation = cmp.axisOrientation * rotationQuat;
+    cmp.invCurrentOrientation = vmath::inverse(cmp.currentOrientation);
+}
+
+void SpaceBodyComponentUpdater::getPositionAndVelocity(const SpaceBodyComponent& cmp, OPT const SpaceBodyComponent* parentCmp, f64 time,
+                                                       OUT f64v3& outPosition, OUT f64v3& outVelocity, OUT f64& outMeanAnomaly) {
     // TODO(Ben): There is potential for more cacheing in here
     /// Calculates position as a function of time
     /// http://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion#Position_as_a_function_of_time
 
     // 1. Calculate the mean anomaly
     f64 meanAnomaly = (M_2_PI / cmp.t) * time + cmp.startMeanAnomaly;
-    cmp.currentMeanAnomaly = meanAnomaly;
+    outMeanAnomaly = meanAnomaly;
 
     f64 v = calculateTrueAnomaly(meanAnomaly, cmp.e);
-  
+
     // Calculate radius
     // http://www.stargazing.net/kepler/ellipse.html
     f64 r = cmp.major * (1.0 - cmp.e * cmp.e) / (1.0 + cmp.e * cos(v));
-    
+
     f64 w = cmp.p - cmp.n; ///< Argument of periapsis
 
     // Calculate position
@@ -68,13 +85,14 @@ void SpaceBodyComponentUpdater::updatePosition(SpaceBodyComponent& cmp, OPT Spac
     // If this planet has a parent, make it parent relative
     if (parentCmp) {
         // TODO(Ben): If the parent updates last, the velocity isn't right.
-        cmp.velocity = parentCmp->velocity + relativeVelocity;
-        cmp.position = position + parentCmp->position;
+        outVelocity = parentCmp->velocity + relativeVelocity;
+        outPosition = position + parentCmp->position;
     } else {
-        cmp.velocity = relativeVelocity;
-        cmp.position = position;
+        outVelocity = relativeVelocity;
+        outPosition = position;
     }
 }
+
 
 f64 SpaceBodyComponentUpdater::calculateTrueAnomaly(f64 meanAnomaly, f64 e) {
     // 2. Solve Kepler's equation to compute eccentric anomaly 
@@ -93,17 +111,4 @@ f64 SpaceBodyComponentUpdater::calculateTrueAnomaly(f64 meanAnomaly, f64 e) {
     }
     // 3. Calculate true anomaly
     return atan2(sqrt(1.0 - e * e) * sin(E), cos(E) - e);
-}
-
-void SpaceBodyComponentUpdater::updateAxisRotation(SpaceBodyComponent& cmp, f64 time) {
-    // Calculate rotation  
-    cmp.currentRotation = (time / cmp.axisPeriod) * 2.0 * M_PI;
-
-    // Calculate the axis rotation quat
-    f64v3 eulerAngles(0, -cmp.currentRotation, 0);
-    f64q rotationQuat = f64q(eulerAngles);
-
-    // Calculate total orientation
-    cmp.currentOrientation = cmp.axisOrientation * rotationQuat;
-    cmp.invCurrentOrientation = vmath::inverse(cmp.currentOrientation);  
 }

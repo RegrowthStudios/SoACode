@@ -8,13 +8,21 @@
 #include "Constants.h"
 #include "RenderUtils.h"
 #include "SpaceSystemComponents.h"
+#include "Errors.h"
 #include "SpaceBodyComponentUpdater.h"
 
-void OrbitRenderer::drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram, const f32m4& wvp, const f64v3& camPos, float blendFactor, SpaceBodyComponent* parentCmp /*= nullptr*/) {
+void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData& renderData,
+                             vg::GLProgram& colorProgram, const f32m4& WVP,
+                             const f64v3& camPos,
+                             const color4& color, const SpaceBodyComponent* parentCmp /*= nullptr*/) {
 
     // Lazily generate mesh
-    if (cmp.vbo == 0) generateOrbitEllipse(cmp, colorProgram);
-    if (cmp.numVerts == 0) return;
+
+    checkGlError("A");
+    if (renderData.vbo == 0) generateOrbitEllipse(cmp, renderData, colorProgram);
+
+    checkGlError("B");
+    if (renderData.numVerts == 0) return;
     
     f32m4 w(1.0f);
     if (parentCmp) {
@@ -23,46 +31,76 @@ void OrbitRenderer::drawPath(SpaceBodyComponent& cmp, vg::GLProgram& colorProgra
         setMatrixTranslation(w, -camPos);
     }
     
-    f32m4 pathMatrix = wvp * w;
+    f32m4 pathMatrix = WVP * w;
+    checkGlError("DDD");
 
-    f32v4 newColor = lerp(cmp.pathColor[0], cmp.pathColor[1], blendFactor);
-    if (newColor.a <= 0.0f) return;
-    glUniform4f(colorProgram.getUniform("unColor"), newColor.r, newColor.g, newColor.b, newColor.a);
+    f32v4 colorf(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
 
+    if (color.a == 0) return;
+    glUniform4f(colorProgram.getUniform("unColor"), colorf.r, colorf.g, colorf.b, colorf.a);
+
+    checkGlError("AA");
     glUniformMatrix4fv(colorProgram.getUniform("unWVP"), 1, GL_FALSE, &pathMatrix[0][0]);
 
+    checkGlError("VV");
     float currentAngle = cmp.currentMeanAnomaly - (f32)cmp.startMeanAnomaly;
     glUniform1f(colorProgram.getUniform("currentAngle"), currentAngle / (float)M_2_PI);
 
+
+    checkGlError("CC");
     // Draw the ellipse
     glDepthMask(false);
-    glBindVertexArray(cmp.vao);
-    glDrawArrays(GL_LINE_STRIP, 0, cmp.numVerts);
+    glBindVertexArray(renderData.vao);
+    glDrawArrays(GL_LINE_STRIP, 0, renderData.numVerts);
+
+    checkGlError("D");
     glBindVertexArray(0);
     glDepthMask(true);
 }
 
-void OrbitRenderer::generateOrbitEllipse(SpaceBodyComponent& cmp, vg::GLProgram& colorProgram) {
+void OrbitRenderer::generateOrbitEllipse(const SpaceBodyComponent& cmp, OrbitPathRenderData& renderData, vg::GLProgram& colorProgram) {
 
-    if (cmp.verts.empty()) return;
+    std::vector <OrbitPathRenderData::Vertex> verts;
+    { // Generate the mesh
+        static const int NUM_VERTS = 2880;
+        verts.resize(NUM_VERTS + 1);
+        f64 timePerDeg = cmp.t / (f64)NUM_VERTS;
 
-    glGenVertexArrays(1, &cmp.vao);
-    glBindVertexArray(cmp.vao);
+        SpaceBodyComponentUpdater updater;
+        for (int i = 0; i < NUM_VERTS; i++) {
+
+            f64v3 position;
+            f64v3 tmp1;
+            f64 tmp2;
+
+            // Sample positions for the vertices
+            // TODO(Ben): We can do this much more cheaply and without the updater
+            // by just using semi-major and semi-minor
+            updater.getPositionAndVelocity(cmp, nullptr, i * timePerDeg, position, tmp1, tmp2);
+
+            OrbitPathRenderData::Vertex& vert = verts[i];
+            vert.position = position;
+            vert.angle = 1.0f - (f32)i / (f32)NUM_VERTS;
+        }
+        verts.back() = verts.front();
+    }
+
+    glGenVertexArrays(1, &renderData.vao);
+    glBindVertexArray(renderData.vao);
 
     colorProgram.enableVertexAttribArrays();
 
     // Upload the buffer data
-    vg::GpuMemory::createBuffer(cmp.vbo);
-    vg::GpuMemory::bindBuffer(cmp.vbo, vg::BufferTarget::ARRAY_BUFFER);
-    vg::GpuMemory::uploadBufferData(cmp.vbo,
+    vg::GpuMemory::createBuffer(renderData.vbo);
+    vg::GpuMemory::bindBuffer(renderData.vbo, vg::BufferTarget::ARRAY_BUFFER);
+    vg::GpuMemory::uploadBufferData(renderData.vbo,
                                     vg::BufferTarget::ARRAY_BUFFER,
-                                    cmp.verts.size() * sizeof(SpaceBodyComponent::Vertex),
-                                    cmp.verts.data(),
+                                    verts.size() * sizeof(OrbitPathRenderData::Vertex),
+                                    verts.data(),
                                     vg::BufferUsageHint::STATIC_DRAW);
     vg::GpuMemory::bindBuffer(0, vg::BufferTarget::ELEMENT_ARRAY_BUFFER);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SpaceBodyComponent::Vertex), 0);
-    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(SpaceBodyComponent::Vertex), (const void*)offsetof(SpaceBodyComponent::Vertex, angle));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(OrbitPathRenderData::Vertex), (const void*)offsetof(OrbitPathRenderData::Vertex, position));
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(OrbitPathRenderData::Vertex), (const void*)offsetof(OrbitPathRenderData::Vertex, angle));
     glBindVertexArray(0);
-    cmp.numVerts = cmp.verts.size();
-    std::vector<SpaceBodyComponent::Vertex>().swap(cmp.verts);
+    renderData.numVerts = verts.size();
 }

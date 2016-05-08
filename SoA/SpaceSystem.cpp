@@ -23,9 +23,6 @@ SpaceSystem::~SpaceSystem() {
     for (auto& it : sphericalVoxel) {
         sphericalVoxel.disposeComponent(sphericalVoxel.getComponentID(it.first), it.first);
     }
-    for (auto& it : spaceBody) {
-        spaceBody.disposeComponent(spaceBody.getComponentID(it.first), it.first);
-    }
     for (auto& it : sphericalVoxel) {
         sphericalVoxel.disposeComponent(sphericalVoxel.getComponentID(it.first), it.first);
     }
