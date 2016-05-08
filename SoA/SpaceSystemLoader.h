@@ -36,10 +36,6 @@ public:
     void loadStarSystemProperties(const nString& path);
 
 private:
-    /// Loads path color scheme
-    /// @param pr: params
-    /// @return true on success
-    //bool loadPathColors();
 
     /// Loads and adds system properties to the params
     /// @param pr: params
@@ -67,12 +63,10 @@ private:
                         f64 parentMass,
                         f64 binaryMassRatio = 0.0);
 
-
     SpaceSystem* m_spaceSystem;
     vio::IOManager* m_ioManager = nullptr;
     std::map<nString, SystemBodyProperties*> m_barycenters;
     std::map<nString, SystemBodyProperties*> m_systemBodies;
-   // std::map<nString, vecs::EntityID> m_bodyLookupMap;
 
     std::set<SystemBodyProperties*> m_calculatedOrbits;
 };

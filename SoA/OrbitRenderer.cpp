@@ -39,6 +39,9 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
     glUniformMatrix4fv(colorProgram.getUniform("unWVP"), 1, GL_FALSE, &pathMatrix[0][0]);
 
     f32 currentAngle = (f32)((cmp.currentMeanAnomaly - cmp.startMeanAnomaly) / M_2_PI);
+    if (currentAngle > 0.4f) {
+        std::cout << currentAngle << std::endl;
+    }
     glUniform1f(colorProgram.getUniform("currentAngle"), currentAngle);
 
     // Draw the ellipse

@@ -76,8 +76,8 @@ void LoadMonitor::start() {
 #endif // DEBUG
 
             // Notify That This Task Is Completed
-            m_completedTasks++;
             uLock.lock();
+            m_completedTasks++;
             m_completionCondition.notify_all();
             uLock.unlock();
         });
