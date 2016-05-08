@@ -8,6 +8,7 @@
 #include "SpaceBodyComponentUpdater.h"
 #include "SpaceSystem.h"
 #include "Errors.h"
+#include "SoaThreads.h"
 #include "soaUtils.h"
 
 #include <Vorb/colors.h>
@@ -140,7 +141,7 @@ void SpaceSystemARRenderer::draw(SpaceSystem* spaceSystem, const Camera* camera,
     glDepthFunc(GL_LEQUAL);
     drawPaths();
     if (m_systemViewer) {
-        drawHUD();
+    //    drawHUD();
     }
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
@@ -186,6 +187,8 @@ void SpaceSystemARRenderer::loadTextures() {
 }
 
 void SpaceSystemARRenderer::drawPaths() {
+
+    AssertIsGraphics();
 
     m_colorProgram.use();
     m_colorProgram.enableVertexAttribArrays();

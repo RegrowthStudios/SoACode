@@ -19,6 +19,7 @@
 #include <Vorb/VorbPreDecl.inl>
 #include "OptionsController.h"
 #include "SpaceSystemLoader.h"
+#include "SoaThreads.h"
 
 class GameSystem;
 class BlockPack;

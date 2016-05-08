@@ -2,43 +2,43 @@
 #include "LoadMonitor.h"
 
 LoadMonitor::LoadMonitor() :
-_lock(),
-_completionCondition() {
-    // Empty
+m_lock(),
+m_completionCondition() {
+    m_completedTasks.store(0);
 }
 LoadMonitor::~LoadMonitor() {
-    if (_internalTasks.size() > 0) {
-        for (ILoadTask* t : _internalTasks) {
+    if (m_internalTasks.size() > 0) {
+        for (ILoadTask* t : m_internalTasks) {
             if (t) delete t;
         }
     }
-    for (auto& t : _internalThreads) {
+    for (auto& t : m_internalThreads) {
         t.detach();
     }
 }
 
-void LoadMonitor::addTask(nString name, ILoadTask* task) {
-    _tasks.emplace(name, task);
+void LoadMonitor::addTask(const nString& name, ILoadTask* task) {
+    m_tasks.emplace(name, task);
 }
-bool LoadMonitor::isTaskFinished(nString task) {
-    _lock.lock();
+bool LoadMonitor::isTaskFinished(const nString& task) {
+    m_lock.lock();
     bool state = isFinished(task);
-    _lock.unlock();
+    m_lock.unlock();
     return state;
 }
 
-bool LoadMonitor::isFinished(nString task) {
-    auto& kvp = _tasks.find(task);
-    if (kvp == _tasks.end()) {
+bool LoadMonitor::isFinished(const nString& task) {
+    auto& kvp = m_tasks.find(task);
+    if (kvp == m_tasks.end()) {
         fprintf(stderr, "LoadMonitor Warning: dependency %s does not exist\n", task.c_str());
         return false;
     }
     return kvp->second->isFinished();
 }
-bool LoadMonitor::canStart(nString task) {
+bool LoadMonitor::canStart(const nString& task) {
     // Check that the dependency exists
-    auto& kvp = _tasks.find(task);
-    if (kvp == _tasks.end()) {
+    auto& kvp = m_tasks.find(task);
+    if (kvp == m_tasks.end()) {
         fprintf(stderr, "LoadMonitor Warning: task %s does not exist\n", task.c_str());
         return false;
     }
@@ -53,13 +53,13 @@ bool LoadMonitor::canStart(nString task) {
 
 void LoadMonitor::start() {
     LoadMonitor* monitor = this;
-    for (auto& kvp : _tasks) {
+    for (auto& kvp : m_tasks) {
         ILoadTask* task = kvp.second;
-        nString name = kvp.first;
-        _internalThreads.emplace_back([=] () {
+        const nString& name = kvp.first;
+        m_internalThreads.emplace_back([=] () {
             // Wait For Dependencies To Complete
-            std::unique_lock<std::mutex> uLock(monitor->_lock);
-            _completionCondition.wait(uLock, [=] {
+            std::unique_lock<std::mutex> uLock(monitor->m_lock);
+            m_completionCondition.wait(uLock, [=] {
 #ifdef DEBUG
                 printf("CHECK: %s\r\n", name.c_str());
 #endif
@@ -76,37 +76,37 @@ void LoadMonitor::start() {
 #endif // DEBUG
 
             // Notify That This Task Is Completed
+            m_completedTasks++;
             uLock.lock();
-            _completionCondition.notify_all();
+            m_completionCondition.notify_all();
             uLock.unlock();
         });
     }
 }
 void LoadMonitor::wait() {
     // Wait for all threads to complete
-    for (auto& t : _internalThreads) {
+    for (auto& t : m_internalThreads) {
         t.join();
-        t.detach();
     }
 
-    _internalThreads.clear();
+    m_internalThreads.clear();
 
     // Free all tasks
-    for (ILoadTask* t : _internalTasks) delete t;
-    _internalTasks.clear();
+    for (ILoadTask* t : m_internalTasks) delete t;
+    m_internalTasks.clear();
 }
 
-void LoadMonitor::setDep(nString name, nString dep) {
+void LoadMonitor::setDep(const nString& name, const nString& dep) {
     // Check that the task exists
-    auto& kvp = _tasks.find(name);
-    if (kvp == _tasks.end()) {
+    auto& kvp = m_tasks.find(name);
+    if (kvp == m_tasks.end()) {
         fprintf(stderr, "LoadMonitor Warning: Task %s doesn't exist.\n",name.c_str());
         return;
     }
 
     // Check that the dependency exists
-    auto& dvp = _tasks.find(dep);
-    if (dvp == _tasks.end()) {
+    auto& dvp = m_tasks.find(dep);
+    if (dvp == m_tasks.end()) {
         fprintf(stderr, "LoadMonitor Warning: Dependency %s doesn't exist.\n", dep.c_str());
         return;
     }

@@ -18,10 +18,8 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
 
     // Lazily generate mesh
 
-    checkGlError("A");
     if (renderData.vbo == 0) generateOrbitEllipse(cmp, renderData, colorProgram);
 
-    checkGlError("B");
     if (renderData.numVerts == 0) return;
     
     f32m4 w(1.0f);
@@ -32,28 +30,22 @@ void OrbitRenderer::drawPath(const SpaceBodyComponent& cmp, OrbitPathRenderData&
     }
     
     f32m4 pathMatrix = WVP * w;
-    checkGlError("DDD");
 
     f32v4 colorf(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
 
     if (color.a == 0) return;
     glUniform4f(colorProgram.getUniform("unColor"), colorf.r, colorf.g, colorf.b, colorf.a);
 
-    checkGlError("AA");
     glUniformMatrix4fv(colorProgram.getUniform("unWVP"), 1, GL_FALSE, &pathMatrix[0][0]);
 
-    checkGlError("VV");
     float currentAngle = cmp.currentMeanAnomaly - (f32)cmp.startMeanAnomaly;
     glUniform1f(colorProgram.getUniform("currentAngle"), currentAngle / (float)M_2_PI);
 
-
-    checkGlError("CC");
     // Draw the ellipse
     glDepthMask(false);
     glBindVertexArray(renderData.vao);
     glDrawArrays(GL_LINE_STRIP, 0, renderData.numVerts);
 
-    checkGlError("D");
     glBindVertexArray(0);
     glDepthMask(true);
 }

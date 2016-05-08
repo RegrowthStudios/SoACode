@@ -135,7 +135,6 @@ bool SoaEngine::loadSpaceSystem(SoaState* state, const nString& filePath) {
 
     // TODO(Ben): Getting random crashes in
     // SpaceSystemLoader::~SpaceSystemLoader()	
-
     return true;
 }
 

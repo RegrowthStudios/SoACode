@@ -620,6 +620,7 @@ EXIT 0</Command>
     <ClInclude Include="OpaqueVoxelRenderStage.h" />
     <ClInclude Include="OptionsController.h" />
     <ClInclude Include="OrbitRenderer.h" />
+    <ClInclude Include="SoaThreads.h" />
     <ClInclude Include="SpaceBodyComponentUpdater.h" />
     <ClInclude Include="ParkourComponentUpdater.h" />
     <ClInclude Include="PauseMenu.h" />
@@ -837,6 +838,7 @@ EXIT 0</Command>
     <ClCompile Include="OpaqueVoxelRenderStage.cpp" />
     <ClCompile Include="OptionsController.cpp" />
     <ClCompile Include="OrbitRenderer.cpp" />
+    <ClCompile Include="SoaThreads.cpp" />
     <ClCompile Include="SpaceBodyComponentUpdater.cpp" />
     <ClCompile Include="ParkourComponentUpdater.cpp" />
     <ClCompile Include="PauseMenu.cpp" />

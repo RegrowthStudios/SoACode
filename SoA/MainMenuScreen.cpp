@@ -154,6 +154,7 @@ void MainMenuScreen::update(const vui::GameTime& gameTime) {
 }
 
 void MainMenuScreen::draw(const vui::GameTime& gameTime) {
+
     m_soaState->clientState.spaceCamera.updateProjection();
     m_renderer.render();
 }

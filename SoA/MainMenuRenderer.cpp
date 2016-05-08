@@ -18,6 +18,7 @@
 #include "SoaState.h"
 #include "SpaceSystem.h"
 #include "soaUtils.h"
+#include "SoaThreads.h"
 
 void MainMenuRenderer::init(vui::GameWindow* window, StaticLoadContext& context,
                             MainMenuScreen* mainMenuScreen, CommonState* commonState) {
@@ -72,6 +73,7 @@ void MainMenuRenderer::dispose(StaticLoadContext& context) {
 }
 
 void MainMenuRenderer::hook() {
+    AssertIsGraphics();
     m_stages->skybox.hook(m_state);
     m_stages->spaceSystem.hook(m_state, &m_state->clientState.spaceCamera, nullptr);
     m_stages->hdr.hook(&m_commonState->quad);
@@ -89,6 +91,7 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
 
         // Create the HDR target    
         context.addTask([&](Sender, void*) {
+            AssertIsGraphics();
             Array<vg::GBufferAttachment> attachments;
             vg::GBufferAttachment att[2];
             // TODO(Ben): Don't think this is right.
@@ -115,13 +118,15 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
         }, false);
 
         // Create the swap chain for post process effects (HDR-capable)
-        context.addTask([&](Sender, void*) { 
+        context.addTask([&](Sender, void*) {
+            AssertIsGraphics();
             m_swapChain.init(m_window->getWidth(), m_window->getHeight(), vg::TextureInternalFormat::RGBA32F);
             context.addWorkCompleted(1);
         }, false);
 
         // Create full-screen quad
         context.addTask([&](Sender, void*) {
+            AssertIsGraphics();
             m_commonState->quad.init();
             context.addWorkCompleted(1);
         }, false);
@@ -142,6 +147,8 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
 }
 
 void MainMenuRenderer::render() {
+
+    AssertIsGraphics();
 
     // Check for window resize
     if (m_shouldResize) resize();

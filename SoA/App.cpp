@@ -6,6 +6,7 @@
 #include <Vorb/graphics/SpriteBatch.h>
 #include <Vorb/sound/SoundEngine.h>
 
+#include "SoaThreads.h"
 #include "ChunkMeshManager.h"
 #include "CommonState.h"
 #include "DebugRenderer.h"
@@ -102,6 +103,8 @@ void App::addScreens() {
 }
 
 void App::onInit() {
+    SetThisThreadIsGraphics();
+
     state.state = new SoaState;
     state.window = &m_window;
     state.soundEngine = new vsound::Engine;
@@ -119,6 +122,8 @@ void App::onInit() {
 
     // Load the options from file
     SoaEngine::optionsController.loadOptions();
+
+    AssertIsGraphics();
 
     vg::SamplerState::initPredefined();
 }

@@ -23,6 +23,8 @@ const color4 LOAD_COLOR_TEXT(205, 205, 205, 255);
 const color4 LOAD_COLOR_BG_LOADING(105, 5, 5, 255);
 const color4 LOAD_COLOR_BG_FINISHED(25, 105, 5, 255);
 
+#define LOAD_TASK_SPACE_SYSTEM "StarSystem"
+
 /************************************************************************/
 /* LoadTasks                                                            */
 /************************************************************************/
@@ -137,7 +139,7 @@ void MainMenuLoadScreen::onEntry(const vui::GameTime& gameTime) {
     m_sf->init("Fonts/orbitron_bold-webfont.ttf", 32);
 
     // Add Tasks Here
-    addLoadTask("SpaceSystem", "SpaceSystem", new LoadTaskStarSystem("StarSystems/Trinity", m_commonState->state));
+    addLoadTask(LOAD_TASK_SPACE_SYSTEM, LOAD_TASK_SPACE_SYSTEM, new LoadTaskStarSystem("StarSystems/Trinity", m_commonState->state));
 
     m_mainMenuScreen->m_renderer.init(m_commonState->window, m_commonState->loadContext, m_mainMenuScreen, m_commonState);
     m_mainMenuScreen->m_renderer.hook();
@@ -186,10 +188,12 @@ void MainMenuLoadScreen::update(const vui::GameTime& gameTime) {
     }
 
     // Perform OpenGL calls
+    AssertIsGraphics();
     m_commonState->loadContext.processRequests(1);
 
     // End condition
-    if (m_mainMenuScreen->m_renderer.isLoaded() && m_monitor.isTaskFinished("SpaceSystem") && (m_isSkipDetected || (!m_isOnVorb && m_timer > m_regrowthScreenDuration))) {
+    if (m_mainMenuScreen->m_renderer.isLoaded() && m_monitor.isFinished() && (m_isSkipDetected || (!m_isOnVorb && m_timer > m_regrowthScreenDuration))) {
+        m_monitor.wait();
         m_commonState->loadContext.end();
         m_state = vui::ScreenState::CHANGE_NEXT;
     }
