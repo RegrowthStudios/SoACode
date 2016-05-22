@@ -30,6 +30,9 @@ DECL_VCORE(class RPCManager)
 
 class SpaceSystemLoader {
 public:
+    SpaceSystemLoader();
+    ~SpaceSystemLoader();
+
     void init(const SoaState* soaState);
     /// Loads and adds a star system to the SpaceSystem
     /// @param pr: params

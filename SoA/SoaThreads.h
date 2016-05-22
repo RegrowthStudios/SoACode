@@ -21,7 +21,7 @@
 extern std::thread::id THREAD_ID_GRAPHICS;
 
 inline void SetThisThreadIsGraphics() { THREAD_ID_GRAPHICS = std::this_thread::get_id(); }
-inline void AssertIsGraphics() { vorb_assert(std::this_thread::get_id() == THREAD_ID_GRAPHICS, "Not graphics thread!") }
-inline void AssertIsNotGraphics() { vorb_assert(std::this_thread::get_id() != THREAD_ID_GRAPHICS, "Is graphics thread!") }
+inline void AssertIsGraphics() { vorb_assert(std::this_thread::get_id() == THREAD_ID_GRAPHICS, "Not graphics thread!"); }
+inline void AssertIsNotGraphics() { vorb_assert(std::this_thread::get_id() != THREAD_ID_GRAPHICS, "Is graphics thread!"); }
 
 #endif // SoaThreads_h__

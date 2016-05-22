@@ -37,12 +37,12 @@ class LoadTaskStarSystem : public ILoadTask {
         filePath(filePath) {
         // Empty
     }
-    virtual void load() {
+    virtual void load() override {
         SoaEngine::loadSpaceSystem(soaState, filePath);
     }
 
-    nString filePath;
-    SoaState* soaState;
+    nString filePath = "";
+    SoaState* soaState = nullptr;
 };
 
 /************************************************************************/

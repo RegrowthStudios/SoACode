@@ -34,6 +34,18 @@
 
 /************************************************************************/
 
+SpaceSystemLoader::SpaceSystemLoader() {
+    // Empty
+}
+SpaceSystemLoader::~SpaceSystemLoader() {
+    for (auto& it : m_systemBodies) {
+        SystemBodyProperties* b = it.second;
+        if (b->genTypeProperties) delete b->genTypeProperties;
+        delete b;
+    }
+    m_systemBodies.clear();
+}
+
 void SpaceSystemLoader::init(const SoaState* soaState) {
     // TODO(Ben): Don't need all this
     m_spaceSystem = soaState->spaceSystem;
@@ -98,8 +110,6 @@ bool SpaceSystemLoader::loadSystemProperties() {
             } else {
                 body = it->second;
             }
-
-            std::cout << name << std::endl;
 
             // Parse orbit
             keg::Error err = keg::parse((ui8*)body, value, context, &KEG_GLOBAL_TYPE(SystemBodyProperties));
@@ -408,9 +418,11 @@ void SpaceSystemLoader::initComponents() {
             } else {
                 // Make the parent entity
                 vecs::EntityID pe = m_spaceSystem->addEntity();
+                // cmp becomes invalid when we add a new component.
                 vecs::ComponentID pcmpID = m_spaceSystem->addComponent(SPACE_SYSTEM_CT_SPACEBODY_NAME, pe);
                 parent->entity = pe;
-                cmp.parentBodyComponent = pcmpID;
+                // Get the original component again to set its parent ID
+                m_spaceSystem->spaceBody.get(cmpID).parentBodyComponent = pcmpID;
             }
         }
     }

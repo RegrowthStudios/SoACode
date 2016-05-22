@@ -115,6 +115,7 @@ bool SoaEngine::loadSpaceSystem(SoaState* state, const nString& filePath) {
     spaceSystemLoader.init(state);
     spaceSystemLoader.loadStarSystemProperties(filePath);
 
+    // TODO(Ben): Crashes in SpaceSystemLoader destructor quite a lot here
     return true;
 }
 

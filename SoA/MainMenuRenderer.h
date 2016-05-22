@@ -62,7 +62,7 @@ public:
     void toggleWireframe() { m_wireframe = !m_wireframe; }
     void cycleColorFilter() { m_colorFilter++; if (m_colorFilter > 3) m_colorFilter = 0; }
    
-    const volatile bool& isLoaded() const { return m_isLoaded.load(); }
+    bool isLoaded() const { return m_isLoaded.load(); }
 
     /************************************************************************/
     /* Events                                                               */

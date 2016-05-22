@@ -11,6 +11,7 @@ public:
     ILoadTask() {
         m_isFinished.store(false);
     }
+    virtual ~ILoadTask() {};
 
     bool isFinished() const {
         return m_isFinished.load();

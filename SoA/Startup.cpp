@@ -18,7 +18,7 @@ Command-line arguments:
 
 Startup startup(int argc, cString* argv) {
     // Application mode is the default
-    Startup mode = Startup::HELP;
+    Startup mode = Startup::APP;
     bool shouldOutputHelp = false;
 
     // Check if another argument exists
