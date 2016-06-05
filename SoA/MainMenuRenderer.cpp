@@ -104,14 +104,14 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
             att[1].pixelFormat = vg::TextureFormat::RGBA;
             att[1].pixelType = vg::TexturePixelType::UNSIGNED_BYTE;
             att[1].number = 2;
-       //     m_hdrTarget.setSize(m_window->getWidth(), m_window->getHeight());
-       //     m_hdrTarget.init(Array<vg::GBufferAttachment>(att, 2), vg::TextureInternalFormat::RGBA32F).initDepth();
+            m_hdrTarget.setSize(m_window->getWidth(), m_window->getHeight());
+            m_hdrTarget.init(Array<vg::GBufferAttachment>(att, 2), vg::TextureInternalFormat::RGBA32F).initDepth();
 
             if (soaOptions.get(OPT_MSAA).value.i > 0) {
-       //         glEnable(GL_MULTISAMPLE);
+                glEnable(GL_MULTISAMPLE);
             }
             else {
-       //         glDisable(GL_MULTISAMPLE);
+                glDisable(GL_MULTISAMPLE);
             }
             context.addWorkCompleted(1);
         }, false);
@@ -119,7 +119,7 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
         // Create the swap chain for post process effects (HDR-capable)
         context.addTask([&](Sender, void*) {
             AssertIsGraphics();
-     //       m_swapChain.init(m_window->getWidth(), m_window->getHeight(), vg::TextureInternalFormat::RGBA32F);
+            m_swapChain.init(m_window->getWidth(), m_window->getHeight(), vg::TextureInternalFormat::RGBA32F);
             context.addWorkCompleted(1);
         }, false);
 
@@ -133,10 +133,10 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
         // Load all the stages
         m_stages->skybox.load(context);
         m_stages->spaceSystem.load(context);
-   //     m_stages->hdr.load(context);
-   //     m_stages->colorFilter.load(context);
-   //     m_stages->exposureCalc.load(context);
-    //    m_stages->bloom.load(context);
+        m_stages->hdr.load(context);
+        m_stages->colorFilter.load(context);
+        m_stages->exposureCalc.load(context);
+        m_stages->bloom.load(context);
 
         context.blockUntilFinished();
 
@@ -150,18 +150,18 @@ void MainMenuRenderer::render() {
     AssertIsGraphics();
 
     // Check for window resize
-//    if (m_shouldResize) resize();
+    if (m_shouldResize) resize();
 
     // Bind the FBO
-  //  m_hdrTarget.useGeometry();
+    m_hdrTarget.useGeometry();
     // Clear depth buffer. Don't have to clear color since skybox will overwrite it
-    glClear(/*tmp*/ GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     // Main render passes
- //   m_stages->skybox.render(&m_state->clientState.spaceCamera);
+    m_stages->skybox.render(&m_state->clientState.spaceCamera);
 
     // Check fore wireframe mode
-//    if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     printVec("Camera Pos: ", m_state->clientState.spaceCamera.getPosition());
 
@@ -169,58 +169,58 @@ void MainMenuRenderer::render() {
     m_stages->spaceSystem.render(&m_state->clientState.spaceCamera);
 
     // Restore fill
-//    if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
- //   f32v3 colorFilter(1.0);
+    f32v3 colorFilter(1.0);
     // Color filter rendering
-    /*  if (m_colorFilter != 0) {
+      if (m_colorFilter != 0) {
           switch (m_colorFilter) {
-          case 1:
-          colorFilter = f32v3(0.66f);
-          m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.33f)); break;
-          case 2:
-          colorFilter = f32v3(0.3f);
-          m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.66f)); break;
-          case 3:
-          colorFilter = f32v3(0.0f);
-          m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.9f)); break;
-          }*/
-//        m_stages->colorFilter.render();
- //   }
+              case 1:
+                  colorFilter = f32v3(0.66f);
+                  m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.33f)); break;
+              case 2:
+                  colorFilter = f32v3(0.3f);
+                  m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.66f)); break;
+              case 3:
+                  colorFilter = f32v3(0.0f);
+                  m_stages->colorFilter.setColor(f32v4(0.0, 0.0, 0.0, 0.9f)); break;
+          }
+        m_stages->colorFilter.render();
+    }
 
-//    m_stages->exposureCalc.render();
-    // Move exposure towards target
-  //  static const f32 EXPOSURE_STEP = 0.005f;
-  //  stepTowards(soaOptions.get(OPT_HDR_EXPOSURE).value.f, m_stages->exposureCalc.getExposure(), EXPOSURE_STEP);
+    m_stages->exposureCalc.render();
+  //  Move exposure towards target
+    static const f32 EXPOSURE_STEP = 0.005f;
+    stepTowards(soaOptions.get(OPT_HDR_EXPOSURE).value.f, m_stages->exposureCalc.getExposure(), EXPOSURE_STEP);
 
     // Post processing
-  //  m_swapChain.reset(0, m_hdrTarget.getGeometryID(), m_hdrTarget.getGeometryTexture(0), soaOptions.get(OPT_MSAA).value.i > 0, false);
+    m_swapChain.reset(0, m_hdrTarget.getGeometryID(), m_hdrTarget.getGeometryTexture(0), soaOptions.get(OPT_MSAA).value.i > 0, false);
 
     // TODO: More Effects?
 
     // last effect should not swap swapChain
- //   if (m_stages->bloom.isActive()) {
-//        m_stages->bloom.render();
-//    }
+    if (m_stages->bloom.isActive()) {
+        m_stages->bloom.render();
+    }
 
     // Render last
- //   glBlendFunc(GL_ONE, GL_ONE);
-//    m_stages->spaceSystem.renderStarGlows(colorFilter);
-  //  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE);
+    m_stages->spaceSystem.renderStarGlows(colorFilter);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//    m_swapChain.swap();
-//    m_swapChain.bindPreviousTexture(0);
+    m_swapChain.swap();
+    m_swapChain.bindPreviousTexture(0);
 
     // Draw to backbuffer for the last effect
- //   m_swapChain.unuse(m_window->getWidth(), m_window->getHeight());
- //   glDrawBuffer(GL_BACK);
- //   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    m_swapChain.unuse(m_window->getWidth(), m_window->getHeight());
+    glDrawBuffer(GL_BACK);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     // original depth texture
-//    m_hdrTarget.bindDepthTexture(1);
-//    m_stages->hdr.render(&m_state->clientState.spaceCamera);
+    m_hdrTarget.bindDepthTexture(1);
+    m_stages->hdr.render(&m_state->clientState.spaceCamera);
 
-//    if (m_showUI) m_mainMenuUI->draw();
+    if (m_showUI) m_mainMenuUI->draw();
 
     if (m_shouldScreenshot) dumpScreenshot();
 
