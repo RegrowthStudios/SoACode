@@ -636,6 +636,7 @@ $(SolutionDir)VorbCopy.bat</Command>
     <ClInclude Include="OpaqueVoxelRenderStage.h" />
     <ClInclude Include="OptionsController.h" />
     <ClInclude Include="OrbitRenderer.h" />
+    <ClInclude Include="ROAMTerrainRenderer.h" />
     <ClInclude Include="SoaThreads.h" />
     <ClInclude Include="SpaceBodyComponentUpdater.h" />
     <ClInclude Include="ParkourComponentUpdater.h" />
@@ -854,6 +855,7 @@ $(SolutionDir)VorbCopy.bat</Command>
     <ClCompile Include="OpaqueVoxelRenderStage.cpp" />
     <ClCompile Include="OptionsController.cpp" />
     <ClCompile Include="OrbitRenderer.cpp" />
+    <ClCompile Include="ROAMTerrainRenderer.cpp" />
     <ClCompile Include="SoaThreads.cpp" />
     <ClCompile Include="SpaceBodyComponentUpdater.cpp" />
     <ClCompile Include="ParkourComponentUpdater.cpp" />

@@ -875,6 +875,9 @@
     <ClInclude Include="SoaThreads.h">
       <Filter>SOA Files</Filter>
     </ClInclude>
+    <ClInclude Include="ROAMTerrainRenderer.h">
+      <Filter>SOA Files\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -1443,6 +1446,9 @@
     </ClCompile>
     <ClCompile Include="SoaThreads.cpp">
       <Filter>SOA Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ROAMTerrainRenderer.cpp">
+      <Filter>SOA Files\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

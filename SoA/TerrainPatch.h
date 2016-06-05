@@ -113,6 +113,7 @@ protected:
 
     const TerrainPatchData* m_terrainPatchData = nullptr; ///< Shared data pointer
     TerrainPatch* m_children = nullptr; ///< Pointer to array of 4 children
+
 };
 
 #endif // TerrainPatch_h__
