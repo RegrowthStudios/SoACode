@@ -106,7 +106,6 @@ bool SpaceSystemLoader::loadSystemProperties() {
                 // Allocate the body
                 body = new SystemBodyProperties();
                 m_systemBodies[name] = body;
-                body->name = name;
             } else {
                 body = it->second;
             }
@@ -118,6 +117,8 @@ bool SpaceSystemLoader::loadSystemProperties() {
                 goodParse = false;
                 delete body;
             }
+
+            vorb_assert(name != body->name, name + "Is it's own parent.");
 
             // Set up parent connection
             // At this point, name is actually parent name, to save space
@@ -425,6 +426,8 @@ void SpaceSystemLoader::initComponents() {
                 m_spaceSystem->spaceBody.get(cmpID).parentBodyComponent = pcmpID;
             }
         }
+
+        vorb_assert(cmp.parentBodyComponent != cmpID, cmp.name + " is it's own parent.");
     }
 }
 

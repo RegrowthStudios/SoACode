@@ -68,11 +68,11 @@ void SpaceSystemRenderStage::hook(SoaState* state, const Camera* spaceCamera, co
 
 void SpaceSystemRenderStage::load(StaticLoadContext& context) {
     context.addTask([&](Sender, void*) {
-        m_lensFlareRenderer.initGL();
+//        m_lensFlareRenderer.initGL();
         context.addWorkCompleted(LENS_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_starRenderer.initGL();
+ //       m_starRenderer.initGL();
         context.addWorkCompleted(STAR_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
@@ -80,27 +80,27 @@ void SpaceSystemRenderStage::load(StaticLoadContext& context) {
         context.addWorkCompleted(AR_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_sphericalTerrainComponentRenderer.initGL();
+ //       m_sphericalTerrainComponentRenderer.initGL();
         context.addWorkCompleted(SPHER_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_gasGiantComponentRenderer.initGL();
+//        m_gasGiantComponentRenderer.initGL();
         context.addWorkCompleted(GAS_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_cloudsComponentRenderer.initGL();
+ ///       m_cloudsComponentRenderer.initGL();
         context.addWorkCompleted(CLOUD_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_atmosphereComponentRenderer.initGL();
+//        m_atmosphereComponentRenderer.initGL();
         context.addWorkCompleted(ATMO_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_ringsRenderer.initGL();
+ //       m_ringsRenderer.initGL();
         context.addWorkCompleted(RING_WORK);
     }, false);
     context.addTask([&](Sender, void*) {
-        m_farTerrainComponentRenderer.initGL();
+//        m_farTerrainComponentRenderer.initGL();
         context.addWorkCompleted(LENS_WORK);
     }, false);
 }

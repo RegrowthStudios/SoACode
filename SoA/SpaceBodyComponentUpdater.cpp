@@ -53,6 +53,8 @@ void SpaceBodyComponentUpdater::getPositionAndVelocity(const SpaceBodyComponent&
     f64 meanAnomaly = (M_2_PI / cmp.t) * time + cmp.startMeanAnomaly;
     outMeanAnomaly = meanAnomaly;
 
+    vorb_assert(!(meanAnomaly != meanAnomaly), "Mean Anomaly NAN");
+
     f64 v = calculateTrueAnomaly(meanAnomaly, cmp.e);
 
     // Calculate radius
@@ -109,6 +111,7 @@ f64 SpaceBodyComponentUpdater::calculateTrueAnomaly(f64 meanAnomaly, f64 e) {
         F = E -
             e * sin(E) - meanAnomaly;
     }
+
     // 3. Calculate true anomaly
     return atan2(sqrt(1.0 - e * e) * sin(E), cos(E) - e);
 }
