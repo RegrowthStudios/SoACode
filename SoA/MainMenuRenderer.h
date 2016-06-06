@@ -94,6 +94,7 @@ private:
     bool m_wireframe = false;
     ui32v2 m_newDims;
     int m_colorFilter = 0;
+
 };
 
 #endif // MainMenuRenderer_h__

@@ -102,6 +102,12 @@ void SpaceSystemRenderStage::load(StaticLoadContext& context) {
     context.addTask([&](Sender, void*) {
 //        m_farTerrainComponentRenderer.initGL();
         context.addWorkCompleted(LENS_WORK);
+
+
+        // TMP: Move THis
+        // TODO(Ben): Don't hardcode to Aldrin.
+        m_roamPlanet.init(9200.0);
+        m_roamPlanet.update();
     }, false);
 }
 
@@ -122,7 +128,7 @@ void SpaceSystemRenderStage::setRenderState(const MTRenderState* renderState) {
 }
 
 void SpaceSystemRenderStage::render(const Camera* camera) {
-   // drawBodies();
+    drawBodies();
     if (m_showAR) m_systemARRenderer.draw(m_spaceSystem, m_spaceCamera,
                                           m_mainMenuSystemViewer,
                                           m_viewport);
@@ -158,6 +164,15 @@ void SpaceSystemRenderStage::renderStarGlows(const f32v3& colorMult) {
 }
 
 void SpaceSystemRenderStage::drawBodies() {
+
+    for (auto& it : m_spaceSystem->spaceBody) {
+        auto& cmp = it.second;
+        if (cmp.name == "Aldrin") {
+            const f64v3* pos = getBodyPosition(cmp, it.first);
+            m_roamPlanet.render(m_spaceCamera, *pos - m_spaceCamera->getPosition());
+        }
+    }
+
     // TODO(Ben): We can't be getting any components here, everything has to be encapsulated in the mt renderstate
 
   //  glEnable(GL_DEPTH_CLAMP);

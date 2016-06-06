@@ -2,11 +2,47 @@
 
 #include "ROAMTerrainRenderer.h"
 
-int ROAMPatchRecycler::m_nextTriNode = 0;
+#include "ShaderLoader.h"
 
+#include "VoxelSpaceConversions.h"
+#include "RenderUtils.h"
+
+int ROAMPatchRecycler::m_nextTriNode = 0;
+ROAMTriTreeNode ROAMPatchRecycler::m_triPool[POOL_SIZE];
+
+// TODO(Ben): NO globals
 std::vector<TmpROAMTerrainVertex> vertices; // TMP
 
-void ROAMPatch::init(const f64v2& gridPosition, WorldCubeFace cubeFace, f64 width) {
+namespace {
+
+const char * VERT_SRC = R"(
+                          
+// Uniforms
+uniform mat4 unWVP;
+
+// Input
+in vec4 vPosition;
+
+void main() {
+  gl_Position = unWVP * vPosition;
+}
+)";
+
+const char * FRAG_SRC = R"(
+
+// Output
+out vec4 pColor;
+
+void main() {
+  pColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+
+)";
+}
+
+
+void ROAMPatch::init(const ROAMPlanet* parent, const f64v2& gridPosition, WorldCubeFace cubeFace, f64 width) {
+    m_parent = parent;
     m_gridPos = gridPosition;
     m_cubeFace = cubeFace;
     m_width = width;
@@ -50,17 +86,28 @@ void ROAMPatch::tesselate() {
                      1);
 }
 
-void ROAMPatch::render() {
+void ROAMPatch::render(const Camera* camera, const vg::GLProgram& program, const f64v3& relativePos) {
 
     // TODO(Ben): Camera
 
     if (m_isDirty) {
         generateMesh();
     }
+    glDisable(GL_DEPTH_TEST);
+
+    f32m4 W(1.0);
+    setMatrixTranslation(W, relativePos);
+    f32m4 WVP = camera->getViewProjectionMatrix() * W;
+
+    glUniformMatrix4fv(program.getUniform("unWVP"), 1, GL_FALSE, &WVP[0][0]);
 
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TmpROAMTerrainVertex), 0);
+
     glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -168,19 +215,39 @@ void ROAMPatch::generateMesh() {
     }
 
     recursGenerateMesh(&m_baseLeft,
-                 f64v2(0, m_width),
-                 f64v2(m_width, 0),
-                 f64v2(0, 0));
+                       f64v2(m_gridPos.x, m_gridPos.y + m_width),
+                       f64v2(m_gridPos.x + m_width, m_gridPos.y),
+                       f64v2(m_gridPos.x, m_gridPos.y));
 
     recursGenerateMesh(&m_baseRight,
-                 f64v2(m_width, 0),
-                 f64v2(0, m_width),
-                 f64v2(m_width, m_width));
+                       f64v2(m_gridPos.x + m_width, m_gridPos.y),
+                       f64v2(m_gridPos.x, m_gridPos.y + m_width),
+                       f64v2(m_gridPos.x + m_width, m_gridPos.y + m_width));
+
+
+    m_numVertices = vertices.size();
+
+    glBindVertexArray(m_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(TmpROAMTerrainVertex), vertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    std::vector<TmpROAMTerrainVertex>().swap(vertices);
 
     m_isDirty = false;
 }
 
 void ROAMPatch::recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 left, f64v2 right, f64v2 apex) {
+    
+    // Move this out of recursion
+    const i32v3& m_coordMapping = VoxelSpaceConversions::VOXEL_TO_WORLD[(int)m_cubeFace];
+    const f32v2 m_coordMults = f32v2(VoxelSpaceConversions::FACE_TO_WORLD_MULTS[(int)m_cubeFace]);
+
+    f32 height = m_parent->m_diameter * 0.5 ;
+    
     if (tri->leftChild)					// All non-leaf nodes have both children, so just check for one
     {
         f64v2 center = (left + right) * 2.0;
@@ -189,24 +256,50 @@ void ROAMPatch::recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 left, f64v2 right
         recursGenerateMesh(tri->rightChild, right, apex, center);
     } else									// A leaf node!  Output a triangle to be rendered.
     {
-        // Actual number of rendered triangles...
-        m_numVertices += 3;
 
 
         // Output the LEFT VERTEX for the triangle
-        vertices.emplace_back((float)left.x,
-                              (float)left.y,
-                              0.0f);
+        vertices.emplace_back();
+        vertices.back().position[m_coordMapping.x] = left.x * m_coordMults.x;
+        vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
+        vertices.back().position[m_coordMapping.z] = left.y * m_coordMults.y;
+        vertices.back().position = vmath::normalize(vertices.back().position) * height;
 
       
         // Output the RIGHT VERTEX for the triangle
-        vertices.emplace_back((float)left.x,
-                              (float)left.y,
-                              0.0f);
+        vertices.emplace_back();
+        vertices.back().position[m_coordMapping.x] = right.x * m_coordMults.x;
+        vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
+        vertices.back().position[m_coordMapping.z] = right.y * m_coordMults.y;
+        vertices.back().position = vmath::normalize(vertices.back().position) * height;
 
-
-        vertices.emplace_back((float)left.x,
-                              (float)left.y,
-                              0.0f);
+        // Output the APEX VERTEX for the triangle
+        vertices.emplace_back();
+        vertices.back().position[m_coordMapping.x] = apex.x * m_coordMults.x;
+        vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
+        vertices.back().position[m_coordMapping.z] = apex.y * m_coordMults.y;
+        vertices.back().position = vmath::normalize(vertices.back().position) * height;
     }
+}
+
+void ROAMPlanet::render(const Camera* camera, const f64v3& relativePos) {
+
+    // Lazy load shader
+    if (!m_program.isLinked()) {
+        m_program = ShaderLoader::createProgram("ROAMPlanet", VERT_SRC, FRAG_SRC);
+    }
+
+    m_program.use();
+    m_program.enableVertexAttribArrays();
+
+    for (int i = 0; i < 6; i++) {
+        for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
+            for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
+                m_patches[i][y][x].render(camera, m_program, relativePos);
+            }
+        }
+    }
+
+    m_program.disableVertexAttribArrays();
+    m_program.unuse();
 }

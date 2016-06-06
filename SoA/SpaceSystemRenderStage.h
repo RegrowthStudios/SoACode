@@ -31,6 +31,7 @@
 #include "StarComponentRenderer.h"
 #include "SpaceSystemARRenderer.h"
 #include "IRenderStage.h"
+#include "ROAMTerrainRenderer.h"
 
 class App;
 class GameSystem;
@@ -101,6 +102,8 @@ private:
     bool m_showAR = true;
 
     vcore::GLRPC m_rpc;
+
+    ROAMPlanet m_roamPlanet;
 };
 
 #endif // SpaceSystemRenderStage_h__

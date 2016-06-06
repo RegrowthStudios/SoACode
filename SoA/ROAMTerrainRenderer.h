@@ -19,7 +19,9 @@
 #define ROAMTerrainRenderer_h__
 
 #include <Vorb/graphics/gtypes.h>
+#include <Vorb/graphics/GLProgram.h>
 #include "VoxelCoordinateSpaces.h"
+#include "Camera.h"
 
 // Depth of variance tree: should be near SQRT(PATCH_SIZE) + 1
 #define VARIANCE_DEPTH (9)
@@ -32,9 +34,10 @@
 // How many TriTreeNodes should be allocated?
 #define POOL_SIZE (25000)
 
+class ROAMPlanet;
+
 /// Vertex for terrain patch
-class ROAMTerrainVertex {
-public:
+struct ROAMTerrainVertex {
     f32v3     position;    
     f32v3     normal;      
     ColorRGB8 color;       
@@ -45,9 +48,12 @@ public:
 };
 static_assert(sizeof(ROAMTerrainVertex) == 32, "ROAMTerrainVertex is not 32");
 
-class TmpROAMTerrainVertex {
-public:
-    f32v3     position;
+struct TmpROAMTerrainVertex {
+    TmpROAMTerrainVertex() {}
+    TmpROAMTerrainVertex(f32 x, f32 y, f32 z) :
+        position(x, y, z) {
+    }
+    f32v3 position;
 };
 
 // Base is hypotenuse
@@ -81,12 +87,12 @@ private:
 
 class ROAMPatch {
 public:
-    void init(const f64v2& gridPosition, WorldCubeFace cubeFace, f64 width);
+    void init(const ROAMPlanet* parent, const f64v2& gridPosition, WorldCubeFace cubeFace, f64 width);
     void reset();
 
     void tesselate();
 
-    void render();
+    void render(const Camera* camera, const vg::GLProgram& program, const f64v3& relativePos);
 
 private:
     void recursTessellate(ROAMTriTreeNode * tri,
@@ -123,20 +129,23 @@ private:
     VGVertexArray m_vao = 0;
     VGVertexBuffer m_vbo = 0;
     int m_numVertices = 0;
+
+    const ROAMPlanet* m_parent = nullptr;
 };
 
 class ROAMPlanet {
 public:
+    friend class ROAMPatch;
+
     void init(f64 diameter) {
         m_diameter = diameter;
 
         f64 patchWidth = m_diameter / ROAM_PATCH_DIAMETER;
 
-        // TODO(Ben): More than 1 face
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
                 for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
-                    m_patches[i][y][x].init(f64v2(x * patchWidth, y * patchWidth) - ROAM_PATCH_RADIUS * patchWidth, FACE_TOP, patchWidth);
+                    m_patches[i][y][x].init(this, f64v2(x * patchWidth, y * patchWidth) - ROAM_PATCH_RADIUS * patchWidth, (WorldCubeFace)i, patchWidth);
                     m_patches[i][y][x].tesselate();
                 }
             }
@@ -144,8 +153,7 @@ public:
     }
 
     void update() {
-        // TODO(Ben): More than 1 face
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
                 for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
                     m_patches[i][y][x].tesselate();
@@ -154,18 +162,11 @@ public:
         }
     }
 
-    void render() {
-        // TODO(Ben): More than 1 face
-        for (int i = 0; i < 1; i++) {
-            for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
-                for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
-                    m_patches[i][y][x].render();
-                }
-            }
-        }
-    }
+    void render(const Camera* camera, const f64v3& relativePos);
 
 private:
+    vg::GLProgram m_program;
+
     ROAMPatch m_patches[6][ROAM_PATCH_DIAMETER][ROAM_PATCH_DIAMETER];
     f64 m_diameter;
 };

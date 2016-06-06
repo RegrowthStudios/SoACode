@@ -138,6 +138,7 @@ void MainMenuRenderer::load(StaticLoadContext& context) {
         m_stages->exposureCalc.load(context);
         m_stages->bloom.load(context);
 
+
         context.blockUntilFinished();
 
         m_isLoaded.store(true);
@@ -167,6 +168,7 @@ void MainMenuRenderer::render() {
 
     m_stages->spaceSystem.setShowAR(true || m_showAR);
     m_stages->spaceSystem.render(&m_state->clientState.spaceCamera);
+
 
     // Restore fill
     if (m_wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
