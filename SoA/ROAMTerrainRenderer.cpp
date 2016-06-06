@@ -15,26 +15,31 @@ std::vector<TmpROAMTerrainVertex> vertices; // TMP
 
 namespace {
 
-const char * VERT_SRC = R"(
+    const char * VERT_SRC = R"(
                           
 // Uniforms
 uniform mat4 unWVP;
 
 // Input
 in vec4 vPosition;
+in vec3 vColor;
+
+out vec3 fColor;
 
 void main() {
+  fColor = vColor;
   gl_Position = unWVP * vPosition;
 }
 )";
 
 const char * FRAG_SRC = R"(
 
+in vec3 fColor;
 // Output
 out vec4 pColor;
 
 void main() {
-  pColor = vec4(1.0, 0.0, 0.0, 1.0);
+  pColor = vec4(fColor.xyz, 1.0);
 }
 
 )";
@@ -52,8 +57,9 @@ void ROAMPatch::init(const ROAMPlanet* parent, const f64v2& gridPosition, WorldC
     m_baseRight.baseNeighbor = &m_baseLeft;
 
     // Initialize flags
-    m_varianceDirty = 1;
-    m_isVisible = 0;
+    m_varianceDirty = true;
+    m_isVisible = false;
+    m_isDirty = true;
 }
 
 void ROAMPatch::reset() {
@@ -69,21 +75,22 @@ void ROAMPatch::reset() {
     m_baseRight.baseNeighbor = &m_baseLeft;
 }
 
-void ROAMPatch::tesselate() {
+void ROAMPatch::tesselate(const f64v3& relCamPos) {
     // Split each of the base triangles
     m_currentVariance = m_varianceLeft;
+
     recursTessellate(&m_baseLeft,
                      f64v2(m_gridPos.x, m_gridPos.y + m_width),
                      f64v2(m_gridPos.x + m_width, m_gridPos.y),
                      m_gridPos,
-                     1);
+                     1, relCamPos);
 
     m_currentVariance = m_varianceRight;
     recursTessellate(&m_baseRight,
                      f64v2(m_gridPos.x + m_width, m_gridPos.y),
                      f64v2(m_gridPos.x, m_gridPos.y + m_width),
                      f64v2(m_gridPos.x + m_width, m_gridPos.y + m_width),
-                     1);
+                     1, relCamPos);
 }
 
 void ROAMPatch::render(const Camera* camera, const vg::GLProgram& program, const f64v3& relativePos) {
@@ -96,7 +103,7 @@ void ROAMPatch::render(const Camera* camera, const vg::GLProgram& program, const
     glDisable(GL_DEPTH_TEST);
 
     f32m4 W(1.0);
-    setMatrixTranslation(W, relativePos);
+    setMatrixTranslation(W, -relativePos);
     f32m4 WVP = camera->getViewProjectionMatrix() * W;
 
     glUniformMatrix4fv(program.getUniform("unWVP"), 1, GL_FALSE, &WVP[0][0]);
@@ -107,6 +114,8 @@ void ROAMPatch::render(const Camera* camera, const vg::GLProgram& program, const
     
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TmpROAMTerrainVertex), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(TmpROAMTerrainVertex), (void*)offsetof(TmpROAMTerrainVertex, color));
 
     glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 
@@ -114,30 +123,38 @@ void ROAMPatch::render(const Camera* camera, const vg::GLProgram& program, const
     glBindVertexArray(0);
 }
 
-void ROAMPatch::recursTessellate(ROAMTriTreeNode * tri, f64v2 left, f64v2 right, f64v2 apex, int node) {
-    f64 TriVariance;
-    f64v2 center = (left + right) * 2.0; // Compute X coordinate of center of Hypotenuse
+void ROAMPatch::recursTessellate(ROAMTriTreeNode * tri, f64v2 left, f64v2 right, f64v2 apex, int node, const f64v3& relCamPos) {
+
+    const i32v3& m_coordMapping = VoxelSpaceConversions::VOXEL_TO_WORLD[(int)m_cubeFace];
+    const f32v2 m_coordMults = f32v2(VoxelSpaceConversions::FACE_TO_WORLD_MULTS[(int)m_cubeFace]);
+
+    f64 height = m_parent->m_diameter * 0.5;
+
+    // optimize
+    f64v2 center = (left + right) * 0.5; // Compute X coordinate of center of Hypotenuse
+    f64v3 center3D;
+    center3D[m_coordMapping.x] = center.x * m_coordMults.x;
+    center3D[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
+    center3D[m_coordMapping.z] = center.y * m_coordMults.y;
+    center3D = vmath::normalize(center3D) * height;
+
+    // Extremely slow distance metric (sqrt is used).
+    f32 distance = vmath::length(relCamPos - center3D);
 
     if (node < (1 << VARIANCE_DEPTH)) {
-        // Extremely slow distance metric (sqrt is used).
-        // Replace this with a faster one!
-        f64 distance = 1000; // 1.0 + sqrt(pow((f64)centerX - gViewPosition[0], 2) + pow((f64)centerY - gViewPosition[2], 2));
 
-        // Egads!  A division too?  What's this world coming to!
+        // optimize
+        f64 tmpSizeMult = vmath::length(left - right);
         // This should also be replaced with a faster operation.
-        TriVariance = ((float)m_currentVariance[node] * 2048 * 2) / distance;	// Take both distance and variance into consideration
-    }
-    // Else?
-    if ((node >= (1 << VARIANCE_DEPTH)) ||	// IF we do not have variance info for this node, then we must have gotten here by splitting, so continue down to the lowest level.
-        (TriVariance > 1000.0f))	// OR if we are not below the variance tree, test for variance.
-    {
-        split(tri);														// Split this triangle.
-
-        if (tri->leftChild &&											// If this triangle was split, try to split it's children as well.
-            ((abs(left.x - right.x) >= 3) || (abs(left.y - right.y) >= 3)))	// Tessellate all the way down to one vertex per height field entry
+        f32 variance = ((f32)m_currentVariance[node] * m_width * 0.001) * tmpSizeMult / distance;
+        if ((variance > 26.0f))	// OR if we are not below the variance tree, test for variance.
         {
-            recursTessellate(tri->leftChild, apex, left, center, node << 1);
-            recursTessellate(tri->leftChild, right, apex, center, 1 + (node << 1));
+            split(tri);
+
+            if (tri->leftChild){ // If this triangle was split, try to split it's children as well.
+                recursTessellate(tri->leftChild, apex, left, center, node << 1, relCamPos);
+                recursTessellate(tri->rightChild, right, apex, center, 1 + (node << 1), relCamPos);
+            }
         }
     }
 }
@@ -206,6 +223,7 @@ void ROAMPatch::split(ROAMTriTreeNode * tri) {
     }
 
     m_isDirty = true;
+    m_varianceDirty = true;
 }
 
 void ROAMPatch::generateMesh() {
@@ -246,17 +264,28 @@ void ROAMPatch::recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 left, f64v2 right
     const i32v3& m_coordMapping = VoxelSpaceConversions::VOXEL_TO_WORLD[(int)m_cubeFace];
     const f32v2 m_coordMults = f32v2(VoxelSpaceConversions::FACE_TO_WORLD_MULTS[(int)m_cubeFace]);
 
-    f32 height = m_parent->m_diameter * 0.5 ;
+    f32 height = m_parent->m_diameter * 0.5;
+
     
     if (tri->leftChild)					// All non-leaf nodes have both children, so just check for one
     {
-        f64v2 center = (left + right) * 2.0;
+        f64v2 center = (left + right) * 0.5;
 
         recursGenerateMesh(tri->leftChild, apex, left, center);
         recursGenerateMesh(tri->rightChild, right, apex, center);
     } else									// A leaf node!  Output a triangle to be rendered.
     {
-
+        ui32 len = (ui8)(vmath::length(left - right) / 2.0);
+        ui8v4 color;
+        
+        if (len > 255) {
+            len = len - (255 - len);
+            if (len > 255) len = 255;
+        }
+        color.r = len;
+        color.g = len;
+        color.b = len;
+        color.a = 255;
 
         // Output the LEFT VERTEX for the triangle
         vertices.emplace_back();
@@ -264,14 +293,15 @@ void ROAMPatch::recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 left, f64v2 right
         vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
         vertices.back().position[m_coordMapping.z] = left.y * m_coordMults.y;
         vertices.back().position = vmath::normalize(vertices.back().position) * height;
-
-      
+        vertices.back().color = color;
+ 
         // Output the RIGHT VERTEX for the triangle
         vertices.emplace_back();
         vertices.back().position[m_coordMapping.x] = right.x * m_coordMults.x;
         vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
         vertices.back().position[m_coordMapping.z] = right.y * m_coordMults.y;
         vertices.back().position = vmath::normalize(vertices.back().position) * height;
+        vertices.back().color = color;
 
         // Output the APEX VERTEX for the triangle
         vertices.emplace_back();
@@ -279,7 +309,66 @@ void ROAMPatch::recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 left, f64v2 right
         vertices.back().position[m_coordMapping.y] = height * VoxelSpaceConversions::FACE_Y_MULTS[(int)m_cubeFace];
         vertices.back().position[m_coordMapping.z] = apex.y * m_coordMults.y;
         vertices.back().position = vmath::normalize(vertices.back().position) * height;
+        vertices.back().color = color;
     }
+}
+
+void ROAMPatch::computeVariance() {
+
+    if (m_varianceDirty) {
+        // Compute variance on each of the base triangles...
+        m_currentVariance = m_varianceLeft;
+        recursComputeVariance(f64v3(0.0f, m_width, 0.0f),
+                              f64v3(m_width, 0.0f, 0.0f),
+                              f64v3(0.0f, 0.0f, 0.0f),
+                              1);
+
+        m_currentVariance = m_varianceRight;
+        recursComputeVariance(f64v3(m_width, 0.0f, 0.0f),
+                              f64v3(0.0f, m_width, 0.0f),
+                              f64v3(m_width, m_width, 0.0f),
+                              1);
+
+        m_varianceDirty = 0;
+    }
+}
+
+ui8 ROAMPatch::recursComputeVariance(f64v3 left,
+                                     f64v3 right,
+                                     f64v3 apex,
+                                     int node) {
+    //        /|\
+    //      /  |  \
+    //    /    |    \
+    //  /      |      \
+    //  ~~~~~~~*~~~~~~~  <-- Compute the X and Y coordinates of '*'
+    //
+    f32v3 center;
+    center.x = (left.x + right.x) * 0.5;		// Compute X coordinate of center of Hypotenuse
+    center.y = 0.0f;
+    center.z = (left.y + right.z) * 0.5;		// Compute Y coord...
+
+    // Get the height value at the middle of the Hypotenuse
+    f32 centerZ = 0.0f;
+    const f32 VARIANCE_MULT = 0.5f;
+
+    // Variance of this triangle is the actual height at it's hypotenuse midpoint minus the interpolated height.
+    // Use values passed on the stack instead of re-accessing the Height Field.
+    ui8 variance = (ui8)(abs(centerZ - ((left.y + right.y) * 0.5f)) * VARIANCE_MULT);
+
+    // Since we're after speed and not perfect representations,
+    //    only calculate variance down to an 8x8 block
+    if (node < (1 << (VARIANCE_DEPTH + 1))) {
+        // Final Variance for this node is the max of it's own variance and that of it's children.
+        variance = vmath::max(variance, recursComputeVariance(apex, left, center, node << 1));
+        variance = vmath::max(variance, recursComputeVariance(right, apex, center, 1 + (node << 1)));
+    }
+
+    // Store the final variance for this node.  Note Variance is never zero.
+    if (node < (1 << VARIANCE_DEPTH))
+        m_currentVariance[node] = 1 + variance;
+
+    return variance;
 }
 
 void ROAMPlanet::render(const Camera* camera, const f64v3& relativePos) {

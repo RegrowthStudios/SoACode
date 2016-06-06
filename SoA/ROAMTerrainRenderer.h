@@ -24,12 +24,13 @@
 #include "Camera.h"
 
 // Depth of variance tree: should be near SQRT(PATCH_SIZE) + 1
-#define VARIANCE_DEPTH (9)
+#define VARIANCE_DEPTH (10)
+const int NUM_NODES = 1 << VARIANCE_DEPTH;
 
 // TODO(Ben): Vary this
 // Diameter of a planet cube in patches
-#define ROAM_PATCH_DIAMETER (10)
-#define ROAM_PATCH_RADIUS (5)
+#define ROAM_PATCH_DIAMETER (4)
+#define ROAM_PATCH_RADIUS (2)
 
 // How many TriTreeNodes should be allocated?
 #define POOL_SIZE (25000)
@@ -50,10 +51,9 @@ static_assert(sizeof(ROAMTerrainVertex) == 32, "ROAMTerrainVertex is not 32");
 
 struct TmpROAMTerrainVertex {
     TmpROAMTerrainVertex() {}
-    TmpROAMTerrainVertex(f32 x, f32 y, f32 z) :
-        position(x, y, z) {
-    }
+
     f32v3 position;
+    ui8v4 color;
 };
 
 // Base is hypotenuse
@@ -90,7 +90,8 @@ public:
     void init(const ROAMPlanet* parent, const f64v2& gridPosition, WorldCubeFace cubeFace, f64 width);
     void reset();
 
-    void tesselate();
+    void computeVariance();
+    void tesselate(const f64v3& relCamPos);
 
     void render(const Camera* camera, const vg::GLProgram& program, const f64v3& relativePos);
 
@@ -99,12 +100,18 @@ private:
                           f64v2 left,
                           f64v2 right,
                           f64v2 apex,
-                          int node);
+                          int node,
+                          const f64v3& relCamPos);
 
     void split(ROAMTriTreeNode * tri);
 
     void generateMesh();
     void recursGenerateMesh(ROAMTriTreeNode *tri, f64v2 leftX, f64v2 right, f64v2 apex);
+
+    ui8 recursComputeVariance(f64v3 left,
+                              f64v3 right,
+                              f64v3 apex,
+                              int node);
 
 
     f64v2 m_gridPos  = f64v2(0.0); ///< Position on 2D grid
@@ -112,13 +119,13 @@ private:
     f64v3 m_aabbDims = f64v3(0.0);
     f64   m_width;
 
-    ui8   m_varianceLeft [1 << (VARIANCE_DEPTH)]; // Left variance tree
-    ui8   m_varianceRight[1 << (VARIANCE_DEPTH)]; // Right variance tree
+    ui8   m_varianceLeft[NUM_NODES]; // Left variance tree
+    ui8   m_varianceRight[NUM_NODES]; // Right variance tree
 
     ui8 * m_currentVariance; // Which variance we are currently using. [Only valid during the Tessellate and ComputeVariance passes]
-    ui8   m_varianceDirty;   // Does the Variance Tree need to be recalculated for this Patch?
-    ui8   m_isVisible;       // Is this patch visible in the current frame?
-    bool  m_isDirty = true;
+    bool  m_varianceDirty;   // Does the Variance Tree need to be recalculated for this Patch?
+    bool  m_isVisible;       // Is this patch visible in the current frame?
+    bool  m_isDirty;
 
     ROAMTriTreeNode m_baseLeft;  // Left base triangle tree node
     ROAMTriTreeNode m_baseRight; // Right base triangle tree node
@@ -146,20 +153,26 @@ public:
             for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
                 for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
                     m_patches[i][y][x].init(this, f64v2(x * patchWidth, y * patchWidth) - ROAM_PATCH_RADIUS * patchWidth, (WorldCubeFace)i, patchWidth);
-                    m_patches[i][y][x].tesselate();
                 }
             }
         }
     }
 
-    void update() {
-        for (int i = 0; i < 6; i++) {
-            for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
-                for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
-                    m_patches[i][y][x].tesselate();
+        void update(const f64v3& relCamPos) {
+            for (int i = 0; i < 6; i++) {
+                for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
+                    for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
+                        m_patches[i][y][x].computeVariance();
+                    }
                 }
             }
-        }
+            for (int i = 0; i < 6; i++) {
+                for (int y = 0; y < ROAM_PATCH_DIAMETER; y++) {
+                    for (int x = 0; x < ROAM_PATCH_DIAMETER; x++) {
+                        m_patches[i][y][x].tesselate(relCamPos);
+                    }
+                }
+            }
     }
 
     void render(const Camera* camera, const f64v3& relativePos);

@@ -107,7 +107,6 @@ void SpaceSystemRenderStage::load(StaticLoadContext& context) {
         // TMP: Move THis
         // TODO(Ben): Don't hardcode to Aldrin.
         m_roamPlanet.init(9200.0);
-        m_roamPlanet.update();
     }, false);
 }
 
@@ -165,11 +164,13 @@ void SpaceSystemRenderStage::renderStarGlows(const f32v3& colorMult) {
 
 void SpaceSystemRenderStage::drawBodies() {
 
+    
     for (auto& it : m_spaceSystem->spaceBody) {
         auto& cmp = it.second;
         if (cmp.name == "Aldrin") {
             const f64v3* pos = getBodyPosition(cmp, it.first);
-            m_roamPlanet.render(m_spaceCamera, *pos - m_spaceCamera->getPosition());
+            m_roamPlanet.update(m_spaceCamera->getPosition() - *pos);
+            m_roamPlanet.render(m_spaceCamera, m_spaceCamera->getPosition() - *pos);
         }
     }
 
